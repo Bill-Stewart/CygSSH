@@ -1,0 +1,51 @@
+NAME="libiconv"
+VERSION=1.14
+RELEASE=3
+CATEGORY="Libs"
+SUMMARY="Unicode iconv() implementation"
+DESCRIPTION="This library provides an iconv() implementation, for use on systems
+which don't have one, or whose implementation cannot convert from/to Unicode."
+HOMEPAGE="http://www.gnu.org/software/libiconv/"
+SRC_URI="mirror://gnu/libiconv/libiconv-${VERSION}.tar.gz"
+
+PATCH_URI="
+	1.14-reloc.patch
+	1.14-wchar.patch
+	1.14-cross-install.patch
+	1.14-aliases.patch
+"
+
+PKG_NAMES="${NAME} libiconv2 libcharset1 libiconv-devel"
+libiconv_CONTENTS="usr/bin/iconv.exe usr/share/doc/ usr/share/locale/ usr/share/man/man1/"
+libiconv2_CONTENTS="usr/bin/cygiconv-2.dll"
+libcharset1_CONTENTS="usr/bin/cygcharset-1.dll"
+libiconv_devel_CONTENTS="usr/include/ usr/lib/ usr/share/man/man3/"
+
+DIFF_EXCLUDES="*.html"
+
+DISTCLEANFILES="m4/libtool.m4 m4/lt*.m4 libcharset/m4/libtool.m4 libcharset/m4/lt*.m4"
+
+CYGPORT_USE_UNSTABLE_API=1
+src_patch_hook() {
+	cygmake -f Makefile.devel lib/aliases.h
+}
+
+src_compile() {
+	cd ${S}
+	ACLOCAL_FLAGS="-I ${S}/m4 -I ${S}/srcm4"
+	cygautoreconf
+	cd ${B}
+	cygconf --enable-shared --enable-static \
+		--enable-extra-encodings \
+		am_cv_proto_iconv_arg1= \
+		am_cv_proto_iconv="extern size_t iconv (iconv_t cd, char * *inbuf, size_t *inbytesleft, char * *outbuf, size_t *outbytesleft);"
+	cygmake
+}
+
+src_install() {
+	cd ${B}
+	cyginstall
+
+	# this belongs to gettext
+	rm -f ${D}/usr/lib/charset.alias
+}

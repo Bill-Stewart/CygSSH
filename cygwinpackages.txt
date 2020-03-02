@@ -1,0 +1,7 @@
+cygrunsrv
+libgssapi_krb5_2
+nano
+openssh
+rsync
+unzip
+zip

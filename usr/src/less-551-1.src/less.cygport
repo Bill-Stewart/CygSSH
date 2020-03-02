@@ -1,0 +1,32 @@
+NAME="less"
+VERSION=551
+RELEASE=1
+
+CATEGORY="Text"
+SUMMARY="A file pager program, similar to more(1)"
+DESCRIPTION="The less utility is a text file browser that resembles more, but has
+more capabilities.  Less allows you to move backwards in the file as
+well as forwards.  Since less doesn't have to read the entire input file
+before it starts, less starts up more quickly than text editors (for
+example, vi)."
+HOMEPAGE="http://www.greenwoodsoftware.com/less/"
+SRC_URI="http://www.greenwoodsoftware.com/less/${PN}-${PV}.tar.gz
+http://www.greenwoodsoftware.com/less/${PN}-${PV}.sig"
+
+PKG_NAMES="less"
+
+less_CONTENTS="usr"
+
+DIFF_EXCLUDES=""
+
+KEEP_LA_FILES="none"
+
+src_compile() {
+	cd ${S}
+        cygautoreconf
+        cd ${B}
+        cygconf --with-regex=pcre
+}
+
+
+

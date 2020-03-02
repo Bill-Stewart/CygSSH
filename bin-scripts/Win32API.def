@@ -1,0 +1,100 @@
+// Win32API.def
+// Win32 API definitions for PowerShell scripts
+// Author: Bill Stewart (bstewart@iname.com)
+
+// [BCA37B9C41264685AD47EEBBD02F40EF.Win32API+LOCALGROUP_INFO_1]
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+public struct LOCALGROUP_INFO_1 {
+  public string lgrpi1_name;
+  public string lgrpi1_comment;
+}
+
+// [BCA37B9C41264685AD47EEBBD02F40EF.Win32API+USER_INFO_2]
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+public struct USER_INFO_2 {
+  public string usri2_name;
+  public string usri2_password;
+  public uint   usri2_password_age;
+  public uint   usri2_priv;
+  public string usri2_home_dir;
+  public string usri2_comment;
+  public uint   usri2_flags;
+  public string usri2_script_path;
+  public uint   usri2_auth_flags;
+  public string usri2_full_name;
+  public string usri2_usr_comment;
+  public string usri2_parms;
+  public string usri2_workstations;
+  public uint   usri2_last_logon;
+  public uint   usri2_last_logoff;
+  public uint   usri2_acct_expires;
+  public uint   usri2_max_storage;
+  public uint   usri2_units_per_week;
+  public IntPtr usri2_logon_hours;
+  public uint   usri2_bad_pw_count;
+  public uint   usri2_num_logons;
+  public string usri2_logon_server;
+  public uint   usri2_country_code;
+  public uint   usri2_code_page;
+}
+
+// [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetGetJoinInformation()
+[DllImport("netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern uint NetGetJoinInformation(
+  string     server,
+  out IntPtr lpNameBuffer,
+  out int    BufferType);
+
+// [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetLocalGroupAdd()
+[DllImport("netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern uint NetLocalGroupAdd(
+  string   servername,
+  uint     level,
+  IntPtr   buf,
+  out uint parm_err);
+
+// [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetLocalGroupGetInfo()
+[DllImport("netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern uint NetLocalGroupGetInfo(
+  string     servername,
+  string     groupname,
+  uint       level,
+  out IntPtr bufptr);
+
+// [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetLocalGroupSetInfo()
+[DllImport("netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern uint NetLocalGroupSetInfo(
+  string     servername,
+  string     groupname,
+  uint       level,
+  IntPtr     buf,
+  out IntPtr parm_err);
+
+// [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetUserAdd()
+[DllImport("netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern uint NetUserAdd(
+  string   servername,
+  uint     level,
+  IntPtr   buf,
+  out uint parm_err);
+
+// [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetUserGetInfo()
+[DllImport("netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern uint NetUserGetInfo(
+  string     servername,
+  string     username,
+  uint       level,
+  out IntPtr bufptr);
+
+// [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetUserSetInfo()
+[DllImport("netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern uint NetUserSetInfo(
+  string   servername,
+  string   username,
+  uint     level,
+  IntPtr   bufptr,
+  out uint parm_err);
+
+// [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetApiBufferFree()
+[DllImport("netapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+public static extern uint NetApiBufferFree(IntPtr Buffer);

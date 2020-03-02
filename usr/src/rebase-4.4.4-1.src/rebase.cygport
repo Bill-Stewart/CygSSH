@@ -1,0 +1,13 @@
+NAME="rebase"
+VERSION="4.4.4"
+RELEASE=1
+CATEGORY="System Utils Base"
+SUMMARY="utilities for rebasing DLLs to load at alternate addresses"
+DESCRIPTION="This package contains the Cygwin rebase utilities.  Use rebase for
+specific DLLs or rebaseall for all DLLs installed by Cygwin's setup.exe."
+REQUIRES="coreutils grep gzip sed"
+
+GIT_URI="git://cygwin.com/git/cygwin-rebase.git"
+GIT_TAG="rebase-${PV//\./-}"
+inherit git
+

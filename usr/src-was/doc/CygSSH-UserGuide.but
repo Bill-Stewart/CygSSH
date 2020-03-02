@@ -1,0 +1,988 @@
+\# CygSSH.but
+\# Written by Bill Stewart (bstewart at iname.com)
+\# CygSSH User Guide - Halibut source file
+
+\# ----------------------------------------------------------------------------
+\# MACROS
+\# ----------------------------------------------------------------------------
+
+\define{version} 1.0
+
+\define{rightarrow} \u2192
+
+\define{copyright} \u00A9
+
+\# ----------------------------------------------------------------------------
+\# CONFIGURATION
+\# ----------------------------------------------------------------------------
+
+\cfg{paper-page-width}{612}
+\cfg{paper-page-height}{792}
+
+\cfg{paper-title-font-size}{24}
+\cfg{paper-title-fonts}{Helvetica-Bold}{Helvetica-BoldOblique}{Courier-Bold}
+
+\cfg{paper-base-font-size}{10}
+\cfg{paper-pagenum-font-size}{10}
+\cfg{paper-base-fonts}{Times-Roman}{Times-Italic}{Times-Bold}
+
+\cfg{paper-code-font-size}{9}
+\cfg{paper-code-fonts}{Courier-Bold}{Courier-Oblique}{Courier}
+
+\cfg{paper-chapter-fonts}{Helvetica-Bold}{Helvetica-BoldOblique}{Courier-Bold}
+\cfg{paper-chapter-font-size}{18}
+
+\cfg{paper-section-fonts}{0}{Helvetica-Bold}{Helvetica-BoldOblique}{Courier-Bold}
+\cfg{paper-section-font-size}{0}{16}
+
+\cfg{paper-section-fonts}{1}{Helvetica-Bold}{Helvetica-BoldOblique}{Courier-Bold}
+\cfg{paper-section-font-size}{1}{14}
+
+\cfg{paper-section-fonts}{2}{Helvetica-Bold}{Helvetica-BoldOblique}{Courier-Bold}
+\cfg{paper-section-font-size}{2}{13}
+
+\# ----------------------------------------------------------------------------
+\# TITLE
+\# ----------------------------------------------------------------------------
+
+\title CygSSH User Guide
+
+\copyright Copyright 2020 by Bill Stewart
+
+\versionid \version
+
+CygSSH is a convenient packaging of the Cygwin version of OpenSSH that provides a simple way to install and use the Cygwin version of OpenSSH on Windows.
+
+This software is covered by the license agreements listed in \k{licenses}.
+
+\# ----------------------------------------------------------------------------
+\# CHAPTER
+\# ----------------------------------------------------------------------------
+
+\C{installer} Installing the Package
+
+The \i{system requirements} are the following:
+
+\b Windows Vista or Windows Server 2008 or later
+
+\b Windows PowerShell 2.0 or later
+
+The \i{installer} installs the appropriate version of the package based on the OS architecture; that is, it installs the \i{64-bit} version on x64 versions of Windows, or the \i{32-bit} version otherwise. (See \k{wow64downlevelauth} for an important caveat about running the 32-bit version of the OpenSSH server service on 64-bit non-x64 downlevel OS versions.)
+
+The installer performs the following tasks:
+
+\b Creates the needed directories and copies the files
+
+\b Configures file and directory access control lists (ACLs)
+
+\b Configures the \c{fstab} file to disable Cygwin file system permission changes (see \k{cygwinfstabfile})
+
+\b If the setup type is \s{full} (see \k{setuptype}), creates the OpenSSH server host keys (see \k{hostkeys})
+
+\b If the setup type is \s{full} (see \k{setuptype}), creates the local \c{sshd}\I{sshd account} account (see \k{chrootdirectory})
+
+\b If the setup type is \s{full} (see \k{setuptype}), creates the local access group and updates the \c{sshd_config} file (see \k{localaccessgroup})
+
+\b If the setup type is \s{full} (see \k{setuptype}) and the \s{startservice} task is selected (see \k{setuptasks}), starts the OpenSSH server service
+
+\b Performs any other tasks selected on the \s{Select Additional Tasks} page (see \k{setuptasks})
+
+The installer package is built using the \W{http://www.jrsoftware.org/isinfo.php}{Inno Setup} \I{Inno Setup} installer, so it supports Inno Setup's \W{http://www.jrsoftware.org/ishelp/index.php?topic=setupcmdline}{command line parameters}.
+
+Example installation command:
+
+\c CygSSH_version /SILENT /CLOSEAPPLICATIONS
+\e        iiiiiii
+
+Replace \e{version} with the version (e.g., \s{8.2.1.0}).
+
+The above command installs the package silently (i.e., without user interaction). The \c{/CLOSEAPPLICATIONS} parameter automatically stops running services and closes programs so that the installer can reinstall or upgrade the files. Stopped services will be automatically restarted after the installation completes. \I{/CLOSEAPPLICATIONS parameter} \I{/SILENT parameter} \I{install, silent} \I{silent install}
+
+If you want to prevent the installer from displaying its progress window during a silent install, use \c{/VERYSILENT} instead of \c{/SILENT}.
+
+The installer also supports non-administrative install mode, which installs only the client files for the current user (does not require administrator privileges). To run in non-administrative install mode, use the \c{/CURRENTUSER} parameter on the command line. \I{non-administrative install mode} \I{/CURRENTUSER parameter}
+
+The following sections describe the pages of the installer wizard.
+
+\H{} License Agreement
+
+The \s{License Agreement} page of the installer wizard lists the license agreements used by the various software components. You must accept the license agreements to continue with the installation.
+
+If you run a silent install using the \c{/SILENT} or \c{/VERYSILENT} command line parameters, you are providing an implicit acceptance of all license agreements (see \k{licenses}).
+
+\H{} Information
+
+The \s{Information} page of the installer wizard lists release notes for the current version of the package.
+
+\H{installpath} Select Destination Location
+
+The \s{Select Destination Location} page of the installer wizard allows you to specify the directory path where the package will be installed. This is \c{C:\\Program Files\\CygSSH} by default (if \c{C:} is the system drive). If you started the installer using the \c{/CURRENTUSER} parameter, the default path will be like \c{C:\\Users\\}\e{username}\c{\\AppData\\Local\\Programs\\CygSSH} (i.e., install only for the current user). \I{/CURRENTUSER parameter}
+
+You can specify a different destination path on the installer's command line by using the \c{/DIR="}\e{installpath}\c{"} command line parameter (where \e{installpath} is the directory path name).
+
+Throughout this documentation, the installation directory is referred to as \e{installpath}. \I{installpath}
+
+Note that this page doesn't appear if you are reinstalling.
+
+\H{setuptype} Select Setup Type
+
+The \s{Select Setup Type} page of the installer wizard allows you to choose the setup type. The setup types are as follows: \I{installer setup type} \I{setup type (installer)}
+
+\b \s{full} - Full installation (server and client files) \I{full installation} \I{installation, full}
+
+\b \s{client} - Client installation (client files only) \I{client installation} \I{installation, client}
+
+You can specify the setup type on the command line using the \c{/TYPE="}\e{type}\c{"} command line parameter (where \e{type} is either \s{full} or \s{client}). The default setup type is \s{full}, so the only reason to use the \c{/TYPE} command line parameter is if you want to specify \c{/TYPE="client"} as the default (typically for a silent install).
+
+Note that this page doesn't appear under the following conditions:
+
+\b If you specified \c{/CURRENTUSER} on the installer's command line, because \c{/CURRENTUSER} implies the \s{client} setup type \I{/CURRENTUSER parameter}
+
+\b If you previously installed using the \s{full} setup type, because selecting the \s{client} setup type does not remove the server files
+
+\H{setupfolder} Select Start Menu Folder
+
+The \s{Select Start Menu Folder} \I{Start menu} page of the installer wizard allows you to specify the name of the Start menu folder where it will install application shortcut \i{icons}.
+
+You can specify the folder name on the command line using the \c{/GROUP="}\e{name}\c{"} command line parameter (where \e{name} is the folder name). Alternatively, you can specify \c{/NOICONS} to prevent creation of any Start menu shortcuts. \I{shortcuts}
+
+Note that this page doesn't appear if you are reinstalling.
+
+\H{setuptasks} Select Additional Tasks
+
+The \s{Select Additional Tasks} page of the installer wizard allows you to select additional tasks the installer should perform. The additional tasks are as follows: \I{additional tasks (installer)} \I{installer additional taks}
+
+\b \s{startservice} - Corresponds to the \s{Start service} check box. Starts the OpenSSH server service. This task is not applicable if the setup type is \s{client} (see \k{setuptype}). This task is selected by default. \I{startservice installer task} \I{service, start}
+
+\b \s{modifypath} - Corresponds to the \s{Add to system Path} (or \s{Add to user Path}) check box. Adds the \e{installpath}\c{\\bin} directory to the system or user Path environment variable if it does not already exist. This task is selected by default. (If you started the installer with the \c{/CURRENTUSER} parameter, this checkbox adds to the user path rather than the system path.) (Note that this task does not appear if \e{installpath}\c{\\bin} is already in the system or user path.) \I{modifypath installer task} \I{system path} \I{user path} \I{/CURRENTUSER parameter}
+
+\b \s{s4ulogonfix} - Corresponds to the \s{Implement MsV1_0S4ULogon fix} check box (see \k{s4ulogonfix}). \I{s4ulogonfix installer task} This task only appears in downlevel OS versions and is not applicable if the setup type is \s{client} (see \k{setuptype}). This task is selected by default \e{only} under the following conditions:
+
+\lcont{
+
+\b The current operating system is a downlevel version (in fact, this task doesn't appear at all if you are not running a downlevel OS version)
+
+\b You are installing interactively (i.e., you have not specified the \c{/SILENT} or \c{/VERYSILENT} command line parameters)
+
+\b The current computer is \e{not} a domain member
+
+}
+
+You can specify one or more of the additional tasks on the command line using the \c{/TASKS="}\e{task}[\c{,}\e{task}[...]]\c{"} command line parameter (where \e{task} is one or more of the above task names, separated by \c{,} characters).
+
+For an interactive (i.e., not silent) installation, the \c{/TASKS} parameter specifies which tasks are selected by default; you can change the defaults on the page as you install.
+
+For a silent installation, the \c{/TASKS} parameter dictates the list of tasks the installer will perform. For example, if you specify \c{/TASKS="startservice" /SILENT} on the installer's command line, the installer will \s{only} perform the \c{startservice} task.
+
+To indicate \q{no tasks}, specify \c{/TASKS=""} on the installer's command line.
+
+Note that if you do not select the \c{modifypath} task when you install, you will need to do one of the following before running commands:
+
+\b Change to the \e{installpath}\c{\\bin} directory before running the command
+
+\b Specify the path to the command when you want to run it
+
+\# ----------------------------------------------------------------------------
+\# CHAPTER
+\# ----------------------------------------------------------------------------
+
+\C{reinstall} Reinstalling or Upgrading the Package
+
+Reinstalling or upgrading the package is as simple as running the installer:
+
+\b If the installer is the same version as the installed version, it will reinstall the installed version.
+
+\b If the installer is a newer version than the installed version, it will upgrade the installed version.
+
+A reinstall or upgrade cannot proceed if the OpenSSH server service or any of the programs in the package are currently running. If any are running, the installer will prompt for permission to stop running services and close any programs.
+
+You can prevent the prompt from appearing by specifying the \c{/CLOSEAPPLICATIONS} parameter \I{/CLOSEAPPLICATIONS parameter} on the installer's command line. This is particularly useful when using the \c{/SILENT} parameter \I{/SILENT parameter} (see \k{installer}).
+
+\# ----------------------------------------------------------------------------
+\# CHAPTER
+\# ----------------------------------------------------------------------------
+
+\C{uninstall} Uninstalling the Package
+
+To \i{uninstall} the package, use the standard means of accessing installed applications on your version of Windows (e.g., the \s{Programs and Features} applet in the Control Panel), and uninstall it from there.
+
+If you want to uninstall silently (without user interaction), do the following: \I{silent uninstall}
+
+\n Determine the filename of the uninstall program. The file is in \e{installpath} and is named like \c{unins}\e{nnn}\c{.exe} (where \e{nnn} is 3 digits - normally \c{000}).
+
+\n Run the executable with the \c{/SILENT} command line parameter.
+
+For example, if the uninstaller executable is \c{C:\\Program Files\\CygSSH\\unins000.exe}, the command line to uninstall silently is the following:
+
+\c "C:\Program Files\CygSSH\unins000.exe" /SILENT
+
+You can also replace \c{/SILENT} with \c{/VERYSILENT} to prevent the uninstaller from displaying its progress window.
+
+The uninstall program does not remove the following items:
+
+\b Configuration files in the \c{etc} directory
+
+\b The \c{lastlog} file in the \c{var\\log} directory
+
+\b Any other user created files
+
+\b The local \c{sshd}\I{sshd account} user account
+
+In addition, if you are running a downlevel OS (see \k{downlevelosversionlimitations}), the unistall program does not reverse the changes made by the \c{s4ulogonfix} installer task (see \k{setuptasks}). If you want to reverse this change, run the following command from an elevated Windows PowerShell window before uninstalling: \I{MsV1_0S4ULogon}
+
+\c Set-S4ULogonFix -Disable
+
+(See \k{s4ulogonfix} for details about what this command does.)
+
+\# ----------------------------------------------------------------------------
+\# CHAPTER
+\# ----------------------------------------------------------------------------
+
+\C{} Client Authentication
+
+This chapter describes how to authenticate to an OpenSSH server using SSH client software.
+
+\H{cygwinsshcommands} Using the SSH Client Commands
+
+The CygSSH package provides several SSH client commands:
+
+\b The \s{ssh} command \I{ssh command} establishes an \i{interactive shell} session with an SSH server
+
+\b The \s{scp} command \I{scp command} copies files to an SSH server
+
+\b The \s{sftp} command \I{sftp command} establishes a file transfer session with an SSH server
+
+Example 1:
+
+\c sftp COMPUTER1+localuser@computer1
+
+This command establishes a file transfer session to \c{computer1} using the account \c{COMPUTER1+localuser}.
+
+Example 2:
+
+\c ssh -i /cygdrive/c/Users/KenDyer/.ssh/kenprivkey KenDyer@computer2
+
+This command establishes an interactive shell session to \c{computer2} using the \c{KenDyer} account using public key authentication (see \k{publickeyauth}), using the file \c{C:\\Users\\KenDyer\\.ssh\\kenprivkey} as the private key.
+
+Example 3:
+
+\c scp "/cygdrive/C/Program\ Files/CygSSH/etc/sshd_config"
+\c   "bkpsvc@server1:/cygdrive/C/Program\ Files\CygSSH\etc"
+
+(All on one line) This command copies the \c{sshd_config} file from the current computer to a remote computer.
+
+When using the Cygwin SSH client commands, note that path names must be in POSIX format, using the \c{\\} character to \q{escape} spaces where necessary (see \k{posixpathnames}).
+
+If you haven't connected to an SSH server before, the command will prompt you to store the server's host key (see \k{hostkeys}) in the \i\c{known_hosts} file. The default path of the \c{known_hosts} file is in the \c{.ssh} directory \I{.ssh directory} in the user's home directory (see \k{cygwinhome}).
+
+You can also use the \s{rsync} command over an SSH connection to transfer files more efficiently (see \k{usingrsync}).
+
+See \k{documentationlinks} for links to the documentation for the \s{ssh}, \s{scp}, \s{sftp}, and \s{rsync} commands.
+
+\H{sshclients} Using Other SSH Clients
+
+See the documentation for the SSH client for more information on how to use it to connect to an SSH server.
+
+Popular Windows SSH clients include the following:
+
+\s{PuTTY} - \W{https://www.chiark.greenend.org.uk/~sgtatham/}{https://www.chiark.greenend.org.uk/~sgtatham/} \I{PuTTY}
+
+\s{WinSCP} - \W{https://winscp.net/}{https://winscp.net/} \I{WinSCP}
+
+\# ----------------------------------------------------------------------------
+\# CHAPTER
+\# ----------------------------------------------------------------------------
+
+\C{} Server Authentication
+
+This chapter describes how to configure the OpenSSH server service to permit logons using password authentication (see \k{usingpasswordauth}) or public key authentication (see \k{usingpublickeyauth}).
+
+\H{localaccessgroup} Using the Local Access Group
+
+By default, the OpenSSH server service only allows accounts that are members of the \c{SSH\_Users} local group  \I{local access group} \I{access group, local} \I{SSH Users group} to log on. The installer (see \k{installer}) will create the \c{SSH\_Users} local group if it does not exist. This local group is referred to as the \e{local access group}.
+
+The local access group is empty by default, which means you must explicitly add accounts to the local access group to allow logon via SSH.
+
+If the computer is an Active Directory domain member, nested domain groups are supported. For example, you can add a domain group as a member of the \c{SSH\_Users} local group, and all members of the domain group will be granted access to log on using SSH.
+
+If you have an \i{Active Directory} domain, you can manage the membership of the \c{SSH\_Users} local group using a \i{Group Policy} Object (GPO).
+
+The installer (see \k{installer}) automatically updates the \i\c{sshd_config} file at installation time with the following line: \I{AllowGroups setting}
+
+\c AllowGroups "[computername+]SSH Users"
+\e               iiiiiiiiiiii
+
+If the computer is a domain member, the installer adds the computer name and \c{+} prefix (see \k{cygwinaccountnames}). Otherwise, the computer name and \c{+} prefix are not used.
+
+If the computer name changes, or if the computer is removed as a domain member, you will need to manually edit the \c{sshd_config} file as follows:
+
+\b If the computer name changes, update the computer name on the \c{AllowGroups} line of the file.
+
+\b If the computer is removed as a domain member, remove the computer name and \c{+} character on the \c{AllowGroups} line.
+
+Once complete, save the \c{sshd_config} file and restart the OpenSSH server service.
+
+\H{usingpasswordauth} Using Password Authentication
+\I{using password authentication} \I{password authentication, using}
+
+Once an account is a member of the local access group on the OpenSSH server (see \k{localaccessgroup}), that account can log on using an SSH client using the account's password. No further configuration is required.
+
+The account name must use Cygwin format (see \k{cygwinaccountnames}).
+
+\H{usingpublickeyauth} Using Public Key Authentication
+\I{using public key authentication} \I{public key authentication, using}
+
+\e{Public key authentication} is a means of authenticating an SSH logon without needing the account's password (see \k{publickeyauth}).
+
+To authenticate an account using a public key instead of a password, you must first create a key pair (see \k{createkeypair}).
+
+Once you have a key pair, you will need to complete all of the following configuration steps to enable public key authentication for the account:
+
+\b Ensure the account is a member of the local access group (see \k{localaccessgroup})
+
+\b Create the directories on the server (see \k{createaccountdirs})
+
+\b Grant the account permission to the directories (see \k{setacl})
+
+\b Add the account's public key to the \c{authorized_keys} file (see \k{addpublickey})
+
+\S1{createaccountdirs} Create the Directories on the Server
+
+To allow an account to authenticate using a public key (see \k{usingpublickeyauth}), you must create a directory named for the account in the \e{installpath}\c{\\users} directory, and a \c{.ssh} directory within that directory. \I{.ssh directory}
+
+This section also applies to setting up an SFTP-only account (see \k{sftponly}).
+
+The account name must use Cygwin format (see \k{cygwinaccountnames}).
+
+For example, suppose the current computer is a domain member, and you want to allow the \c{KenDyer} account in the computer's domain to authenticate.
+
+In this example you would create the following directories on the server:
+
+\b \e{installpath}\c{\\users\\KenDyer}
+
+\b \e{installpath}\c{\\users\\KenDyer\\.ssh}
+
+\S1{setacl} Grant the Account Permission to the Directories
+
+To allow an account to authenticate using a public key (see \k{usingpublickeyauth}), you must update the directory's access control list (ACL) \I{Access Control List} to grant the account at least read (\s{RX}) access to the directory and it subdirectories.
+
+This section also applies to setting up an SFTP-only account (see \k{sftponly}).
+
+You can use the \s{setacl} \I{setacl} command to grant the \i{permissions}.
+
+First, open an elevated PowerShell console (i.e., right-click the PowerShell icon and choose \c{Run as administrator}).
+
+Run a command like the following:
+
+\c setacl -on "installpath\users\cygwinaccountname" -ot file
+\e             iiiiiiiiiii       iiiiiiiiiiiiiiiii
+\c   -actn ace -ace "n:windowsaccountname;p:read"
+\e                     iiiiiiiiiiiiiiiiii
+
+(All on one line) Replace \e{cygwinaccountname} with the Cygwin account name (see \k{cygwinaccountnames}), and replace \e{windowsaccountname} with the Windows account name.
+
+For example, suppose the current computer is a member of the \c{FABRIKAM} domain and you are setting the permissions for the \c{KenDyer} account in that domain. The command would be as follows:
+
+\c setacl -on "C:\Program Files\CygSSH\users\KenDyer" -ot file
+\c   -actn ace -ace "n:FABRIKAM\KenDyer;p:read"
+
+(All on one line)
+
+If you want to grant change (\s{RWXD}) instead of just read (\s{RX}) access, replace \c{read} at the end of the \c{\-ace} parameter's argument with \c{change} (i.e., \c{p:change} instead of \c{p:read}).
+
+\S1{addpublickey} Add the Account's Public Key to the \c{authorized_keys} File
+
+To allow an account to authenticate using a public key (see \k{usingpublickeyauth}), you must add the account's public key to the \c{authorized_keys} file. \I{authorized_keys file}
+
+The \c{authorized_keys} file is a text file in the account's \c{.ssh} directory \I{.ssh directory} that contains one line for each public key for the account. (The \W{https://man.openbsd.org/sshd.8#AUTHORIZED_KEYS_FILE_FORMAT}{OpenSSH documentation} describes the \c{authorized_keys} file format.)
+
+If you use the \s{New\-SSHKey.ps1} script to generate a key pair (see \k{newsshkey}), you can use the generated public key (\c{.pub}) file as the \c{authorized_keys} file for the account.
+
+If you use \s{PuTTYgen} to generate a key pair (see \k{puttygen}), you can use the text box labeled \s{Public key for pasting into OpenSSH authorized_keys file} as the content of the \c{authorized_keys} file. If you have a \c{.ppk} file, open it in \s{PuTTYgen}. It will put the public key in the text box, and you can copy it from there (make sure there are no line breaks).
+
+For example, suppose the current computer is a member of the \c{FABRIKAM} domain, and you want to allow the \c{KenDyer} account in that domain to authenticate.
+
+In this example, the file \e{installpath}\c{\\users\\KenDyer\\.ssh\\authorized_keys} would contain the public key(s) used to authenticate the \c{KenDyer} account.
+
+\H{sftponly} Configuring an SFTP-Only Account
+
+This section describes how to configure an \i{SFTP-only} account (i.e., the account can only connect to the OpenSSH server using a file transfer client such as \s{sftp} or \s{WinSCP}).
+
+To configure an SFTP-only account, first create the directories for it (see \k{createaccountdirs}) and set the permissions (see \k{setacl}).
+
+Next, create an \c{sftp} directory inside the account's directory.
+
+Next, add lines like the following to the end of the \i\c{sshd_config} file: \I{AllowTcpForwarding setting} \I{ChrootDirectory setting} \I{ForceCommand setting}
+
+\c Match User accountname
+\e            iiiiiiiiiii
+\c         X11Forwarding no
+\c         AllowTcpForwarding no
+\c         PermitTTY no
+\c         ChrootDirectory /users/%u/sftp
+\c         ForceCommand internal-sftp
+
+Replace \e{accountname} with the account's Cygwin account name (see \k{cygwinaccountnames}).
+
+The \c{ChrootDirectory} setting is not a true security control on Windows and is used only to limit the file system view on SFTP-only accounts (see \k{chrootdirectory}).
+
+Once complete, save the \c{sshd_config} file and restart the OpenSSH server service.
+
+\s{Note:} You can't prevent the \c{cygdrive} and \c{dev} directories from appearing on the client side of the SFTP connection, but they don't cause any problems, either. \I{cygdrive directory} \I{dev directory}
+
+Example configuration:
+
+Suppose the current computer is a domain member named \c{COMPUTER1}, and local account \c{sftponly} will be an SFTP-only account.
+
+In this example, first create the following directories on the OpenSSH server:
+
+\b \e{installpath}\c{\\users\\COMPUTER1+sftponly}
+
+\b \e{installpath}\c{\\users\\COMPUTER1+sftponly\\sftp}
+
+Next, grant the \c{sftponly} account at least read (\s{RX}) access to the \e{installpath}\c{\\users\\COMPUTER1+sftponly} directory and its subdirectories.
+
+Then, add the following lines to the end of the \c{sshd_config} file: \I{Match User setting}
+
+\c Match User COMPUTER1+sftponly
+\c         X11Forwarding no
+\c         AllowTcpForwarding no
+\c         PermitTTY no
+\c         ChrootDirectory /users/%u/sftp
+\c         ForceCommand internal-sftp
+
+If the account will authenticate using a public key instead of a password (see \k{usingpublickeyauth}), add the \c{AuthenticationMethods publickey} \I{AuthenticationMethods} setting; e.g.:
+
+\c Match User COMPUTER1+sftponly
+\c         AuthenticationMethods publickey
+\c         X11Forwarding no
+\c         AllowTcpForwarding no
+\c         PermitTTY no
+\c         ChrootDirectory /users/%u/sftp
+\c         ForceCommand internal-sftp
+
+(You must also add the \c{authorized_keys} file to the account's \c{.ssh} directory, as described in \k{addpublickey}.)
+
+Once complete, save the \c{sshd_config} file and restart the OpenSSH server service.
+
+\# ----------------------------------------------------------------------------
+\# CHAPTER
+\# ----------------------------------------------------------------------------
+
+\C{} Public Key Cryptography
+ \I{public key cryptography} \I{cryptography, public key} \I{key pairs}
+
+\e{Public key cryptography}, sometimes also called \e{asymmetric cryptography}, is an encryption technique that uses two cryptographically related signatures--a \e{public key} and a \e{private key}. (The public key and private key are typically referred to as a \e{key pair}.) The public key is used to encrypt, and the private key is used to decrypt. It is not computationally feasible to generate a private key based on a public key.
+
+OpenSSH uses public key cryptography to ensure the communication between an SSH client and the OpenSSH server are encrypted.
+
+\H{hostkeys} Host Keys
+
+A \e{host key} is a cryptographic signature that uniquely identifies an OpenSSH server to SSH clients.
+
+The installer (see \k{installer}) automatically creates the necessary host key files at installation time.
+
+The files containing the \i{host keys} are stored in \e{installpath}\c{\\etc} and are named using the format \c{ssh_host_}\e{keytype}\c{_key}[\c{.pub}], where \e{keytype} is \s{dsa}, \s{ecdsa}, \s{ed25519}, or \s{rsa}. The \c{.pub} suffix indicates the public key. Each key type represents an encryption algorithm supported by OpenSSH.
+
+For example, the file \c{ssh_host_ed25519_key} contains the private host key for the ED25519 encryption algorithm, and the file \c{ssh_host_ed25519_key.pub} contains its associated public key.
+
+The private key files are configured with restricted access control lists (ACLs) to prevent unauthorized access (\s{SYSTEM:F} and \s{Administrators:F} only).
+
+SSH clients can store an SSH server's host key for later comparison. If the host key is different the next time the client connects, it may indicate the server has been compromised. Host keys are a mechanism to validate the identity of the server to which you're connecting.
+
+The Cygwin SSH client commands (see \k{cygwinsshcommands}) store known host keys in the \i\c{known_hosts} file in the current user's home directory (see \k{cygwinhome}).
+
+\H{publickeyauth} Public Key Authentication
+\I{public key authentication} \I{authentication, public key}
+
+\e{Public key authentication} is a means of authenticating an SSH logon without needing the account's password.
+
+To use \i{public key} authentication to authenticate an account in OpenSSH, you will need to create a key pair. The \i{private key} is used on the client side of the SSH connection, and the public key is used on the server side.
+
+The account name must use Cygwin format (see \k{cygwinaccountnames}).
+
+\S1{createkeypair} Creating a Key Pair
+\I{key pairs}
+
+This section describes different ways to create a key pair.
+
+\S2{newsshkey} Creating a Key Pair Using the \s{New\-SSHKey.ps1} Script
+
+The \s{New\-SSHKey.ps1} script is a wrapper for the \s{ssh\-keygen} command. Using the script is straightforward: Open a PowerShell command window, run the script, it will prompt for the information it needs: \I{New-SSHKey.ps1} \I{ssh-keygen command}
+
+\n It will prompt you to enter the name of the private key file. The default path is the \c{.ssh} directory in the current user's home directory (see \k{cygwinhome}). Press \c{Enter} without entering anything to use the default file name or enter a new file name.
+
+\n It will prompt you to enter a passphrase. If you specify a passphrase, you must enter it every time you want to use the key.
+
+\n It will prompt you to enter a comment. The comment is intended to help you identify the key. Press \c{Enter} without entering anything to use the default comment, or enter a new comment.
+
+Sample command output follows:
+
+\c PS C:\Users\accountname> New-SSHKey
+\e             iiiiiiiiiii
+\c Key type: ed25519
+\c Enter file in which to save the key (C:\Users\accountname\.ssh\id_ed25519):
+\e                                               iiiiiiiiiii
+\c Enter passphrase (leave empty for no passphrase):
+\c Confirm passphrase (leave empty for no passphrase):
+\c Comment (accountname@hostname): My SSH key
+\e          iiiiiiiiiii iiiiiiii
+\c Generating public/private ed25519 key pair.
+\c Your identification has been saved in /cygdrive/c/Users/accountname/.ssh/id_ed25519.
+\e                                                         iiiiiiiiiii
+\c Your public key has been saved in /cygdrive/c/Users/accountname/.ssh/id_ed25519.pub.
+\e                                                     iiiiiiiiiii
+\c The key fingerprint is:
+\c SHA256:w5UB4i5qymXdQX/7ErHgbglow77s6Q6h/kaN0iavKbA My SSH key
+\c The key's randomart image is:
+\c +--[ED25519 256]--+
+\c |  E...+o+.=o.    |
+\c | . oo o+ =.=o    |
+\c |. =.o*  . ...    |
+\c | o Bo .. =       |
+\c |  = + . S        |
+\c | = . = o o       |
+\c |o o   = .        |
+\c |.  . +.+         |
+\c |    o.o..        |
+\c +----[SHA256]-----+
+\c Restricted permissions on file 'C:\Users\accountname\.ssh\id_ed25519'.
+\e                                          iiiiiiiiiii
+
+The \s{New\-SSHKey.ps1} script will attempt to restrict the permissions on the private key file to protect it from unauthorized access, but it may not be able to do this if the private key file is saved in a location where you don't have sufficient permissions to change the file's access control list (ACL). It's strongly recommended to store the private key in a location where you have permission to change the file's ACL so it will be protected from unauthorized access. \I{.pub file}
+
+The file paths output by the \s{ssh\-keygen} command are in POSIX format (see \k{posixpathnames}).
+
+\S2{puttygen} Create a Key Pair Using \s{PuTTYgen}
+
+To create a key pair using \W{https://www.chiark.greenend.org.uk/~sgtatham/putty/}{\s{PuTTYgen}}, do the following:
+
+\n Open the \s{PuTTYgen} program. \I{PuTTYgen}
+
+\n At the bottom of the \s{PuTTYgen} window, select \s{ED25519} as the type of key to generate.
+
+\n Click the \c{Generate} button.
+
+\n Move the mouse in the \s{PuTTYgen} window to generate randomness.
+
+\n The text box near the top of the \s{PuTTYgen} window (labeled \s{Public key for pasting into OpenSSH authorized_keys file}) contains the public key for use on the OpenSSH server. (The line of text in this text box corresponds to the \c{.pub} file generated using the \s{New\-SSHKey.ps1} script.)
+
+\n You can specify a comment and/or a passphrase in the corresponding text boxes.
+
+\n Click the \c{Save} button to save the private key in PuTTY (\c{.ppk}) format. \I{.ppk file}
+
+It's strongly recommended to store the private key file in a location with a restricted access control list (ACL), particularly if the private key is not protected with a passphrase.
+
+\S1{editprivatekey} Updating a Private Key
+\I{Edit-SSHKey.ps1} \I{key passphrase} \I{passphrase, key}
+
+You can use the \s{Edit\-SSHKey.ps1} script to update the passphrase or comment of a private key file. The command syntax is as follows:
+
+\c Edit-SSHKey "filename" -Passphrase
+\e              iiiiiiii
+
+or:
+
+\c Edit-SSHKey "filename" -Comment
+\e              iiiiiiii
+
+Replace \e{filename} with the name of the private key file.
+
+The script will prompt you to enter a new passphrase or comment.
+
+If you specify \c{\-Comment}, the script will create a replacement public key file with a new comment (same filename but with \c{.pub} appended). \I{comment, key} \I{key comment}
+
+Hint: If you lose the public key file associated with a private key file, simply run \s{Edit\-SSHKey.ps1} with the \c{\-Comment} parameter. Enter an updated comment, and a new public key file will be created (same filename as private key, but with \c{.pub} appended).
+
+\# ----------------------------------------------------------------------------
+\# CHAPTER
+\# ----------------------------------------------------------------------------
+
+\C{cygwin} About Cygwin
+
+\W{https://www.cygwin.com/}{Cygwin} \I{Cygwin} is a set of Windows DLLs (dynamically linked libraries) that provides substantial \i{POSIX}-compatible API (application programming interface) compatibility.
+
+In effect, Cygwin is a POSIX \i{emulation} layer that allows programmers to compile POSIX-compatible source code into Windows executables with minimal changes.
+
+This has several effects on programs that use the Cygwin emulation layer, as described in the following sections.
+
+\H{cygwinfstabfile} Cygwin File System Permissions
+
+By default, Cygwin programs will attempt to reproduce POSIX-style file \i{permissions} using Windows access control lists (ACLs). \I{Access Control List} This can result in unexpected permission problems when running Cygwin-based file management tools such as \s{rsync}. \I{rsync}
+
+To avoid this problem, the installer (see \k{installer}) configures the file systems in the \e{installpath}\c{\\fstab} file \I{fstab file} to use the \c{noacl} \I{noacl} option for all directories.
+
+Please see the following references in the Cygwin documentation for more information:
+
+\b File Permissions - \W{https://cygwin.com/cygwin-ug-net/ntsec.html#ntsec-files}\cw{https://cygwin.com/cygwin-ug-net/ntsec.html#ntsec-files}
+
+\b The Cygwin Mount Table - \W{https://cygwin.com/cygwin-ug-net/using.html#mount-table}\cw{https://cygwin.com/cygwin-ug-net/using.html#mount-table}
+
+\H{cygwinaccountnames} Cygwin Account Names
+\I{account names, Cygwin} \I{Cygwin account names}
+
+Account names in Windows use the following format: [\e{authorityname}\c{\\}]\e{accountname} (where \e{authorityname} is a computer name or domain name). The authority name isn't used in all circumstances (such as with the \c{BUILTIN} and \c{NT AUTHORITY} authorities).
+
+Cygwin programs use the \c{+} rather than the \c{\\} character to separate authority names from account names.
+
+Cygwin's account naming rules are as follows:
+
+\b Well-known and built-in accounts will be named as in Windows, without an authority name. Examples: \c{Administrators} or \c{SYSTEM}
+
+\b If the computer \s{is not} a domain member, the authority name is not used. Example: \c{Administrator} (not \c{COMPUTERNAME+Administrator})
+
+\b If the computer \s{is} a domain member, accounts from the computer's domain are used without an authority name. Example: \c{kendyer} (not \c{DOMAIN1+kendyer})
+
+\b Accounts from other domains use the domain name as the authority name. Example: \c{DOMAIN2+lynndyer}
+
+\b Local computer accounts of a domain member computer use the computer name as the authority. Example: \c{COMPUTERNAME+localuser}
+
+See \W{https://cygwin.com/cygwin-ug-net/ntsec.html#ntsec-mapping}{the Cygwin documentation} for more details about how Cygwin maps between Windows and POSIX account names.
+
+The \s{Get\-AccountName.ps1} script \I{Get-AccountName.ps1} outputs one or more account names in both Windows and Cygwin formats:
+
+\b The script will output the Windows and Cygwin account names for the current account if you run it without parameters
+
+\b The script will out the Windows and Cygwin account names for one or more accounts if you provide the account name(s) as a parameter (the script also accepts pipeline input)
+
+Run the command \s{Get\-Help Get\-AccountName} for more information about the script.
+
+\s{Note:} OpenSSH server versions older than 8.0 required that Cygwin account names be specified using \e{exact case}. \I{case-sensitive account names} This requirement was removed starting in OpenSSH version 8.0.
+
+\H{posixpathnames} POSIX Path Names
+
+Cygwin programs use POSIX path names (such as \c{/etc/fstab}) \I{path names, POSIX} \I{POSIX path names} rather than Windows path names (such as \c{C:\\Program Files\\CygSSH\\etc\\fstab}).
+
+For example, the root directory (\c{/}) corresponds to \e{installpath} (e.g., \c{C:\\Program Files\\CygSSH}).
+
+Windows drive letters (e.g., \c{C:}) are found in the \c{/cygdrive} directory (e.g., \c{/cygdrive/c} corresponds to \c{C:}).
+
+The \s{cygpath} command \I{cygpath command} allows you to easily translate Windows path names into a POSIX path names and vice-versa. Use the \c{\-w} parameter to tell \s{cygpath} you want the Windows path.
+
+\c Example Command               Example Output
+\c ---------------------------------------------------------------
+\c cygpath "C:\Program Files"    /cygdrive/c/Program Files
+\c cygpath C:\Users\KenDyer      /cygdrive/c/Users/KenDyer
+\c cygpath -w /                  C:\Program Files\CygSSH
+\c cygpath -w /etc/fstab         C:\Program Files\CygSSH\etc\fstab
+
+In the first example, note that the quotes are required since the path name contains spaces.
+
+If you need to specify a path name that contains spaces on a Cygwin program's command line, it may be necessary, depending on the command, to \q{escape} the spaces in the path using the \c{\\} character (see \k{cygwinsshcommands} for an example).
+
+\H{cygwinhome} The Cygwin Home Directory
+
+A user's \e{home directory} \I{home directory} is the default path location for files owned by that user. By default, Cygwin maps the user's home directory to \c{/home/}\e{accountname} (see \k{posixpathnames} for more about POSIX path names).
+
+The default can cause confusion, though, because it means that Cygwin and Windows have two separate home directory paths. For example, the Windows home directory for the \c{KenDyer} account might be \c{C:\\Users\\KenDyer} but the default Cygwin home directory would be something like \c{C:\\Program Files\\CygSSH\\home\\KenDyer}.
+
+To avoid the confusion, the CygSSH package uses the \i\c{nsswitch.conf} file to set Cygwin's home directory to the same home directory that Windows uses. The file contains the following line:
+
+\c db_home: /%H
+
+The \c{%H} placeholder means \q{Windows home directory in POSIX format.}
+
+See \W{https://cygwin.com/cygwin-ug-net/ntsec.html#ntsec-mapping-nsswitch}{the Cygwin documentation} for more details about the \c{nsswitch.conf} file.
+
+\# ----------------------------------------------------------------------------
+\# CHAPTER
+\# ----------------------------------------------------------------------------
+
+\C{downlevelosversionlimitations} Downlevel OS Version Limitations
+
+In this documentation, operating system versions older than Windows 8.1/Server 2012 R2 are referred to as \e{downlevel versions}. \I{downlevel OS version limitations} \I{limitations, downlevel OS versions}
+
+\H{wow64downlevelauth} 32-bit SSH Server on 64-bit OS Cannot Authenticate Local Account Logons
+
+The \i{32-bit} version of the OpenSSH server service on \i{64-bit} downlevel OS versions cannot authenticate local account logons. This is because the \s{MsV1_0S4ULogon} logon type \I{MsV1_0S4ULogon} used by the OpenSSH service to impersonate local accounts is not implemented in the 32-bit emulator on 64-bit Windows OS versions until Windows 8.1/Server 2012 R2.
+
+There are two scenarios where the above limitation does \e{not} apply:
+
+\b It does not apply if the computer is running a downlevel 32-bit version of Windows
+
+\b It does not apply to domain accounts if the computer is a domain member
+
+An unfortunate implication of this limitation is that you cannot use the OpenSSH server in the following specific scenario:
+
+\b The operating system is 64-bit but not \i{x64} (e.g., \i{IA64}), so therefore the installer installed the 32-bit version of OpenSSH
+
+\b The operating system is a downlevel OS version
+
+\b The computer is not a domain member
+
+In this specific scenario, the OpenSSH server service will not be able to authenticate any account logons due to the limitation stated in this section.
+
+\H{s4ulogonfix} Local Account Logons After Restart Fail Until Another Logon Occurs
+
+The OpenSSH server service on downlevel OS versions will fail to authenticate local account logons after a restart until another logon occurs first. The installer provides the \s{s4ulogonfix} task \I{s4ulogonfix installer task}
+(see \k{setuptasks}) that works around this problem by doing the following:
+
+\n Creates a local user account named \c{MsV1_0S4ULogon} \I{MsV1_0S4ULogon} with a long, complex password
+
+\n Grants the \s{Log on as a batch job} user right \I{Log on as a batch job} to the local user account
+
+\n Creates a \i{scheduled task} named \c{MsV1_0S4ULogon} that causes a logon at system startup (it simply runs the Windows \s{hostname} command)
+
+This workaround is only needed on downlevel OS versions if you need to authenticate using local accounts. If your computer is a domain member and you only authenticate using domain accounts, this workaround is not needed.
+
+The workaround has two limitations:
+
+\b If the account loses the \s{Log on as a batch job user right}, the workaround will fail - this can occur if a \i{Group Policy} Object (GPO) in a domain configures this user right and removes the account
+
+\b If the \s{Network access: Do not allow storage of passwords and credentials for network authentication} security policy is set to \s{Enabled}, the workaround will fail - this can occur if a Group Policy Object (GPO) in a domain changes this setting to \s{Enabled} (it is not set to \s{Enabled} by default)
+
+You can also implement the fix manually after installation if needed.
+
+First, open an elevated Windows PowerShell console (i.e., right-click the PowerShell icon and choose \c{Run as administrator}). Then, run the following command: \I{Set-S4ULogonFix.ps1}
+
+\c Set-S4ULogonFix -Enable
+
+The script will ask for confirmation before proceeding with each required configuration item.
+
+If you specify \c{\-Disable} rather than \c{\-Enable} on the script's command line, the script will do the following instead:
+
+\b Revoke the \s{Log on as a batch job} user right from the \c{MsV1_0S4ULogon} local user account
+
+\b Disable the \c{MsV1_0S4ULogon} local user account
+
+\b Disable the \c{MsV1_0S4ULogon} scheduled task
+
+\# ----------------------------------------------------------------------------
+\# APPENDIX
+\# ----------------------------------------------------------------------------
+
+\A{chrootdirectory} The ChrootDirectory Setting
+
+On a POSIX-compliant operating system (e.g., Linux), the OpenSSH \c{ChrootDirectory} setting \I{ChrootDirectory setting} uses the \i\c{chroot} system call to restrict an account's access to a specific path in the file system: The account cannot access any file or directory outside of that specific path. In POSIX terminology, this is sometimes referred to as a \e{\i{chroot jail}}.
+
+The Cygwin emulation layer used by OpenSSH on Windows (see \k{cygwin}) has a limited implementation of \c{chroot} because the Windows operating system does not have a direct equivalent of this system call. Consequently, Cygwin's limited implementation of \c{chroot} is not a true security control because it can sometimes permit the account to \q{escape} from the \q{jail.} (It's important to understand that even if the account \q{escapes} from the \q{jail,} the account is still restricted by Windows security controls; it's just that the limited Cygwin \i{chroot jail} isn't enforced as an \e{additional} security control.)
+
+Even though Cygwin's implementation \c{chroot} is not a true security control, we can still use the \c{ChrootDirectory} setting in \c{sshd_config} to restrict the file system view for an SFTP-only account (see \k{sftponly}).
+
+Using the \c{ChrootDirectory} setting in \c{sshd_config} requires the following two items be in place:
+
+\n The \c{passwd} file \I{passwd file} in the \c{etc} directory must specify that the Windows \c{SYSTEM} account is user number \c{0} (this corresponds to the POSIX \c{root} user account) \I{root user account}
+
+\n The local \c{sshd} account\I{sshd account} (known as the \e{privsep account}) \I{privsep account} must exist, and it must be \s{enabled} (it must \e{not} be disabled as stated in the OpenSSH documentation)
+
+These two items are taken care of automatically at installation time (they don't need to be configured manually).
+
+\# ----------------------------------------------------------------------------
+\# APPENDIX
+\# ----------------------------------------------------------------------------
+
+\A{usingrsync} Using rsync with SSH
+
+The \s{rsync} command \I{rsync} is an efficient file and directory replication tool that supports replication over an SSH connection so that the data is encrypted in transit.
+
+The syntax for replicating data to a remote computer using an SSH connection is as follows:
+
+\c rsync options -e "ssh [sshoptions]" "source" "accountname@hostname:dest"
+\e       iiiiiii          iiiiiiiiii    iiiiii   iiiiiiiiiii iiiiiiii iiii
+
+Where:
+
+\b \e{options} is one or more command line options for the \s{rsync} command
+
+\b \e{sshoptions} is one or more command line options for the \s{ssh} command
+
+\b \e{source} is the source path in POSIX format (see \k{posixpathnames}); do not use \c{\\} to escape spaces in the source path
+
+\b \e{accountname} is the account name to connect with, in Cygwin format (see \k{cygwinaccountnames})
+
+\b \e{hostname} is the remote computer name
+
+\b \e{dest} is the destination path in POSIX format (see \k{posixpathnames}); escape spaces in the destination path using \c{\\} unless using \s{rsync}'s \s{\-s} option (recommended)
+
+Example command 1:
+
+\c rsync -lrstvz -e "ssh" "/cygdrive/c/Users/KenDyer/Backup Files/"
+\c   "KenDyer@computer3:/cygdrive/c/Users/KenDyer/Backup Files"
+
+(All on one line) This command replicates the \c{C:\\Users\\KenDyer\\Backup Files} directory to the same path on \c{computer3} using the \c{KenDyer} account.
+
+Example command 2:
+
+\c rsync -lrstvz -e "ssh -i /cygdrive/c/Users/filerepl/.ssh/ed25519"
+\c   "/cygdrive/c/ProgramData/App Name/"
+\c   "filerepl@server2:/cygdrive/c/ProgramData/App Name"
+
+(All on one line) This command replicates the directory \c{C:\\Program Data\\App Name} to the computer \c{server2} using the \c{filerepl} account. Note the use of a private key file, specified as a POSIX path (see \k{posixpathnames}).
+
+Note that the source path in the example commands uses a trailing \c{/} to prevent creating a new directory in the destination path.
+
+See \k{documentationlinks} for a link to \s{rsync}'s documentation.
+
+\# ----------------------------------------------------------------------------
+\# APPENDIX
+\# ----------------------------------------------------------------------------
+
+\A{documentationlinks} Documentation Links
+\I{documentation links} \I{links, documentation}
+
+\s{OpenSSH} - \W{https://www.openssh.com/manual.html}{https://www.openssh.com/manual.html} \I{OpenSSH}
+
+\s{Cygwin} - \W{https://www.cygwin.com/cygwin-ug-net/cygwin-ug-net.html}{https://www.cygwin.com/cygwin-ug-net/cygwin-ug-net.html} \I{Cygwin}
+
+\s{rsync} - \W{https://rsync.samba.org/documentation.html}{https://rsync.samba.org/documentation.html} \I{rsync}
+
+\s{setacl} - \W{https://helgeklein/setacl/}{https://helgeklein/setacl/} \I{setacl}
+
+\s{Inno Setup} - \W{http://www.jrsoftware.org/ishelp/}{http://www.jrsoftware.org/ishelp/} \I{Inno Setup}
+
+\# ----------------------------------------------------------------------------
+\# APPENDIX
+\# ----------------------------------------------------------------------------
+
+\A{powershellscripts} Windows PowerShell Scripts
+
+The following list describes the \i{Windows PowerShell scripts} \I{PowerShell scripts} provided by the CygSSH package.
+
+\s{Edit\-SSHKey.ps1} - Updates a private key file's comment or passphrase (see \k{editprivatekey}) \I{Edit-SSHKey.ps1}
+
+\s{Get\-AccountName.ps1} - Outputs an account's name in both Cygwin and Windows format (see \k{cygwinaccountnames}) \I{Get-AccountName.ps1}
+
+\s{New\-SSHKey.ps1} - Creates a key pair (see \k{createkeypair}) \I{New-SSHKey.ps1}
+
+\s{Set\-FstabConfig.ps1} - Used by the installer to create a default \c{fstab} file (see \k{cygwinfstabfile}) \I{Set-FstabConfig.ps1}
+
+\s{Set\-SSHGroup.ps1} - Used by the installer to create the local access group and update the \c{sshd_config} file (see \k{localaccessgroup})* \I{Set-SSHGroup.ps1}
+
+\s{Set\-SSHHostKey.ps1} - Used by the installer to create the OpenSSH server host keys (see \k{hostkeys})* \I{Set-SSHHostKey.ps1}
+
+\s{Set\-SSHService.ps1} - Used by the installer to install, start, stop, and uninstall the OpenSSH server service* \I{Set-SSHService.ps1}
+
+\s{Set\-S4ULogonFix.ps1} - Used by the \s{s4ulogonfix} installer task (see \k{setuptasks})** \I{Set-S4ULogonFix.ps1}
+
+* Only installed when setup type is \s{full} (see \k{setuptype})
+
+** Only installed on downlevel OS versions (see \k{s4ulogonfix}) when setup type is \s{full} (see \k{setuptype})
+
+\s{Note:} Use the \s{Get\-Help} cmdlet to get online help information for any of the PowerShell scripts.
+
+\# ----------------------------------------------------------------------------
+\# APPENDIX
+\# ----------------------------------------------------------------------------
+
+\A{acknowledgments} Acknowledgments
+\I{acknowledgments}
+
+Special thanks to the authors of the following software packages for their generous contributions:
+
+\s{Cygwin} - \W{https://www.cygwin.com/}{https://www.cygwin.com/}
+
+\s{OpenSSH} - \W{https://www.openssh.com/}{https://www.openssh.com/}
+
+\s{winpty} - \W{https://github.com/rprichard/winpty/}{https://github.com/rprichard/winpty/}
+
+\s{rsync} - \W{https://rsync.samba.org/}{https://rsync.samba.org/}
+
+\s{setacl} - \W{https://helgeklein.com/setacl/}{https://helgeklein.com/setacl/}
+
+\s{Inno Setup} - \W{http://www.jrsoftware.org/}{http://www.jrsoftware.org/}
+
+\s{Halibut} - \W{https://www.chiark.greenend.org.uk/~sgtatham/halibut/}{https://www.chiark.greenend.org.uk/~sgtatham/halibut/}
+
+\# ----------------------------------------------------------------------------
+\# APPENDIX
+\# ----------------------------------------------------------------------------
+
+\A{licenses} License Agreements
+\I{license agreements}
+
+This package contains software from multiple sources:
+
+\b \s{Cygwin} - \W{https://www.cygwin.com/licensing.html}{https://www.cygwin.com/licensing.html}
+
+\b \s{OpenSSH} - \W{https://cvsweb.openbsd.org/src/usr.bin/ssh/LICENCE?rev=HEAD}{https://cvsweb.openbsd.org/src/usr.bin/ssh/LICENCE?rev=HEAD}
+
+\b \s{rsync} - \W{https://rsync.samba.org/GPL.html}{https://rsync.samba.org/GPL.html}
+
+\b \s{winpty} - \W{https://github.com/rprichard/winpty/blob/master/LICENSE}{https://github.com/rprichard/winpty/blob/master/LICENSE}
+
+\b \s{setacl} - \W{https://helgeklein.com/setacl/}{https://helgeklein.com/setacl/}
+
+See \k{opensource} for source code availability for software components that require making the source code available.
+
+\s{Windows PowerShell Script License}
+
+In addition to the above, the package contains a set of Windows PowerShell scripts written by Bill Stewart that are used for installing and managing the software. The Windows PowerShell scripts are covered by the MIT license:
+
+Copyright \copyright 2019-2020 by Bill Stewart.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+\# ----------------------------------------------------------------------------
+\# APPENDIX
+\# ----------------------------------------------------------------------------
+
+\A{opensource} Open Source Source Code
+\I{open source}
+\I{source code}
+
+Some of the software components used by the CygSSH package have a license that requires the agent (a person or organization) who distributes the software to provide the source code for the software being distributed.
+
+To meet this requirement for the CygSSH package, the source code for the included software components covered by this kind of license is available at the following URL:
+
+\W{https://github.com/Bill-Stewart/CygSSH}{https://github.com/Bill-Stewart/CygSSH}
+
+The \c{/usr/src} directory contains the source code. The source code files are generally of interest only to developers. Software components not requiring source code distribution are not provided at the above URL.
+
+\# ----------------------------------------------------------------------------
+\# APPENDIX
+\# ----------------------------------------------------------------------------
+
+\A{versionhistory} Version History
+\I{release history}
+\I{version history}
+
+\s{1.0}
+
+\b Initial version.
+
+\# ----------------------------------------------------------------------------
+\# INDEX MODIFICATIONS
+\# ----------------------------------------------------------------------------
+
+\IM{.ppk file} \c{.ppk} file
+\IM{.pub file} \c{.pub} file
+\IM{.ssh directory} \c{.ssh} directory
+\IM{64-bit}{x64} 64-bit (x64)
+\IM{Access Control List} Access Control List (ACL)
+\IM{AllowGroups setting} \c{AllowGroups} setting
+\IM{AllowTcpForwarding setting} \c{AllowTcpForwarding} setting
+\IM{AuthenticationMethods} \c{AuthenticationMethods} setting
+\IM{authorized_keys file} \c{authorized_keys} file
+\IM{chroot jail} \c{chroot} jail
+\IM{chroot jail} jail (\c{chroot})
+\IM{ChrootDirectory setting} \c{ChrootDirectory} setting
+\IM{/CLOSEAPPLICATIONS parameter} \c{/CLOSEAPPLICATIONS} parameter
+\IM{/CURRENTUSER parameter} \c{/CURRENTUSER} parameter
+\IM{cygdrive directory} \c{cygdrive} directory (SFTP-only)
+\IM{dev directory} \c{dev} directory (SFTP-only)
+\IM{ForceCommand setting} \c{ForceCommand} setting
+\IM{fstab file} \c{fstab} file
+\IM{Group Policy} Group Policy (GPO)
+\IM{installpath} \e{installpath}
+\IM{interactive shell} interactive shell
+\IM{interactive shell} shell (interactive)
+\IM{known_hosts} \c{known_hosts} file
+\IM{Log on as a batch job} Log on as batch job (user right)
+\IM{Match User setting} \c{Match User} setting
+\IM{modifypath installer task} \c{modifypath} installer task
+\IM{modifypath installer task} path (environment variable)
+\IM{MsV1_0S4ULogon} MsV1_0S4ULogon logon type
+\IM{noacl} \c{noacl} option (\c{fstab} file)
+\IM{nsswitch.conf} \c{nsswitch.conf} file
+\IM{passwd file} \c{passwd} file
+\IM{root user account} \c{root} user account
+\IM{s4ulogonfix installer task} \c{s4ulogonfix} installer task
+\IM{/SILENT parameter} \c{/SILENT} parameter
+\IM{SSH Users group} \c{SSH Users} (local access group)
+\IM{sshd account} \c{sshd} account
+\IM{sshd_config} \c{sshd_config} file
+\IM{startservice installer task} \c{startservice} installer task

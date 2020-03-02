@@ -1,0 +1,11 @@
+--- origsrc/nano-2.5.3/doc/syntax/json.nanorc	2014-05-25 12:43:57.000000000 -0500
++++ src/nano-2.5.3/doc/syntax/json.nanorc	2016-03-16 11:40:36.570891100 -0500
+@@ -13,7 +13,7 @@ color brightmagenta "\".+\""
+ # Hex numbers (used as value).
+ color green ":[[:space:]]*\"#[0-9abcdefABCDEF]+\""
+ # Escapes.
+-color green "\\\\" "\\\"" "\\[bfnrt]" "\\u[0-9abcdefABCDEF]{4})"
++color green "\\\\" "\\\"" "\\[bfnrt]" "\\u[0-9abcdefABCDEF]{4}"
+ # Special words.
+ color green "(true|false|null)"
+ 

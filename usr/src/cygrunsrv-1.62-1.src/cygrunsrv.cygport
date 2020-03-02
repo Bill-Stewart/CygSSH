@@ -1,0 +1,13 @@
+NAME="cygrunsrv"
+VERSION="1.62"
+RELEASE=1
+CATEGORY="Admin"
+SUMMARY="NT/W2K service initiator"
+DESCRIPTION="NT/W2K service initiator"
+HOMEPAGE="http://cygwin.com/"
+
+CVS_URI=":pserver:anoncvs@sourceware.org:/cvs/cygwin-apps"
+CVS_BRANCH="rel${VERSION/\./-}"
+inherit cvs
+
+CYGCONF_ARGS="--bindir=/bin"

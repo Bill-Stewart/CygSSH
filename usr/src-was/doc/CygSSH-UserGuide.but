@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 1.0
+\define{version} 1.1
 
 \define{rightarrow} \u2192
 
@@ -246,21 +246,23 @@ This chapter describes how to authenticate to an OpenSSH server using SSH client
 
 The CygSSH package provides several SSH client commands:
 
-\b The \s{ssh} command \I{ssh command} establishes an \i{interactive shell} session with an SSH server
-
 \b The \s{scp} command \I{scp command} copies files to an SSH server
+
+\b The \s{ssh} command \I{ssh command} establishes an \i{interactive shell} session with an SSH server
 
 \b The \s{sftp} command \I{sftp command} establishes a file transfer session with an SSH server
 
+\s{Note:} It's recommended to run the \s{ssh} and \s{sftp} SSH client commands using the \s{mintty} command (e.g., \s{mintty ssh} rather than just \s{ssh}). If you run these SSH client commands without the \s{mintty} command, line wrapping and other features may not work as expected. \I{mintty}
+
 Example 1:
 
-\c sftp COMPUTER1+localuser@computer1
+\c mintty sftp COMPUTER1+localuser@computer1
 
 This command establishes a file transfer session to \c{computer1} using the account \c{COMPUTER1+localuser}.
 
 Example 2:
 
-\c ssh -i /cygdrive/c/Users/KenDyer/.ssh/kenprivkey KenDyer@computer2
+\c mintty ssh -i /cygdrive/c/Users/KenDyer/.ssh/kenprivkey KenDyer@computer2
 
 This command establishes an interactive shell session to \c{computer2} using the \c{KenDyer} account using public key authentication (see \k{publickeyauth}), using the file \c{C:\\Users\\KenDyer\\.ssh\\kenprivkey} as the private key.
 
@@ -940,6 +942,14 @@ The \c{/usr/src} directory contains the source code. The source code files are g
 \I{release history}
 \I{version history}
 
+\s{1.1}
+
+\b Updated OpenSSH service not to use the Windows \i{ConPTY} API calls in newer versions of Windows by setting the \c{disable_pcon} setting in the \c{CYGWIN} environment variable. (The CygSSH package doesn't need the ConPTY support since it uses \s{winpty}.) See \W{https://cygwin.com/cygwin-ug-net/using-cygwinenv.html}{https://cygwin.com/cygwin-ug-net/using-cygwinenv.html} for details. \I{CYGWIN environment variable} \I{disable_pcon}
+
+\b Added recommendation to run \s{ssh} and \s{sftp} using \s{mintty}. \I{mintty}
+
+\b Updated \s{runposh} tool to version 1.1.
+
 \s{1.0}
 
 \b Initial version.
@@ -963,7 +973,9 @@ The \c{/usr/src} directory contains the source code. The source code files are g
 \IM{/CLOSEAPPLICATIONS parameter} \c{/CLOSEAPPLICATIONS} parameter
 \IM{/CURRENTUSER parameter} \c{/CURRENTUSER} parameter
 \IM{cygdrive directory} \c{cygdrive} directory (SFTP-only)
+\IM{CYGWIN environment variable} \c{CYGWIN} environment variable
 \IM{dev directory} \c{dev} directory (SFTP-only)
+\IM{disable_pcon} \c{disable_pcon}
 \IM{ForceCommand setting} \c{ForceCommand} setting
 \IM{fstab file} \c{fstab} file
 \IM{Group Policy} Group Policy (GPO)

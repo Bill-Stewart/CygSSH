@@ -57,6 +57,7 @@ Source: "bin-x64\getent.exe";                DestDir: "{app}\bin"; Check: Is64Bi
 Source: "bin-x64\id.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\less.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\mount.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
+Source: "bin-x64\mintty.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\nano.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\passwd.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\rebase.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
@@ -101,6 +102,7 @@ Source: "bin-x86\getent.exe";                DestDir: "{app}\bin"; Check: not Is
 Source: "bin-x86\id.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\less.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\mount.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
+Source: "bin-x86\mintty.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\nano.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\passwd.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\rebase.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
@@ -227,7 +229,7 @@ Filename: "{app}\bin\runposh.exe"; \
 
 ; Install service
 Filename: "{app}\bin\runposh.exe"; \
-  Parameters: "--noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -Install -NoConfirm"; \
+  Parameters: "--noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -EnvVarOptions disable_pcon -Install -NoConfirm"; \
   StatusMsg: "{cm:RunInstallServiceStatusMsg}"; \
   Components: server; \
   Check: not ServiceExists('{#ServiceName}')

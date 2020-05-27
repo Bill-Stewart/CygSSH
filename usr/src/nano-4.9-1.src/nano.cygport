@@ -1,5 +1,5 @@
 NAME="nano"
-VERSION=4.3
+VERSION=4.9
 RELEASE=1
 CATEGORY="Editors"
 SUMMARY="Enhanced clone of Pico editor"
@@ -8,14 +8,23 @@ on and mostly compatible with UW Pico. Besides basic text editing, nano offers
 many extra features like an interactive search and replace, go to line and
 column number, auto-indentation, feature toggles, internationalization support,
 and filename tab completion."
-HOMEPAGE="http://www.nano-editor.org/"
-SRC_URI="http://www.nano-editor.org/dist/v${VERSION%.*}/nano-${VERSION}.tar.gz"
+HOMEPAGE="https://www.nano-editor.org/"
+SRC_URI="https://www.nano-editor.org/dist/v${VERSION%.*}/nano-${VERSION}.tar.xz"
 PATCH_URI="
-	2.9.7-syntax-colors.patch
 	2.9.7-syntax-gitcommit.patch
 	2.5.3-syntax-regex.patch
+	4.9-sample-nanorc.patch
 "
 
 DIFF_EXCLUDES="nano.spec"
 
 CYGCONF_ARGS="--without-slang"
+
+src_install() {
+	cd ${B}
+	cyginstall
+
+	insinto /etc
+	newins doc/sample.nanorc nanorc
+	make_etc_defaults /etc/nanorc
+}

@@ -56,8 +56,10 @@ Source: "bin-x64\false.exe";                 DestDir: "{app}\bin"; Check: Is64Bi
 Source: "bin-x64\getent.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\id.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\less.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\mount.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\mintty.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
+Source: "bin-x64\mkgroup.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
+Source: "bin-x64\mkpasswd.exe";              DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
+Source: "bin-x64\mount.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\nano.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\passwd.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\rebase.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
@@ -68,6 +70,7 @@ Source: "bin-x64\ssh-add.exe";               DestDir: "{app}\bin"; Check: Is64Bi
 Source: "bin-x64\ssh-agent.exe";             DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\ssh-keygen.exe";            DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\ssh-keyscan.exe";           DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-pageant.exe";           DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\ssh.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\touch.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x64\true.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
@@ -101,8 +104,10 @@ Source: "bin-x86\false.exe";                 DestDir: "{app}\bin"; Check: not Is
 Source: "bin-x86\getent.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\id.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\less.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\mount.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\mintty.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
+Source: "bin-x86\mkgroup.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
+Source: "bin-x86\mkpasswd.exe";              DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
+Source: "bin-x86\mount.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\nano.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\passwd.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\rebase.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
@@ -113,6 +118,7 @@ Source: "bin-x86\ssh-add.exe";               DestDir: "{app}\bin"; Check: not Is
 Source: "bin-x86\ssh-agent.exe";             DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\ssh-keygen.exe";            DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\ssh-keyscan.exe";           DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
+Source: "bin-x86\ssh-pageant.exe";           DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\ssh.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\touch.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
 Source: "bin-x86\true.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
@@ -151,20 +157,24 @@ Source: "bin-scripts\Set-SSHHostKey.ps1";  DestDir: "{app}\bin"; Components: ser
 Source: "bin-scripts\Set-SSHService.ps1";  DestDir: "{app}\bin"; Components: server
 Source: "bin-scripts\Set-S4ULogonFix.ps1"; DestDir: "{app}\bin"; Components: server; OnlyBelowVersion: 6.3
 ; shared - /etc
-Source: "etc\nsswitch.conf"; DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
-Source: "etc\passwd";        DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
-Source: "etc\ssh_config";    DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
-Source: "etc\moduli";        DestDir: "{app}\etc"; Components: server
-Source: "etc\banner.txt";    DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
-Source: "etc\profile";       DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
-Source: "etc\sshd_config";   DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
+Source: "etc\cygserver.conf"; DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "etc\nsswitch.conf";  DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "etc\ssh_config";     DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "etc\virc";           DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "etc\banner.txt";     DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
+Source: "etc\passwd";         DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
+Source: "etc\profile";        DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
+Source: "etc\sshd_config";    DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
+Source: "etc\moduli";         DestDir: "{app}\etc"; Components: server
 ; shared - /etc/defaults/etc
-Source: "etc\defaults\etc\nsswitch.conf"; DestDir: "{app}\etc\defaults\etc"; Components: client server
-Source: "etc\defaults\etc\passwd";        DestDir: "{app}\etc\defaults\etc"; Components: client server
-Source: "etc\defaults\etc\ssh_config";    DestDir: "{app}\etc\defaults\etc"; Components: client server
-Source: "etc\defaults\etc\banner.txt";    DestDir: "{app}\etc\defaults\etc"; Components: server
-Source: "etc\defaults\etc\profile";       DestDir: "{app}\etc\defaults\etc"; Components: server
-Source: "etc\defaults\etc\sshd_config";   DestDir: "{app}\etc\defaults\etc"; Components: server
+Source: "etc\defaults\etc\cygserver.conf"; DestDir: "{app}\etc\defaults\etc"; Components: client server
+Source: "etc\defaults\etc\nsswitch.conf";  DestDir: "{app}\etc\defaults\etc"; Components: client server
+Source: "etc\defaults\etc\ssh_config";     DestDir: "{app}\etc\defaults\etc"; Components: client server
+Source: "etc\defaults\etc\virc";           DestDir: "{app}\etc\defaults\etc"; Components: client server
+Source: "etc\defaults\etc\banner.txt";     DestDir: "{app}\etc\defaults\etc"; Components: server
+Source: "etc\defaults\etc\passwd";         DestDir: "{app}\etc\defaults\etc"; Components: server
+Source: "etc\defaults\etc\profile";        DestDir: "{app}\etc\defaults\etc"; Components: server
+Source: "etc\defaults\etc\sshd_config";    DestDir: "{app}\etc\defaults\etc"; Components: server
 ; shared - /usr/share
 Source: "usr\share\*"; DestDir: "{app}\usr\share"; Components: server; Flags: recursesubdirs createallsubdirs
 ; shared - /usr/src
@@ -204,46 +214,46 @@ Filename: "{app}\bin\setacl.exe"; \
 
 ; Configure fstab
 Filename: "{app}\bin\runposh.exe"; \
-  Parameters: "--noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-FstabConfig.ps1"""; \
+  Parameters: "-b --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-FstabConfig.ps1"""; \
   StatusMsg: "{cm:RunConfigureFstabStatusMsg}"; \
   Components: client server
 
 ; Create SSH host keys
 Filename: "{app}\bin\runposh.exe"; \
-  Parameters: "--noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHHostKey.ps1"""; \
+  Parameters: "-b --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHHostKey.ps1"""; \
   StatusMsg: "{cm:RunConfigureSSHHostKeysStatusMsg}"; \
   Components: server
 
 ; Configure local access group and sshd_config file
 Filename: "{app}\bin\runposh.exe"; \
-  Parameters: "--noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHGroup.ps1"" -- -NoConfirm"; \
+  Parameters: "-b --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHGroup.ps1"" -- -NoConfirm"; \
   StatusMsg: "{cm:RunConfigureLocalAccessGroupStatusMsg}"; \
   Components: server
 
 ; S4U local account logon fix - OS older than 6.3 (Windows 8.1/Server 2012 R2)
 Filename: "{app}\bin\runposh.exe"; \
-  Parameters: "--noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-S4ULogonFix.ps1"" -- -Enable -NoConfirm"; \
+  Parameters: "-b --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-S4ULogonFix.ps1"" -- -Enable -NoConfirm"; \
   StatusMsg: "{cm:RunConfigureMsV1_0S4ULogonFixStatusMsg}"; \
   Components: server; \
   Tasks: s4ulogonfix
 
 ; Install service
 Filename: "{app}\bin\runposh.exe"; \
-  Parameters: "--noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -EnvVarOptions disable_pcon -Install -NoConfirm"; \
+  Parameters: "-b --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -EnvVarOptions disable_pcon -Install -NoConfirm"; \
   StatusMsg: "{cm:RunInstallServiceStatusMsg}"; \
   Components: server; \
   Check: not ServiceExists('{#ServiceName}')
 
 ; Start service
 Filename: "{app}\bin\runposh.exe"; \
-  Parameters: "--noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -Start -NoConfirm"; \
+  Parameters: "-b --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -Start -NoConfirm"; \
   StatusMsg: "{cm:RunStartServiceStatusMsg}"; \
   Components: server; \
   Tasks: startservice
 
 [UninstallRun]
 Filename: "{app}\bin\runposh.exe"; \
-  Parameters: "--noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -Uninstall -NoConfirm"; \
+  Parameters: "-b --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -Uninstall -NoConfirm"; \
   RunOnceId: "uninstallservice"; \
   Components: server
 
@@ -258,80 +268,80 @@ Filename: "{app}\bin\runposh.exe"; \
 //   service restart (Windows Restart Manager does not work correctly with
 //   Cygwin services and processes); uses WMI and progress page
 
-Const
+const
   SC_MANAGER_CONNECT   = 1;
   SERVICE_QUERY_STATUS = 4;
 
-Type
+type
   TSCHandle = THandle;
-  TServiceStatus = Record
-                   dwServiceType:             DWORD;
-                   dwCurrentState:            DWORD;
-                   dwControlsAccepted:        DWORD;
-                   dwWin32ExitCode:           DWORD;
-                   dwServiceSpecificExitCode: DWORD;
-                   dwCheckPoint:              DWORD;
-                   dwWaitHint:                DWORD;
-                   End;
-  TCygwinService = Record
-                   ProcessId:      DWORD;
-                   Name:           String;
-                   DisplayName:    String;
-                   ExecutablePath: String;
-                   End;
-  TCygwinServiceList = Array Of TCygwinService;
-  TCygwinProcess = Record
-                   ProcessId:      DWORD;
-                   Name:           String;
-                   ExecutablePath: String;
-                   End;
-  TCygwinProcessList = Array Of TCygwinProcess;
+  TServiceStatus = record
+    dwServiceType:             DWORD;
+    dwCurrentState:            DWORD;
+    dwControlsAccepted:        DWORD;
+    dwWin32ExitCode:           DWORD;
+    dwServiceSpecificExitCode: DWORD;
+    dwCheckPoint:              DWORD;
+    dwWaitHint:                DWORD;
+    end;
+  TCygwinService = record
+    ProcessId:      DWORD;
+    Name:           string;
+    DisplayName:    string;
+    ExecutablePath: string;
+    end;
+  TCygwinServiceList = array of TCygwinService;
+  TCygwinProcess = record
+    ProcessId:      DWORD;
+    Name:           string;
+    ExecutablePath: string;
+    end;
+  TCygwinProcessList = array of TCygwinProcess;
 
-Var
+var
   AppProgressPage: TOutputProgressWizardPage;
-  ModifyPathTaskName: String;
-  PathIsModified, S4UTaskDefaultChanged: Boolean;
-  SWbemLocator, WMIService: Variant;
+  ModifyPathTaskName: string;
+  PathIsModified, S4UTaskDefaultChanged: boolean;
+  SWbemLocator, WMIService: variant;
   RunningServices: TCygwinServiceList;
 
 // Windows API function declarations
-Function NetGetJoinInformation(lpServer:         String;
-                               Var lpNameBuffer: DWORD;
-                               Var BufferType:   DWORD): DWORD;
-  External 'NetGetJoinInformation@netapi32.dll stdcall setuponly';
+function NetGetJoinInformation(lpServer:         string;
+                               var lpNameBuffer: DWORD;
+                               var BufferType:   DWORD): DWORD;
+  external 'NetGetJoinInformation@netapi32.dll stdcall setuponly';
 
-Function NetApiBufferFree(Buffer: DWORD): DWORD;
-  External 'NetApiBufferFree@netapi32.dll stdcall setuponly';
+function NetApiBufferFree(Buffer: DWORD): DWORD;
+  external 'NetApiBufferFree@netapi32.dll stdcall setuponly';
 
-Function OpenSCManager(lpMachineName:   String;
-                       lpDatabaseName:  String;
+function OpenSCManager(lpMachineName:   string;
+                       lpDatabaseName:  string;
                        dwDesiredAccess: DWORD): TSCHandle;
-  External 'OpenSCManagerW@advapi32.dll stdcall';
+  external 'OpenSCManagerW@advapi32.dll stdcall';
 
-Function OpenService(hSCManager:      TSCHandle;
-                     lpServiceName:   String;
+function OpenService(hSCManager:      TSCHandle;
+                     lpServiceName:   string;
                      dwDesiredAccess: DWORD): TSCHandle;
-  External 'OpenServiceW@advapi32.dll stdcall';
+  external 'OpenServiceW@advapi32.dll stdcall';
 
-Function QueryServiceStatus(hService:            TSCHandle;
+function QueryServiceStatus(hService:            TSCHandle;
                             Out lpServiceStatus: TServiceStatus): BOOL;
-  External 'QueryServiceStatus@advapi32.dll stdcall';
+  external 'QueryServiceStatus@advapi32.dll stdcall';
 
-Function CloseServiceHandle(hSCObject: TSCHandle): BOOL;
-  External 'CloseServiceHandle@advapi32.dll stdcall';
+function CloseServiceHandle(hSCObject: TSCHandle): BOOL;
+  external 'CloseServiceHandle@advapi32.dll stdcall';
 
 // Used by:
 //   NextButtonClick() function
-Function ParamStrExists(Const Param: String): Boolean;
-  Var
-    I: Integer;
-  Begin
-  For I := 1 To ParamCount Do
-    Begin
-    Result := CompareText(Param, ParamStr(I)) = 0;
-    If Result Then Exit;
-    End;
-  End;
+function ParamStrExists(const Param: string): boolean;
+  var
+    I: integer;
+  begin
+  for I := 1 to ParamCount do
+    begin
+    result := CompareText(Param, ParamStr(I)) = 0;
+    if result then exit;
+    end;
+  end;
 
 // Requires:
 //   OpenSCManager() Windows API function
@@ -343,53 +353,53 @@ Function ParamStrExists(Const Param: String): Boolean;
 //   [Run] section
 // Get whether service exists
 // Acknowledgment: TLama (https://stackoverflow.com/questions/32463808/)
-Function ServiceExists(ServiceName: String): Boolean;
-  Var
+function ServiceExists(ServiceName: string): boolean;
+  var
     Manager, Service: TSCHandle;
     Status: TServiceStatus;
-  Begin
-  Result := False;
-  Manager := OpenSCManager('', '', SC_MANAGER_CONNECT);
-  If Manager <> 0 Then
-    Try
+  begin
+  result := false;
+  manager := OpenSCManager('', '', SC_MANAGER_CONNECT);
+  if Manager <> 0 then
+    try
       Service := OpenService(Manager, ServiceName, SERVICE_QUERY_STATUS);
-      If Service <> 0 Then
-        Try
-          Result := QueryServiceStatus(Service, Status);
-        Finally
+      if Service <> 0 then
+        try
+          result := QueryServiceStatus(Service, Status);
+        finally
           CloseServiceHandle(Service);
-        End; //Try
-    Finally
+        end; //try
+    finally
       CloseServiceHandle(Manager);
-    End //Try
-  Else
+    end //try
+  else
     RaiseException('OpenSCManager failed: ' + SysErrorMessage(DLLGetLastError()));
-  End;
+  end;
 
 // Used by:
 //   InitializeSetup() function
-// Return True if we detect at least PowerShell v2, or False otherwise
-Function IsPowerShell2OrHigherInstalled(): Boolean;
-  Var
-    RootPath, VersionString: String;
+// Return true if we detect at least PowerShell v2, or false otherwise
+function IsPowerShell2OrHigherInstalled(): boolean;
+  var
+    RootPath, VersionString: string;
     SubkeyNames: TArrayOfString;
-    HighestPSVersion, I, PSVersion: Integer;
-  Begin
+    HighestPSVersion, I, PSVersion: integer;
+  begin
   RootPath := 'SOFTWARE\Microsoft\PowerShell';
-  Result := RegGetSubkeyNames(HKEY_LOCAL_MACHINE, RootPath, SubkeyNames);
-  If Not Result Then Exit;
+  result := RegGetSubkeyNames(HKEY_LOCAL_MACHINE, RootPath, SubkeyNames);
+  if not result then exit;
   HighestPSVersion := 0;
-  For I := 0 To GetArrayLength(SubkeyNames) - 1 Do
-    Begin
-    If RegQueryStringValue(HKEY_LOCAL_MACHINE, RootPath + '\' + SubkeyNames[I] + '\PowerShellEngine', 'PowerShellVersion', VersionString) Then
-      Begin
+  for I := 0 to GetArrayLength(SubkeyNames) - 1 do
+    begin
+    if RegQueryStringValue(HKEY_LOCAL_MACHINE, RootPath + '\' + SubkeyNames[I] + '\PowerShellEngine', 'PowerShellVersion', VersionString) then
+      begin
       PSVersion := StrToIntDef(Copy(VersionString, 0, 1), 0);
-      If PSVersion > HighestPSVersion Then
+      if PSVersion > HighestPSVersion then
         HighestPSVersion := PSVersion;
-      End;
-    End;
-  Result := HighestPSVersion >= 2;
-  End;
+      end;
+    end;
+  result := HighestPSVersion >= 2;
+  end;
 
 // Requires:
 //   ModifyPathTaskName global variable
@@ -398,125 +408,125 @@ Function IsPowerShell2OrHigherInstalled(): Boolean;
 //   SWbemLocator global variable
 //   WMIService global variable
 //   IsPowerShell2OrHigherInstalled() function
-Function InitializeSetup(): Boolean;
-  Begin
-  Result := IsPowerShell2OrHigherInstalled();
-  If Not Result Then
-    Begin
+function InitializeSetup(): boolean;
+  begin
+  result := IsPowerShell2OrHigherInstalled();
+  if not result then
+    begin
     Log(CustomMessage('ErrorNoPowerShellLogMessage'));
-    If Not WizardSilent() Then
+    if not WizardSilent() then
       MsgBox(CustomMessage('ErrorNoPowerShellGUIMessage'), mbCriticalError, MB_OK);
-    Exit;
-    End;
+    exit;
+    end;
   ModifyPathTaskName := 'modifypath';
   PathIsModified := GetPreviousData('Modify Path', '') = 'true';
-  S4UTaskDefaultChanged := False;
-  Try
+  S4UTaskDefaultChanged := false;
+  try
     SWbemLocator := CreateOleObject('WbemScripting.SWbemLocator');
     WMIService := SWbemLocator.ConnectServer('', 'root\CIMV2');
-  Except
+  except
     SWbemLocator := Null();
     WMIService := Null();
-  End; //Try
+  end; //try
   SetArrayLength(RunningServices, 0);
-  End;
+  end;
 
-Procedure InitializeWizard();
-  Begin
+procedure InitializeWizard();
+  begin
   AppProgressPage := CreateOutputProgressPage(SetupMessage(msgWizardInstalling),
     FmtMessage(CustomMessage('AppProgressPageInstallingCaption'), [ExpandConstant('{#SetupSetting("AppName")}')]));
-  End;
+  end;
 
 // Requires:
 //   PathIsModified global variable
-Function InitializeUninstall(): Boolean;
-  Begin
-  Result := True;
+function InitializeUninstall(): boolean;
+  begin
+  result := true;
   PathIsModified := GetPreviousData('Modify Path', '') = 'true';
-  End;
+  end;
 
 // Requires:
 //   NetGetJoinInformation() Windows API function
 //   NetApiBufferFree() Windows API function
 // Used by:
 //   CurPageChanged() procedure
-// Returns True if computer is a domain member, or False otherwise
-Function IsDomainMember(): Boolean;
-  Var
+// Returns true if computer is a domain member, or false otherwise
+function IsDomainMember(): boolean;
+  var
     NameBuffer, BufferType: DWORD;
-  Begin
-  Result := False;
-  If NetGetJoinInformation('', NameBuffer, BufferType) = 0 Then
-    Begin
-    Result := BufferType = 3;  // NetSetupDomainName
+  begin
+  result := false;
+  if NetGetJoinInformation('', NameBuffer, BufferType) = 0 then
+    begin
+    result := BufferType = 3;  // NetSetupDomainName
     NetApiBufferFree(NameBuffer);
-    End;
-  End;
+    end;
+  end;
 
 // Requires:
 //   S4UTaskDefaultChanged global variable
 //   IsDomainMember() function
-Procedure CurPageChanged(PageID: Integer);
-  Begin
-  If PageID = wpSelectTasks Then
-    Begin
-    If Not WizardSilent() Then
-      Begin
+procedure CurPageChanged(PageID: integer);
+  begin
+  if PageID = wpSelectTasks then
+    begin
+    if not WizardSilent() then
+      begin
       // Only select if not already changed
-      If Not S4UTaskDefaultChanged Then
-        Begin
+      if not S4UTaskDefaultChanged then
+        begin
         // Interactive install: Set s4ulogonfix task default:
         // If not domain member, select by default (but only interactively)
         // If silent install, command line must specify the task
-        If Not IsDomainMember() Then WizardSelectTasks('s4ulogonfix');
-        S4UTaskDefaultChanged := True;
-        End;
-      End;
-    End;
-  End;
+        if not IsDomainMember() then WizardSelectTasks('s4ulogonfix');
+        S4UTaskDefaultChanged := true;
+        end;
+      end;
+    end;
+  end;
 
 // Used by:
 //   [Tasks] section
-Function GetSystemOrUserPath(Param: String): String;
-  Begin
-  If IsAdminInstallMode() Then
-    Result := CustomMessage('PathTypeSystemMessage')
-  Else
-    Result := CustomMessage('PathTypeUserMessage');
-  End;
+function GetSystemOrUserPath(Param: string): string;
+  begin
+  if IsAdminInstallMode() then
+    result := CustomMessage('PathTypeSystemMessage')
+  else
+    result := CustomMessage('PathTypeUserMessage');
+  end;
 
 // Used by:
 //   ModifyPath() function
 //   IsDirInPath() function
 // Gets the directory are we adding to (or removing from) the path
-Function GetPathDirName(): String;
-  Begin
-  Result := ExpandConstant('{app}\bin');
-  End;
+function GetPathDirName(): string;
+  begin
+  result := ExpandConstant('{app}\bin');
+  end;
 
 // Used by:
 //   SplitPathString() procedure
 // Splits S into array Dest using Delim as delimiter
-Procedure SplitString(S, Delim: String; Var Dest: TArrayOfString);
-  Var
-    Temp: String;
-    I, P: Integer;
-  Begin
+procedure SplitString(S, Delim: string; var Dest: TArrayOfString);
+  var
+    Temp: string;
+    I, P: integer;
+  begin
   Temp := S;
-  I := StringChangeEx(Temp, Delim, '', True);
+  I := StringChangeEx(Temp, Delim, '', true);
   SetArrayLength(Dest, I + 1);
-  For I := 0 To GetArrayLength(Dest) - 1 Do
-    Begin
+  for I := 0 to GetArrayLength(Dest) - 1 do
+    begin
     P := Pos(Delim, S);
-    If P > 0 Then
-      Begin
+    if P > 0 then
+      begin
       Dest[I] := Copy(S, 1, P - 1);
       Delete(S, 1, P + Length(Delim) - 1);
-      End
-    Else
+      end
+    else
       Dest[I] := S;
-    End;
-  End;
+    end;
+  end;
 
 // Used by:
 //   PathStringContainsDir() function
@@ -526,35 +536,35 @@ Procedure SplitString(S, Delim: String; Var Dest: TArrayOfString);
 // Splits the specified semicolon-delimited path string into an array such
 // that each element in the string array contains a properly formed
 // directory name; array might contain empty string elements
-Procedure SplitPathString(Path: String; Var Dest: TArrayOfString);
-  Var
-    I: Integer;
-  Begin
+procedure SplitPathString(Path: string; var Dest: TArrayOfString);
+  var
+    I: integer;
+  begin
   SplitString(Path, ';', Dest);
-  For I := 0 To GetArrayLength(Dest) - 1 Do
+  for I := 0 to GetArrayLength(Dest) - 1 do
     Dest[I] := RemoveBackslashUnlessRoot(Trim(Dest[I]));
-  End;
+  end;
 
 // Requires:
 //   SplitPathString() procedure
 // Returns whether the semicolon-delimited path string contains the named
 // directory or not; not case-sensitive; if Dir is empty or only whitespace,
-// the function returns False
-Function PathStringContainsDir(Path, Dir: String): Boolean;
-  Var
+// the function returns false
+function PathStringContainsDir(Path, Dir: string): boolean;
+  var
     PathArray: TArrayOfString;
-    I: Integer;
-  Begin
-  Result := False;
+    I: integer;
+  begin
+  result := false;
   Dir := RemoveBackslashUnlessRoot(Trim(Dir));
-  If Dir = '' Then Exit;
+  if Dir = '' then exit;
   SplitPathString(Path, PathArray);
-  For I := 0 To GetArrayLength(PathArray) - 1 Do
-    Begin
-    Result := CompareText(PathArray[I], Dir) = 0;
-    If Result Then Exit;
-    End;
-  End;
+  for I := 0 to GetArrayLength(PathArray) - 1 do
+    begin
+    result := CompareText(PathArray[I], Dir) = 0;
+    if result then exit;
+    end;
+  end;
 
 // Requires:
 //   PathStringContainsDir() function
@@ -563,32 +573,32 @@ Function PathStringContainsDir(Path, Dir: String): Boolean;
 // string with the named directory added; if Dir is empty, only whitespace, or
 // already exists in the path string, the function returns the path string
 // unchanged
-Function AddDirToPathString(Path, Dir: String): String;
-  Var
+function AddDirToPathString(Path, Dir: string): string;
+  var
     PathArray: TArrayOfString;
-    I: Integer;
-  Begin
-  Result := Path;
+    I: integer;
+  begin
+  result := Path;
   Dir := RemoveBackslashUnlessRoot(Trim(Dir));
-  If Dir = '' Then Exit;
-  If PathStringContainsDir(Path, Dir) Then Exit;
+  if Dir = '' then exit;
+  if PathStringContainsDir(Path, Dir) then exit;
   SplitPathString(Path, PathArray);
-  Result := '';
-  For I := 0 To GetArrayLength(PathArray) - 1 Do
-    Begin
-    If Trim(PathArray[I]) <> '' Then
-      Begin
-      If Result = '' Then
-        Result := PathArray[I]
-      Else
-        Result := Result + ';' + PathArray[I];
-      End;
-    End;
-  If Result <> '' Then
-    Result := Result + ';' + Dir
-  Else
-    Result := Dir;
-  End;
+  result := '';
+  for I := 0 to GetArrayLength(PathArray) - 1 do
+    begin
+    if Trim(PathArray[I]) <> '' then
+      begin
+      if result = '' then
+        result := PathArray[I]
+      else
+        result := result + ';' + PathArray[I];
+      end;
+    end;
+  if result <> '' then
+    result := result + ';' + Dir
+  else
+    result := Dir;
+  end;
 
 // Requires:
 //   PathStringContainsDir() function
@@ -597,33 +607,33 @@ Function AddDirToPathString(Path, Dir: String): String;
 // path string with all instances of the named directory removed; if Dir is
 // empty, only whitespace, or doesn't exist in the path string, the function
 // returns the path string unchanged
-Function RemoveDirFromPathString(Path, Dir: String): String;
-  Var
+function RemoveDirFromPathString(Path, dir: string): string;
+  var
     PathArray: TArrayOfString;
-    I: Integer;
-  Begin
-  Result := Path;
+    I: integer;
+  begin
+  result := Path;
   Dir := RemoveBackslashUnlessRoot(Trim(Dir));
-  If Dir = '' Then Exit;
-  If Not PathStringContainsDir(Path, Dir) Then Exit;
+  if Dir = '' then exit;
+  if not PathStringContainsDir(Path, Dir) then exit;
   SplitPathString(Path, PathArray);
-  For I := 0 To GetArrayLength(PathArray) - 1 Do
-    Begin
-    If CompareText(PathArray[I], Dir) = 0 Then
+  for I := 0 to GetArrayLength(PathArray) - 1 do
+    begin
+    if CompareText(PathArray[I], Dir) = 0 then
       PathArray[I] := '';
-    End;
-  Result := '';
-  For I := 0 To GetArrayLength(PathArray) - 1 Do
-    Begin
-    If Trim(PathArray[I]) <> '' Then
-      Begin
-      If Result = '' Then
-        Result := PathArray[I]
-      Else
-        Result := Result + ';' + PathArray[I];
-      End;
-    End;
-  End;
+    end;
+  result := '';
+  for I := 0 to GetArrayLength(PathArray) - 1 do
+    begin
+    if Trim(PathArray[I]) <> '' then
+      begin
+      if result = '' then
+        result := PathArray[I]
+      else
+        result := result + ';' + PathArray[I];
+      end;
+    end;
+  end;
 
 // Requires:
 //   SplitPathString() function
@@ -634,44 +644,44 @@ Function RemoveDirFromPathString(Path, Dir: String): String;
 // AddOrRemove: 'add' or 'remove' (default = 'add')
 // PathType: 'user' or 'system' (default = 'user')
 // Dir: semicolon-delimited list of directories to add or remove
-// Returns False only when a registry update fails
+// Returns false only when a registry update fails
 // (NOTE: Do not enclose path names in quotes!)
-Function UpdatePath(AddOrRemove, PathType, Dir: String): Boolean;
-  Var
-    AddToPath: Boolean;
-    RegRoot, I: Integer;
-    RegPath, Path, NewPath: String;
+function UpdatePath(AddOrRemove, PathType, Dir: string): boolean;
+  var
+    AddToPath: boolean;
+    RegRoot, I: integer;
+    RegPath, Path, NewPath: string;
     DirArray: TArrayOfString;
-  Begin
-  Result := True;
+  begin
+  result := true;
   AddToPath := CompareText(AddOrRemove, 'remove') <> 0;
-  If CompareText(PathType, 'system') = 0 Then
-    Begin
+  if CompareText(PathType, 'system') = 0 then
+    begin
     RegRoot := HKEY_LOCAL_MACHINE;
     RegPath := 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
-    End
-  Else
-    Begin
+    end
+  else
+    begin
     RegRoot := HKEY_CURRENT_USER;
     RegPath := 'Environment';
-    End;
+    end;
   SplitPathString(Dir, DirArray);
-  For I := 0 To GetArrayLength(DirArray) - 1 Do
-    Begin
-    If Trim(DirArray[I]) = '' Then Continue;
+  for I := 0 to GetArrayLength(DirArray) - 1 do
+    begin
+    if Trim(DirArray[I]) = '' then continue;
     Path := '';
     RegQueryStringValue(RegRoot, RegPath, 'Path', Path);
-    If AddToPath Then
+    if AddToPath then
       NewPath := AddDirToPathString(Path, DirArray[I])
-    Else
+    else
       NewPath := RemoveDirFromPathString(Path, DirArray[I]);
-    If NewPath <> Path Then
-      Begin
-      Result := RegWriteExpandStringValue(RegRoot, RegPath, 'Path', NewPath);
-      If Not Result Then Exit;
-      End;
-    End;
-  End;
+    if NewPath <> Path then
+      begin
+      result := RegWriteExpandStringValue(RegRoot, RegPath, 'Path', NewPath);
+      if not result then exit;
+      end;
+    end;
+  end;
 
 // Requires:
 //   GetPathDirName() function
@@ -679,72 +689,72 @@ Function UpdatePath(AddOrRemove, PathType, Dir: String): Boolean;
 // Used by:
 //   CurStepChanged() function
 //   CurUninstallStepChanged() function
-Function ModifyPath(Const AddOrRemove: String): Boolean;
-  Var
-    Action, Context, DirName: String;
-  Begin
-  Result := True;
-  If CompareText(AddOrRemove, 'remove') <> 0 Then
+function ModifyPath(const AddOrRemove: string): boolean;
+  var
+    Action, Context, DirName: string;
+  begin
+  result := true;
+  if CompareText(AddOrRemove, 'remove') <> 0 then
     Action := 'add'
-  Else
+  else
     Action := 'remove';
-  If IsAdminInstallMode() Then
+  if IsAdminInstallMode() then
     Context := 'system'
-  Else
+  else
     Context := 'user';
   DirName := GetPathDirName();
-  Result := UpdatePath(Action, Context, DirName);
-  If Result Then
+  result := UpdatePath(Action, Context, DirName);
+  if result then
     Log(FmtMessage(CustomMessage('PathUpdateSuccessMessage'), [Context,Action,DirName]))
-  Else
+  else
     Log(FmtMessage(CustomMessage('PathUpdateFailMessage'), [Context,Action,DirName]));
-  End;
+  end;
 
 // Requires:
 //   PathStringContainsDir() function
 //   GetPathDirName() function
 // Used by:
 //   [Tasks] section
-Function IsDirInPath(): Boolean;
-  Var
-    RegRoot: Integer;
-    RegPath, Path: String;
-  Begin
-  Result := False;
-  If IsAdminInstallMode() Then
-    Begin
+function IsDirInPath(): boolean;
+  var
+    RegRoot: integer;
+    RegPath, Path: string;
+  begin
+  result := false;
+  if IsAdminInstallMode() then
+    begin
     RegRoot := HKEY_LOCAL_MACHINE;
     RegPath := 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
-    End
-  Else
-    Begin
+    end
+  else
+    begin
     RegRoot := HKEY_CURRENT_USER;
     RegPath := 'Environment';
-    End;
-  If RegQueryStringValue(RegRoot, RegPath, 'Path', Path) Then
-    Result := PathStringContainsDir(Path, GetPathDirName());
-  End;
+    end;
+  if RegQueryStringValue(RegRoot, RegPath, 'Path', Path) then
+    result := PathStringContainsDir(Path, GetPathDirName());
+  end;
 
 // Requires:
 //   PathIsModified global variable
 //   ModifyPath() function
-Procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
-  Begin
-  If CurUninstallStep = usUninstall Then
-    Begin
-    If PathIsModified Then ModifyPath('remove');
-    End;
-  End;
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+  begin
+  if CurUninstallStep = usUninstall then
+    begin
+    if PathIsModified then ModifyPath('remove');
+    end;
+  end;
 
-Function ShouldSkipPage(PageID: Integer): Boolean;
-  Begin
-  Result := False;
-  If PageID = wpSelectComponents Then
-    Begin
-    Result := (Not IsAdminInstallMode()) Or
-      (IsAdminInstallMode() And (GetPreviousData('Setup Type', '') = 'full'));
-    End;
-  End;
+function ShouldSkipPage(PageID: integer): boolean;
+  begin
+  result := false;
+  if PageID = wpSelectComponents then
+    begin
+    result := (not IsAdminInstallMode()) or
+      (IsAdminInstallMode() and (GetPreviousData('Setup Type', '') = 'full'));
+    end;
+  end;
 
 // Requires:
 //   PathIsModified global variable
@@ -752,20 +762,20 @@ Function ShouldSkipPage(PageID: Integer): Boolean;
 // IS removes and rewrites 'previous data' values at every reinstall, so at
 // initialize time we cache whether modify path task had already been selected
 // from a previous install
-Procedure RegisterPreviousData(PreviousDataKey: Integer);
-  Begin
-  SetPreviousData(PreviousDataKey, 'Setup Type', WizardSetupType(False));
+procedure RegisterPreviousData(PreviousDataKey: integer);
+  begin
+  SetPreviousData(PreviousDataKey, 'Setup Type', WizardSetupType(false));
   // If task was previously or currently selected, write data again
-  If PathIsModified Or WizardIsTaskSelected(ModifyPathTaskName) Then
+  if PathIsModified or WizardIsTaskSelected(ModifyPathTaskName) then
     SetPreviousData(PreviousDataKey, 'Modify Path', 'true');
-  End;
+  end;
 
 // Used by:
 //   NextButtonClick() function
-Function GetCygwinRootDir(): String;
-  Begin
-  Result := ExpandConstant('{app}');
-  End;
+function GetCygwinRootDir(): string;
+  begin
+  result := ExpandConstant('{app}');
+  end;
 
 // Requires:
 //   WMIService global variable
@@ -773,36 +783,36 @@ Function GetCygwinRootDir(): String;
 //   GetCygwinRunningServices() function
 // For a running Cygwin service, gets two-element output array:
 // element 0 = service name, and element 1 = service display name
-Procedure GetServiceNamesFromProcessId(Const ProcessId: DWORD; Var Names: TArrayOfString);
-  Var
-    WQLQuery: String;
-    SWbemObjectSet, SWbemObject: Variant;
-    I: Integer;
-  Begin
+procedure GetServiceNamesFromProcessId(const ProcessId: DWORD; var Names: TArrayOfString);
+  var
+    WQLQuery: string;
+    SWbemObjectSet, SWbemObject: variant;
+    I: integer;
+  begin
   WQLQuery := Format('SELECT Name,DisplayName FROM Win32_Service'
     + ' WHERE ProcessID = %d', [ProcessId]);
-  Try
+  try
     SWbemObjectSet := WMIService.ExecQuery(WQLQuery);
-    If Not VarIsNull(SWbemObjectSet) And (SWbemObjectSet.Count > 0) Then
-      Begin
-      For I := 0 To SWbemObjectSet.Count - 1 Do
-        Begin
+    if not VarIsNull(SWbemObjectSet) and (SWbemObjectSet.Count > 0) then
+      begin
+      for I := 0 to SWbemObjectSet.Count - 1 do
+        begin
         SWbemObject := SWbemObjectSet.ItemIndex(I);
-        If Not VarIsNull(SWbemObject) Then
-          Begin
+        if not VarIsNull(SWbemObject) then
+          begin
           SetArrayLength(Names, 2);
           Names[0] := SWbemObject.Name;
-          If SWbemObject.DisplayName <> '' Then
+          if SWbemObject.DisplayName <> '' then
             Names[1] := SWbemObject.DisplayName
-          Else
+          else
             Names[1] := Names[0];
-          Break;
-          End;
-        End;
-      End;
-  Except
-  End; //Try
-  End;
+          break;
+          end;
+        end;
+      end;
+  except
+  end; //try
+  end;
 
 // Used by:
 //   GetRunningCygwinProcesses() function
@@ -812,48 +822,48 @@ Procedure GetServiceNamesFromProcessId(Const ProcessId: DWORD; Var Names: TArray
 //   WMIService global variable
 //   GetServiceNamesFromProcessId() function
 // Gets list of running Cygwin services (process is cygrunsrv.exe)
-Function GetCygwinRunningServices(CygwinRootDir: String; Var Services: TCygwinServiceList): Integer;
-  Var
-    WQLQuery: String;
-    SWbemObjectSet, SWbemObject: Variant;
-    I: Integer;
+function GetCygwinRunningServices(CygwinRootDir: string; var Services: TCygwinServiceList): integer;
+  var
+    WQLQuery: string;
+    SWbemObjectSet, SWbemObject: variant;
+    I: integer;
     Names: TArrayOfString;
-  Begin
-  Result := 0;
+  begin
+  result := 0;
   CygwinRootDir := AddBackslash(CygwinRootDir);
-  StringChangeEx(CygwinRootDir, '\', '\\', True);
+  StringChangeEx(CygwinRootDir, '\', '\\', true);
   WQLQuery := Format('SELECT ExecutablePath,Name,ProcessId FROM Win32_Process'
     + ' WHERE (ExecutablePath LIKE "%s%%") AND (NAME = "cygrunsrv.exe")', [CygwinRootDir]);
-  Try
+  try
     SWbemObjectSet := WMIService.ExecQuery(WQLQuery);
-    If (Not VarIsNull(SWbemObjectSet)) And (SWbemObjectSet.Count > 0) Then
-      Begin
+    if (not VarIsNull(SWbemObjectSet)) and (SWbemObjectSet.Count > 0) then
+      begin
       SetArrayLength(Services, SWbemObjectSet.Count);
-      For I := 0 To SWbemObjectSet.Count - 1 Do
-        Begin
+      for I := 0 to SWbemObjectSet.Count - 1 do
+        begin
         SWbemObject := SWbemObjectSet.ItemIndex(I);
-        If Not VarIsNull(SWbemObject) Then
-          Begin
+        if not VarIsNull(SWbemObject) then
+          begin
           Services[I].ProcessId := SWbemObject.ProcessId;
           GetServiceNamesFromProcessId(SWbemObject.ProcessId, Names);
           Services[I].Name := Names[0];
           Services[I].DisplayName := Names[1];
           Services[I].ExecutablePath := SWbemObject.ExecutablePath;
-          Result := Result + 1;
-          End
-        Else
-          Begin
+          result := result + 1;
+          end
+        else
+          begin
           Services[I].ProcessId := 0;
           Services[I].Name := '';
           Services[I].DisplayName := '';
           Services[I].ExecutablePath := '';
-          End;
-        End;
-      End;
-  Except
+          end;
+        end;
+      end;
+  except
     SetArrayLength(Services, 0);
-  End; //Try
-  End;
+  end; //try
+  end;
 
 // Used by:
 //   GetRunningCygwinProcesses() function
@@ -863,59 +873,59 @@ Function GetCygwinRunningServices(CygwinRootDir: String; Var Services: TCygwinSe
 //   WMIService global variable
 // Gets list of running Cygwin processes (except cygrunsrv.exe, which are
 // assumed to be running services)
-Function GetCygwinRunningProcesses(CygwinRootDir: String; Var Processes: TCygwinProcessList): Integer;
-  Var
-    WQLQuery: String;
-    SWbemObjectSet, SWbemObject: Variant;
-    I: Integer;
-  Begin
-  Result := 0;
+function GetCygwinRunningProcesses(CygwinRootDir: string; var Processes: TCygwinProcessList): integer;
+  var
+    WQLQuery: string;
+    SWbemObjectSet, SWbemObject: variant;
+    I: integer;
+  begin
+  result := 0;
   CygwinRootDir := AddBackslash(CygwinRootDir);
-  StringChangeEx(CygwinRootDir, '\', '\\', True);
+  StringChangeEx(CygwinRootDir, '\', '\\', true);
   WQLQuery := Format('SELECT ExecutablePath,Name,ProcessId FROM Win32_Process'
     + ' WHERE (ExecutablePath LIKE "%s%%") AND (Name <> "cygrunsrv.exe")', [CygwinRootDir]);
-  Try
+  try
     SWbemObjectSet := WMIService.ExecQuery(WQLQuery);
-    If (Not VarIsNull(SWbemObjectSet)) And (SWbemObjectSet.Count > 0) Then
-      Begin
+    if (not VarIsNull(SWbemObjectSet)) and (SWbemObjectSet.Count > 0) then
+      begin
       SetArrayLength(Processes, SWbemObjectSet.Count);
-      For I := 0 To SWbemObjectSet.Count - 1 Do
-        Begin
+      for I := 0 to SWbemObjectSet.Count - 1 do
+        begin
         SWbemObject := SWbemObjectSet.ItemIndex(I);
-        If Not VarIsNull(SWbemObject) Then
-          Begin
+        if not VarIsNull(SWbemObject) then
+          begin
           Processes[I].ProcessId := SWbemObject.ProcessId;
           Processes[I].Name := SWbemObject.Name;
           Processes[I].ExecutablePath := SWbemObject.ExecutablePath;
-          Result := Result + 1;
-          End
-        Else
-          Begin
+          result := result + 1;
+          end
+        else
+          begin
           Processes[I].ProcessId := 0;
           Processes[I].Name := ''
           Processes[I].ExecutablePath := '';
-          End;
-        End;
-      End;
-  Except
+          end;
+        end;
+      end;
+  except
     SetArrayLength(Processes, 0);
-  End; //Try
-  End;
+  end; //try
+  end;
 
 // Used by:
 //   GetRunningCygwinProcesses() function
 // Returns true if the string array contains an item (not case-sensitive)
-Function ArrayContainsString(Var Arr: TArrayOfString; Const Item: String): Boolean;
-  Var
-    I: Integer;
-  Begin
-  Result := False;
-  For I := 0 To GetArrayLength(Arr) - 1 Do
-    Begin
-    Result := CompareText(Arr[I], Item) = 0;
-    If Result Then Exit;
-    End;
-  End;
+function ArrayContainsString(var Arr: TArrayOfString; const Item: string): boolean;
+  var
+    I: integer;
+  begin
+  result := false;
+  for I := 0 to GetArrayLength(Arr) - 1 do
+    begin
+    result := CompareText(Arr[I], Item) = 0;
+    if result then exit;
+    end;
+  end;
 
 // Requires:
 //   GetCygwinRunningServices() function
@@ -923,42 +933,42 @@ Function ArrayContainsString(Var Arr: TArrayOfString; Const Item: String): Boole
 //   ArrayContainsString() function
 // Returns a new-line delimited string containing running Cygwin processes;
 // empty return value means 'no Cygwin processes running'
-Function GetRunningCygwinProcesses(CygwinRootDir: String): String;
-  Var
-    ServiceCount, ProcessCount, I, J, MaxOutput: Integer;
+function GetRunningCygwinProcesses(CygwinRootDir: string): string;
+  var
+    ServiceCount, ProcessCount, I, J, MaxOutput: integer;
     Services: TCygwinServiceList;
     Processes: TCygwinProcessList;
     Output: TArrayOfString;
-  Begin
-  Result := '';
+  begin
+  result := '';
   ServiceCount := GetCygwinRunningServices(CygwinRootDir, Services);
   ProcessCount := GetCygwinRunningProcesses(CygwinRootDir, Processes);
-  If ServiceCount + ProcessCount = 0 Then Exit;
+  if ServiceCount + ProcessCount = 0 then exit;
   SetArrayLength(Output, ServiceCount + ProcessCount);
-  For I := 0 To ServiceCount - 1 Do
+  for I := 0 to ServiceCount - 1 do
     Output[I] := Services[I].DisplayName;
   J := I;
-  For I := 0 To ProcessCount - 1 Do
-    If Not ArrayContainsString(Output, Processes[I].Name) Then
-      Begin
+  for I := 0 to ProcessCount - 1 do
+    if not ArrayContainsString(Output, Processes[I].Name) then
+      begin
       Output[J] := Processes[I].Name;
       J := J + 1;
-      End;
+      end;
   MaxOutput := 20;
-  If GetArrayLength(Output) >= MaxOutput Then
-    Begin
+  if GetArrayLength(Output) >= MaxOutput then
+    begin
     J := MaxOutput;
     Output[MaxOutput - 1] := '...';
-    End
-  Else
+    end
+  else
     J := GetArrayLength(Output);
-  For I := 0 To J - 1 Do
-    If Output[I] <> '' Then
-      If Result = '' Then
-        Result := Output[I]
-      Else
-        Result := Result + #10 + Output[I];
-  End;
+  for I := 0 to J - 1 do
+    if Output[I] <> '' then
+      if result = '' then
+        result := Output[I]
+      else
+        result := result + #10 + Output[I];
+  end;
 
 // Requires:
 //   GetCygwinRunningServices() function
@@ -966,26 +976,26 @@ Function GetRunningCygwinProcesses(CygwinRootDir: String): String;
 //   NextButtonClick() function
 // Stops running Cygwin services using 'net stop'; returns true if all were
 // stopped
-Function StopRunningCygwinServices(CygwinRootDir: String): Boolean;
-  Var
-    Count, I, ResultCode: Integer;
+function StopRunningCygwinServices(CygwinRootDir: string): boolean;
+  var
+    Count, I, ResultCode: integer;
     Services: TCygwinServiceList;
-    Command, Parameters: String;
-  Begin
-  Result := False;
+    Command, Parameters: string;
+  begin
+  result := false;
   Count := GetCygwinRunningServices(CygwinRootDir, Services);
-  If Count > 0 Then
-    Begin
+  if Count > 0 then
+    begin
     Command := ExpandConstant('{sys}\net.exe');
-    For I := 0 To Count - 1 Do
-      Begin
+    for I := 0 to Count - 1 do
+      begin
       Parameters := Format('stop "%s"', [Services[I].Name]);
       Log(FmtMessage(CustomMessage('RunCommandMessage'), [Command,Parameters]));
       Exec(Command, Parameters, '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
-      End;
-    Result := GetCygwinRunningServices(CygwinRootDir, Services) = 0;
-    End;
-  End;
+      end;
+    result := GetCygwinRunningServices(CygwinRootDir, Services) = 0;
+    end;
+  end;
 
 // Requires:
 //   GetCygwinRunningProcesses() function
@@ -993,51 +1003,51 @@ Function StopRunningCygwinServices(CygwinRootDir: String): Boolean;
 //   NextButtonClick() function
 // Terminates running cygwin processes using 'taskkill'; returns true if all
 // were terminated
-Function TerminateRunningCygwinProcesses(CygwinRootDir: String): Boolean;
-  Var
-    Count, I, ResultCode: Integer;
+function TerminateRunningCygwinProcesses(CygwinRootDir: string): boolean;
+  var
+    Count, I, ResultCode: integer;
     Processes: TCygwinProcessList;
-    Command, Parameters: String;
-  Begin
-  Result := False;
+    Command, Parameters: string;
+  begin
+  result := false;
   Count := GetCygwinRunningProcesses(CygwinRootDir, Processes);
-  If Count > 0 Then
-    Begin
+  if Count > 0 then
+    begin
     Command := ExpandConstant('{sys}\taskkill.exe');
     Parameters := ' ';
-    For I := 0 To Count - 1 Do
+    for I := 0 to Count - 1 do
       Parameters := Parameters + Format('/PID %d ', [Processes[I].ProcessId]);
     Parameters := Parameters + '/F';
     Log(FmtMessage(CustomMessage('RunCommandMessage'), [Command,Parameters]));
     Exec(Command, Parameters, '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
-    Result := GetCygwinRunningProcesses(CygwinRootDir, Processes) = 0;
-    End;
-  End;
+    result := GetCygwinRunningProcesses(CygwinRootDir, Processes) = 0;
+    end;
+  end;
 
 // Used by:
 //   CurStepChanged() procedure
 // Starts the services named in the list
-Function StartCygwinServices(Var Services: TCygwinServiceList): Boolean;
-  Var
-    Count, I, NumStarted, ResultCode: Integer;
-    Command, Parameters: String;
-  Begin
-  Result := False;
+function StartCygwinServices(var Services: TCygwinServiceList): boolean;
+  var
+    Count, I, NumStarted, ResultCode: integer;
+    Command, Parameters: string;
+  begin
+  result := false;
   Count := GetArrayLength(Services);
-  If Count > 0 Then
-    Begin
+  if Count > 0 then
+    begin
     Command := ExpandConstant('{sys}\net.exe');
     NumStarted := 0;
-    For I := 0 To Count - 1 Do
-      Begin
+    for I := 0 to Count - 1 do
+      begin
       Parameters := Format('start "%s"', [Services[I].Name]);
       Log(FmtMessage(CustomMessage('RunCommandMessage'), [Command,Parameters]));
-      If Exec(Command, Parameters, '', SW_HIDE, ewWaitUntilTerminated, ResultCode) And (ResultCode = 0) Then
+      if Exec(Command, Parameters, '', SW_HIDE, ewWaitUntilTerminated, ResultCode) and (ResultCode = 0) then
         NumStarted := NumStarted + 1;
-      End;
-    Result := NumStarted = Count;
-    End;
-  End;
+      end;
+    result := NumStarted = Count;
+    end;
+  end;
 
 // Requires:
 //   AppProgressPage global variable
@@ -1049,85 +1059,85 @@ Function StartCygwinServices(Var Services: TCygwinServiceList): Boolean;
 //   StopRunningCygwinServices() function
 //   GetCygwinRunningProcesses() function
 //   TerminateRunningCygwinProcesses() function
-Function NextButtonClick(CurPageID: Integer): Boolean;
-  Var
-    ProcList: String;
-    Count: Integer;
+function NextButtonClick(CurPageID: integer): boolean;
+  var
+    ProcList: string;
+    Count: integer;
     Processes: TCygwinProcessList;
-  Begin
-  Result := True;
-  If CurPageID = wpReady Then
-    Begin
+  begin
+  result := true;
+  if CurPageID = wpReady then
+    begin
     ProcList := GetRunningCygwinProcesses(GetCygwinRootDir());
-    Result := ProcList = '';
-    If Not Result Then
-      Begin
+    result := ProcList = '';
+    if not result then
+      begin
       Log(CustomMessage('ApplicationsRunningLogMessage'));
-      Result := ParamStrExists('/closeapplications') Or ParamStrExists('/forcecloseapplications');
-      If Not Result Then
-        Result := SuppressibleTaskDialogMsgBox(CustomMessage('ApplicationsRunningInstructionMessage'),
+      result := ParamStrExists('/closeapplications') or ParamStrExists('/forcecloseapplications');
+      if not result then
+        result := SuppressibleTaskDialogMsgBox(CustomMessage('ApplicationsRunningInstructionMessage'),
           FmtMessage(CustomMessage('ApplicationsRunningTextMessage'),[ProcList]),
           mbCriticalError,
           MB_YESNO, [CustomMessage('CloseApplicationsMessage'),CustomMessage('DontCloseApplicationsMessage')],
           0,
           IDNO) = IDYES;
-      If Result Then
-        Begin
+      if result then
+        begin
         AppProgressPage.SetText(CustomMessage('AppProgressPageStoppingMessage'), '');
         AppProgressPage.SetProgress(0, 0);
         AppProgressPage.Show();
-        Try
+        try
           AppProgressPage.SetProgress(1, 3);
           // Cache running service(s) in global variable for later restart
           Count := GetCygwinRunningServices(GetCygwinRootDir(), RunningServices);
-          Result := (Count = 0) Or (StopRunningCygwinServices(GetCygwinRootDir()));
+          result := (Count = 0) or (StopRunningCygwinServices(GetCygwinRootDir()));
           AppProgressPage.SetProgress(2, 3);
-          If Result Then
-            Begin
+          if result then
+            begin
             Count := GetCygwinRunningProcesses(GetCygwinRootDir(), Processes);
-            Result := (Count = 0) Or (TerminateRunningCygwinProcesses(GetCygwinRootDir()));
-            End;
+            result := (Count = 0) or (TerminateRunningCygwinProcesses(GetCygwinRootDir()));
+            end;
           AppProgressPage.SetProgress(3, 3);
-          If Result Then
+          if result then
             Log(CustomMessage('ClosedApplicationsMessage'))
-          Else
-            Begin
+          else
+            begin
             Log(SetupMessage(msgErrorCloseApplications));
             SuppressibleMsgBox(SetupMessage(msgErrorCloseApplications), mbCriticalError, MB_OK, IDOK);
-            End;
-        Finally
+            end;
+        finally
           AppProgressPage.Hide();
-        End; //Try
-        End
-      Else
+        end; //try
+        end
+      else
         Log(CustomMessage('ApplicationsStillRunningMessage'));
-      End;
-    End;
-  End;
+      end;
+    end;
+  end;
 
 // Requires:
 //   AppProgressPage global variable
 //   RunningServices global variable
 //   StartCygwinServices() function
-Procedure CurStepChanged(CurStep: TSetupStep);
-  Begin
-  If CurStep = ssPostInstall Then
-    Begin
-    If WizardIsTaskSelected(ModifyPathTaskName) Then
+procedure CurStepChanged(CurStep: TSetupStep);
+  begin
+  if CurStep = ssPostInstall then
+    begin
+    if WizardIsTaskSelected(ModifyPathTaskName) then
       ModifyPath('add');
-    If GetArrayLength(RunningServices) > 0 Then
-      Begin
+    if GetArrayLength(RunningServices) > 0 then
+      begin
       AppProgressPage.SetText(CustomMessage('AppProgressPageStartingMessage'), '');
       AppProgressPage.SetProgress(0, 0);
       AppProgressPage.Show();
-      Try
+      try
         AppProgressPage.SetProgress(1, 2);
-        If StartCygwinServices(RunningServices) Then
+        if StartCygwinServices(RunningServices) then
           Log(CustomMessage('StartedServicesMessage'));
         AppProgressPage.SetProgress(2, 2);
-      Finally
+      finally
         AppProgressPage.Hide();
-      End; //Try
-      End;
-    End;
-  End;
+      end; //try
+      end;
+    end;
+  end;

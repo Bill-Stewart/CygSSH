@@ -1,0 +1,11 @@
+--- origsrc/ssh-pageant-1.4/Makefile	2014-11-24 00:16:07.000000000 +0100
++++ src/ssh-pageant-1.4/Makefile	2015-01-27 11:31:12.823983700 +0100
+@@ -34,7 +34,7 @@ $(PROGRAM): $(OBJS)
+ 	$(CC) $(LDFLAGS) $(LOADLIBES) $^ $(LDLIBS) -o $@
+ 
+ CC = gcc
+-CFLAGS = -O2 -Werror -Wall -Wextra -MMD
++override CFLAGS += -O2 -Werror -Wall -Wextra -MMD -g
+ 
+ CSCOPE = $(firstword $(shell which cscope mlcscope 2>/dev/null) false)
+ cscope: cscope.out

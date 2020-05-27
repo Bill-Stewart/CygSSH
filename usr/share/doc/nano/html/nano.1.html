@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.4 -->
-<!-- CreationDate: Tue Jun 18 10:25:00 2019 -->
+<!-- CreationDate: Tue Mar 24 11:14:56 2020 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -51,25 +51,34 @@ Nano&rsquo;s ANOther editor, inspired by Pico</p>
 
 <p style="margin-left:11%; margin-top: 1em"><b>nano</b>
 [<i>options</i>]
-[[+<i>line</i>[,<i>column</i>]]&nbsp;<i>file</i>]...</p>
+[[<b>+</b><i>line</i>[<b>,</b><i>column</i>]]
+<i>file</i>]...</p>
+
+<p style="margin-left:11%; margin-top: 1em"><b>nano</b>
+[<i>options</i>]
+[[<b>+</b>[<b>crCR</b>](<b>/</b>|<b>?</b>)<i>string</i>]
+<i>file</i>]...</p>
 
 <h2>NOTICE
 <a name="NOTICE"></a>
 </h2>
 
 
-<p style="margin-left:11%; margin-top: 1em">Starting with
-version 4.0, <b>nano</b> no longer hard-wraps an overlong
-line by default. It further uses smooth scrolling by
-default, and by default includes the line below the title
-bar into the editing area.</p>
+<p style="margin-left:11%; margin-top: 1em">Since version
+4.0, <b>nano</b> by default:</p>
+
+<p style="margin-left:17%; margin-top: 1em">&bull; does not
+automatically hard-wrap lines that become overlong, <br>
+&bull; includes the line below the title bar in the editing
+area, <br>
+&bull; does linewise (smooth) scrolling.</p>
 
 <p style="margin-left:11%; margin-top: 1em">If you want the
 old, Pico behavior back, you can use
 <b>&minus;&minus;breaklonglines</b>,
-<b>&minus;&minus;jumpyscrolling</b>, and
-<b>&minus;&minus;emptyline</b> (or <b>&minus;bje</b> for
-short).</p>
+<b>&minus;&minus;emptyline</b>, and
+<b>&minus;&minus;jumpyscrolling</b> (or <b>&minus;bej</b>
+for short).</p>
 
 <h2>DESCRIPTION
 <a name="DESCRIPTION"></a>
@@ -87,7 +96,22 @@ soft-wrapping overlong lines.</p>
 filename on the command line, the cursor can be put on a
 specific line by adding the line number with a plus sign
 (<b>+</b>) before the filename, and even in a specific
-column by adding it with a comma.</p>
+column by adding it with a comma. (Negative numbers count
+from the end of the file or line.) The cursor can be put on
+the first or last occurrence of a specific string by
+specifying that string after <b>+/</b> or <b>+?</b> before
+the filename. The string can be made case sensitive and/or
+caused to be interpreted as a regular expression by
+inserting <b>c</b> and/or <b>r</b> after the <b>+</b> sign.
+These search modes can be explicitly disabled by using the
+uppercase variant of those letters: <b>C</b> and/or
+<b>R</b>. When the string contains spaces, it needs to be
+enclosed in quotes. To give an example: to open a file at
+the first occurrence of the word &quot;Foo&quot;, one would
+do:</p>
+
+<p style="margin-left:17%; margin-top: 1em"><b>nano
++c/Foo</b> <i>file</i></p>
 
 <p style="margin-left:11%; margin-top: 1em">As a special
 case: if instead of a filename a dash (<b>&minus;</b>) is
@@ -166,8 +190,12 @@ the specified <i>directory</i>.</p>
 <p style="margin-left:11%;"><b>&minus;D</b>,
 <b>&minus;&minus;boldtext</b></p>
 
-<p style="margin-left:22%;">Use bold text instead of
-reverse video text.</p>
+<p style="margin-left:22%;">For the interface, use bold
+instead of reverse video. This will be overridden by setting
+the options <b>titlecolor</b>, <b>statuscolor</b>,
+<b>keycolor</b>, <b>functioncolor</b>, <b>numbercolor</b>,
+and/or <b>selectedcolor</b> in your nanorc file. See
+<b>nanorc</b>(5).</p>
 
 <p style="margin-left:11%;"><b>&minus;E</b>,
 <b>&minus;&minus;tabstospaces</b></p>
@@ -378,6 +406,14 @@ Backspace.</p>
 <p style="margin-left:22%;">Do not use the line below the
 title bar, leaving it entirely blank.</p>
 
+
+<p style="margin-left:11%;"><b>&minus;f&nbsp;</b><i>file</i>,
+<b>&minus;&minus;rcfile=</b><i>file</i></p>
+
+<p style="margin-left:22%;">Read only this <i>file</i> for
+setting nano&rsquo;s options, instead of reading both the
+system-wide and the user&rsquo;s nanorc files.</p>
+
 <p style="margin-left:11%;"><b>&minus;g</b>,
 <b>&minus;&minus;showcursor</b></p>
 
@@ -454,8 +490,8 @@ chroot.</p>
 <b>&minus;&minus;preserve</b></p>
 
 <p style="margin-left:22%;">Preserve the XON and XOFF
-sequences (^Q and ^S) so they will be caught by the
-terminal.</p>
+sequences (<b>^Q</b> and <b>^S</b>) so they will be caught
+by the terminal.</p>
 
 
 <p style="margin-left:11%;"><b>&minus;r&nbsp;</b><i>number</i>,
@@ -469,12 +505,15 @@ allowing the wrap point to vary along with the width of the
 screen if the screen is resized. The default value is
 &minus;8.</p>
 
+<p style="margin-left:11%;"><b>&minus;s
+&quot;</b><i>program</i> [<i>argument</i> ...]<b>&quot;</b>,
+<b>&minus;&minus;speller=&quot;</b><i>program</i>
+[<i>argument</i> ...]<b>&quot;</b></p>
 
-<p style="margin-left:11%;"><b>&minus;s&nbsp;</b><i>program</i>,
-<b>&minus;&minus;speller=</b><i>program</i></p>
-
-<p style="margin-left:22%;">Use this alternative spell
-checker command.</p>
+<p style="margin-left:22%;">Use this command to perform
+spell checking and correcting, instead of using the built-in
+corrector that calls <b>hunspell</b> or GNU
+<b>spell</b>.</p>
 
 <p style="margin-left:11%;"><b>&minus;t</b>,
 <b>&minus;&minus;tempfile</b></p>
@@ -521,22 +560,23 @@ lines at the bottom of the screen.</p>
 ends instead of beginnings.</p>
 
 <p style="margin-left:11%;"><b>&minus;z</b>,
-<b>&minus;&minus;suspend</b></p>
+<b>&minus;&minus;suspendable</b></p>
 
-<p style="margin-left:22%;">Enable the suspend ability.</p>
+<p style="margin-left:22%;">Allow the user to suspend the
+editor (with <b>^Z</b> by default).</p>
 
 <p style="margin-left:11%;"><b>&minus;$</b>,
 <b>&minus;&minus;softwrap</b></p>
 
-<p style="margin-left:22%;">Enable &rsquo;soft
-wrapping&rsquo;. This will make <b>nano</b> attempt to
-display the entire contents of any line, even if it is
-longer than the screen width, by continuing it over multiple
-screen lines. Since &rsquo;$&rsquo; normally refers to a
-variable in the Unix shell, you should specify this option
-last when using other options (e.g. &rsquo;nano
-&minus;wS$&rsquo;) or pass it separately (e.g. &rsquo;nano
-&minus;wS &minus;$&rsquo;).</p>
+<p style="margin-left:22%;">Display lines that exceed the
+screen&rsquo;s width over multiple screen lines. (You can
+make this soft-wrapping occur at whitespace instead of
+rudely at the screen&rsquo;s edge, by using also
+<b>&minus;&minus;atblanks</b>.) Since &rsquo;$&rsquo;
+normally refers to a variable in the Unix shell, you should
+specify this option last when using other options (e.g.
+&rsquo;nano &minus;wS$&rsquo;) or pass it separately (e.g.
+&rsquo;nano &minus;wS &minus;$&rsquo;).</p>
 
 <h2>TOGGLES
 <a name="TOGGLES"></a>
@@ -558,8 +598,11 @@ complete list.</p>
 </h2>
 
 
-<p style="margin-left:11%; margin-top: 1em"><b>nano</b>
-will read two configuration files: first the system&rsquo;s
+<p style="margin-left:11%; margin-top: 1em">When
+<b>&minus;&minus;rcfile</b> is given, <b>nano</b> will read
+just the specified file for setting its options and syntaxes
+and key bindings. Without that option, <b>nano</b> will read
+two configuration files: first the system&rsquo;s
 <i>nanorc</i> (if it exists), and then the user&rsquo;s
 <i>nanorc</i> (if it exists), either <i>~/.nanorc</i> or
 <i>$XDG_CONFIG_HOME/nano/nanorc</i> or

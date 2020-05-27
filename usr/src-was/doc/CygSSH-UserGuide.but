@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 1.1
+\define{version} 1.2
 
 \define{rightarrow} \u2192
 
@@ -94,7 +94,7 @@ Example installation command:
 \c CygSSH_version /SILENT /CLOSEAPPLICATIONS
 \e        iiiiiii
 
-Replace \e{version} with the version (e.g., \s{8.2.1.0}).
+Replace \e{version} with the version (e.g., \s{8.2.1.2}).
 
 The above command installs the package silently (i.e., without user interaction). The \c{/CLOSEAPPLICATIONS} parameter automatically stops running services and closes programs so that the installer can reinstall or upgrade the files. Stopped services will be automatically restarted after the installation completes. \I{/CLOSEAPPLICATIONS parameter} \I{/SILENT parameter} \I{install, silent} \I{silent install}
 
@@ -941,6 +941,16 @@ The \c{/usr/src} directory contains the source code. The source code files are g
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{1.2}
+
+\b Updated OpenSSH to version 8.3.
+
+\b Added \s{mkgroup}, \s{mkpasswd}, and \s{ssh-pageant} tools.
+
+\b Updated \s{runposh} tool to version 1.2.
+
+\b Added default \c{cygserver.conf} and \c{virc} configuration files.
 
 \s{1.1}
 

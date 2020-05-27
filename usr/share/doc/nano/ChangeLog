@@ -1,3 +1,718 @@
+Changes between v4.8 and v4.9:
+------------------------------
+
+Benno Schulenberg (209):
+      bindings: remove the translation of ^H to Backspace on the BSDs
+      build: fix compilation for --enable-tiny --enable-justify
+      build: restore non-UTF8 fallbacks, to allow compiling with --disable-utf8
+      build: update the conditional placement of the "Go To Line" menu item
+      bump version numbers and add a news item for the 4.9 release
+      chars: optimize a function for the most common blanks: space and tab
+      copyright: update to the current year for significantly changed files
+      cutting: let M-T cut a trailing empty line, but not nothing at all
+      cutting: with --cutfromcursor, allow ^K to cut the penultimate empty line
+      display: do not show a "[" double-width placeholder when softwrapping
+      display: keep the help items aligned, by not writing too many characters
+      docs: improve the descriptions of --softwrap and 'set softwrap'
+      docs: mark bracketed pasting as done in the TODO list
+      docs: mention that ^[ (Esc) is unbindable, and explain why
+      docs: remove the note saying that nanorc files must be in Unix format
+      docs: trim some TODO items, and condense several others
+      docs: update the form of an option, --suspendable / 'set suspendable'
+      docs: update the missed occurrences of --suspendable / 'set suspendable'
+      feedback: give a clearer message when trying to justify an empty region
+      feedback: make sure that a later message can overwrite a short warning
+      files: be consistent in which code means "New File"
+      files: don't check uninitialized memory when writing new file  [valgrind]
+      files: when piping, always pipe whatever was cut to the external command
+      gnulib: update to its current upstream state
+      help: do not break a line inside the 17-column keystrokes area
+      help: increase the minimum help-text width from 32 to 40 columns
+      input: accommodate silly emulators that have LF instead of CR in a paste
+      input: after reallocating a string, do not write to its old address
+      input: allocate sufficient bytes for entering a Unicode codepoint
+      input: keep a multibyte character together during verbatim entry
+      justify: do not copy too many bytes when trimming leading whitespace
+      justify: do not crash when the user attempts to justify an empty region
+      justify: do not take an empty line as template for first-line indentation
+      justify: give the first line of a marked region its proper indentation
+      justify: never break a line in leading whitespace
+      justify: restore a region properly when it was marked backwards
+      justify: skip over blanks after the region, to not skew the indentation
+      justify: skip over in-line whitespace only, not over leading whitespace
+      justify: trim prefixed whitespace when justifying a marked region
+      justify: trim the leading blanks of a marked region at the right moment
+      justify: when appropriate, move end point of marked region forward
+      justify: when the cursor is at the left edge, keep it there
+      locking: do not open an empty buffer when respecting the first lock file
+      moving: do not put the cursor at end-of-line when in a help text
+      options: rename --suspend to --suspendable, to make more sense
+      prompt: insert a burst of bytes in one go instead of characterwise
+      rcfile: allow alternate line endings in nanorc files
+      rcfile: do not allow a regex for name, header, or magic to be empty
+      rcfile: don't store a coloring rule before it is complete
+      rcfile: rename bindable function 'suspendenable' to 'suspendable'
+      rcfile: when a start= is not matched with an end=, abandon the whole rule
+      rcfile: when finding a mistake, skip the rest of the line
+      shutdown: don't refer to an open file when there aren't any
+      softwrap: when typing goes beyond the bottom row, scroll just one row
+      syntax: nanorc: colorize 'rawsequences', not the obsolete 'rebindkeypad'
+      syntax: spec: add two missing % signs, and colorize also "%triggerprein"
+      syntax: spec: colorize the date and author of changelog items differently
+      syntax: spec: drop invalid parentheses after "Summary"
+      tweaks: abort in three situations that should never occur
+      tweaks: add a COUPLE_END undo item a bit later, instead of updating it
+      tweaks: add a different helping variable
+      tweaks: add a supporting variable, in order to condense some statements
+      tweaks: add calls of die() for five theoretical programming mistakes
+      tweaks: adjust some whitespace, reshuffle two ifs, and remove two braces
+      tweaks: adjust the indentation after the previous change
+      tweaks: always determine the second lead, to simplify the rewrap call
+      tweaks: avoid a complaint about uninitialized memory  [valgrind]
+      tweaks: call add_undo() before the character is actually added
+      tweaks: change a function to return the name of the lock file on success
+      tweaks: change a function with two possible results to boolean
+      tweaks: change an integer to a short, and reshuffle it for better packing
+      tweaks: change another function with two possible results to boolean
+      tweaks: check for a starting quote in one place instead of three
+      tweaks: combine two ifs into one
+      tweaks: condense a comment, reshuffle conditions, and remove unwanted one
+      tweaks: condense a fragment of code
+      tweaks: condense two fragments of code
+      tweaks: convert integers to bytes in one place instead of two
+      tweaks: copy and store a deleted character in a conciser manner
+      tweaks: correct a typo, improve two indentations, and rewrap a line
+      tweaks: correct two typos in a changelog, and drop a doubled word
+      tweaks: create an undo item earlier, and discard it when needed
+      tweaks: don't bother reallocating the line data when undoing a line join
+      tweaks: do some text alignments properly: with spaces, not tabs
+      tweaks: drop a check for something that will not occur
+      tweaks: drop two comments that contain variable names
+      tweaks: elide a function call, by copying a byte directly
+      tweaks: elide an intermediate copy of a character during injection, twice
+      tweaks: elide an intermediate copy of an added character
+      tweaks: elide a parameter, and rename a variable
+      tweaks: elide a supporting variable, to make four loops slightly faster
+      tweaks: elide a variable and an unneeded iteration
+      tweaks: elide one variable and three gotos
+      tweaks: elide three unneeded #defines
+      tweaks: elide two variables and their two assignments
+      tweaks: exclude a function when compiled without spell-checking support
+      tweaks: extend the undo data for deleting and backspacing more directly
+      tweaks: factor out a three-line condition into a separate function
+      tweaks: frob a statement, rewrap two lines, and remove a pair of braces
+      tweaks: frob two statements, condense another, and add a comment
+      tweaks: highlight keystrokes in the documentation more consistently
+      tweaks: improve four comments, and condense two fragments of code
+      tweaks: improve three comments, and reshuffle two declarations
+      tweaks: improve two comments
+      tweaks: improve two comments, and remove an unneeded one
+      tweaks: inject the entire burst of bytes at once into the edit buffer
+      tweaks: instead of swapping the end points later, assign them correctly
+      tweaks: invert the logic of a symbol, to make more sense
+      tweaks: make prompt-bar input more similar to edit-buffer input
+      tweaks: make two conditions more direct, and thus elide two functions
+      tweaks: mesh two bits of code together
+      tweaks: move a function to after the one that it calls
+      tweaks: move a function to before the one that calls it
+      tweaks: move a function to before the one that calls it
+      tweaks: move a function to its proper place in the order of things
+      tweaks: move a function to where it is used
+      tweaks: move another function to where it is used
+      tweaks: move some definitions closer to where they are used
+      tweaks: move two functions to before the ones that call them
+      tweaks: normalize a translator hint, update one, and add another
+      tweaks: normalize the indentation after the previous change
+      tweaks: normalize the indentation after the previous change
+      tweaks: normalize the indentation after the previous two changes
+      tweaks: pull the NUL-terminating of a string into a function
+      tweaks: rearrange a case item, so that PASTE is always after CUT
+      tweaks: rearrange some conditions, for compactness
+      tweaks: relocate a function to before its callers
+      tweaks: relocate eleven functions to before they are called
+      tweaks: remove a now-unused helper function
+      tweaks: remove an unneeded indirection
+      tweaks: remove a redundant assignment
+      tweaks: remove a redundant statement, a spurious reference to 'cutbottom'
+      tweaks: remove a superfluous assignment, and reshuffle a call
+      tweaks: remove non-UTF-8 code from three more functions
+      tweaks: remove some redundant filtering, and thus elide a parameter
+      tweaks: remove some unneeded braces, not used elsewhere either
+      tweaks: remove two redundant case labels
+      tweaks: remove two superfluous checks
+      tweaks: remove two superfluous conditions
+      tweaks: rename a constant, and rename and relocate a function
+      tweaks: rename a function, and condense a few comments
+      tweaks: rename a function, and split a variable into two separate ones
+      tweaks: rename a function, to be more fitting, and improve some comments
+      tweaks: rename a function, to remove an obscuring abbreviation
+      tweaks: rename another function, to remove the obscuring abbreviation
+      tweaks: rename a parameter and a variable, and reword two comments
+      tweaks: rename a symbol, to match the corresponding renamed option
+      tweaks: rename a variable, and add a helping one
+      tweaks: rename a variable, and reshuffle a declaration
+      tweaks: rename a variable, away from a single letter
+      tweaks: rename a variable, away from a single letter
+      tweaks: rename a variable, for aptness
+      tweaks: rename a variable, reshuffle an assignment, and change a code
+      tweaks: rename a variable, to be a bit clearer
+      tweaks: rename a variable, to get out of the way of a later rename
+      tweaks: rename a variable, to not be a substring of a function name
+      tweaks: rename four more functions, to get rid of an abbreviation
+      tweaks: rename four parameters, to be more distinct and telling
+      tweaks: rename four variables, to be a bit more telling
+      tweaks: rename to the same name two variables that have the same role
+      tweaks: rename two elements of an undo record, to be more telling
+      tweaks: rename two functions, for shortness
+      tweaks: rename two functions, to match the style of others
+      tweaks: rename two more elements of an undo record, for symmetry
+      tweaks: rename two more functions, to match the style of others
+      tweaks: rename two more variables, to harmonize with two others
+      tweaks: rename two parameters, to not overlap with other names
+      tweaks: rename two symbols, to be more precise
+      tweaks: rename two variables, and frob four comments
+      tweaks: rename two variables, and reshuffle a few things
+      tweaks: rename two variables, for distinctiveness
+      tweaks: rename two variables, to be different or for more contrast
+      tweaks: rename two variables, to harmonize with two others
+      tweaks: rename two variables, to suit both the marked and unmarked case
+      tweaks: reorder a case item, to have SPLIT_BEGIN always before SPLIT_END
+      tweaks: reshuffle a condition, for compacter code
+      tweaks: reshuffle a condition, for compactness
+      tweaks: reshuffle a few declarations and assignments
+      tweaks: reshuffle an assignment and a free()
+      tweaks: reshuffle some code, in preparation for improving it
+      tweaks: reshuffle some stuff, to have related things together
+      tweaks: reshuffle the setting of the starting point of a cut
+      tweaks: reshuffle the trimming of leading whitespace, for compactness
+      tweaks: reshuffle two declarations plus a fragment of code
+      tweaks: simplify the undoing and redoing of an <Enter>
+      tweaks: strip a parameter that is equivalent to 'openfile' for both calls
+      tweaks: strip a parameter that is TRUE for both calls
+      tweaks: swap the use of 'head' and 'tail' for CUT and PASTE undo items
+      tweaks: trim an unnecessary detail from an error message
+      tweaks: unabbreviate the name of a variable
+      tweaks: unwrap four lines, and use explicit codes where possible
+      tweaks: update several comments after the previous changes
+      tweaks: update some comments after the previous changes
+      tweaks: use a symbol instead of a number, and drop two unneeded casts
+      tweaks: use spaces when aligning things, not tabs
+      tweaks: use the variable that suits 'END' better
+      tweaks: weld two fragments together, twice, by eliding an unneeded 'if'
+      tweaks: when appropriate, move starting point of justified region back
+      tweaks: when extending the marked region, include also exotic blanks
+      tweaks: when undoing an addition or redoing a deletion, do not reallocate
+      undo: do not mark the buffer as modified when pasting back nothing
+      undo: do not try to copy a cutbuffer that is NULL
+      undo: do not try to paste back an empty cutbuffer
+      undo: for an automatic hard-wrap, store the correct previous buffer size
+      undo: store the cursor row, for redoing filtering & justification better
+      undo: treat a cut-until-end-of-buffer like a backward marked region
+      undo: use the correct original fusion point when unjoining two lines
+      undo: when undoing a paste or an insertion, remove an added magic line
+      usage: improve the description of --softwrap
+
+Neal Gompa (1):
+      syntax: spec: add some keywords that were added in RPM 4.15 and 4.13
+
+Saagar Jha (1):
+      rcfile: fix an out-of-bounds read on empty lines
+
+
+Changes between v4.7 and v4.8:
+------------------------------
+
+Benno Schulenberg (166):
+      bindings: allow to bind shifted Meta+letter combinations with Sh-M-X
+      bindings: allow to rebind also ^`, although it is synonymous with ^Space
+      bindings: do not show the Full-Justify keystroke when in View mode
+      bindings: force the first letter in a key name to uppercase
+      build: exclude bracketed pasting from the tiny version
+      build: exclude option '-g' when configured without browser and help
+      build: exclude the escape sequences for F13...F16 from the tiny version
+      build: fix compilation for --enable-{tiny,help,multibuffer}
+      build: restrict the use of --with-slang to together with --enable-tiny
+      bump version numbers and add a news item for the 4.8 release
+      copyright: update the years for significantly changed files
+      copyright: update the years for the FSF
+      display: adjust line and column count upon a resize also when using Slang
+      display: clear the help lines before a briefly shown warning
+      display: don't let a message write over the second help line
+      display: ensure the guiding stripe can be shown when not softwrapping
+      display: exclude a bit of feedback from the tiny version
+      display: show the cursor during suspension also when built with Slang
+      display: skip zero-width characters on a Linux console, to avoid a mess
+      docs: add a FAQ item about a self-compiled nano not reading /etc/nanorc
+      docs: document the new -f/--rcfile option
+      docs: document the new Sh-M-X format for binding <Shift+Meta+letter>
+      docs: for the alternative bindings, rebind ^C only in the main menu
+      docs: improve the description of which rc-files are read during startup
+      docs: mention in the FAQ that auto-indentation is suppressed when pasting
+      docs: mention that -D/--boldtext gets overridden by some nanorc options
+      docs: put the three new behaviors in a bulletted list, to catch the eye
+      docs: stop saying that 'set fill' enables hard-wrapping -- it does not
+      docs: use more generally available arrows in the cheatsheet
+      feedback: ask a clearer question when a valid lock file is encountered
+      feedback: report Ctrl+Alt keystrokes as unbindable
+      feedback: restore a message that can occur in help viewer or file browser
+      files: alert the user afterward when an overwritten file is being edited
+      files: revert the previous commit, as the extra warning is annoying
+      files: warn doubly when the user is about to overwrite an existing file
+      files: write a lock file also for a new file and when the name changed
+      gnulib: update to its current upstream state
+      help: don't waste the last column in the help viewer on narrow terminals
+      help: increase the minimum help-text width from 24 to 32 columns
+      help: prevent double spaces from protruding across the right edge
+      help: when a key description wraps, indent its wrapped part
+      input: consume and ignore the raw escape sequences for F17 to F24
+      input: correct the escape sequence for PageUp/PageDown on Eterm/Urxvt
+      input: Ctrl+arrow is "Esc O x" on Eterm, as on rxvt -- not "Esc o x"
+      input: discard partial sequences that Slang produces for F17 to F24
+      input: do not auto-indent when something is pasted into nano from outside
+      input: don't discard the first keystroke after a resize when using Slang
+      input: filter out Ctrl+Meta keystrokes, as they can never be shortcuts
+      input: ignore bracketed pastes in help viewer and file browser
+      input: ignore modifiers on a VT while executing a macro or a string bind
+      input: prevent unintentional marking of text for shifted Meta keystrokes
+      input: read in an external paste in one go, to allow undoing with one M-U
+      input: recognize the raw escape sequences for F13 to F16 on xterm too
+      locking: accept a minimal amount of data, enough for PID plus username
+      locking: avoid crashing when there is a problem writing the lock file
+      locking: check two magic bytes, to verify that it is a lock file
+      locking: do not write a lock file when in view mode
+      locking: when a lock file is unreadable, open the file itself anyway
+      locking: when finding a lock file at startup, quit when user cancels
+      new feature: allow specifying a custom nanorc file on the command line
+      pasting: retain the mark's position when it was set at the cursor
+      prompt: for a Yes-No-All, accept the first character of an external paste
+      rcfile: do set the meta flag for plain <Meta+ASCII> combinations
+      rcfile: require "bright", "start=", and "end=" to be in lowercase too
+      rcfile: unbind keys by their key code instead of by their key string
+      softwrap: suppress the guiding stripe on unaffected chunks
+      speller: avoid messing up the screen when an unknown locale is used
+      suspension: put in an extra terminal-initialization call for Slang
+      syntax: nanohelp, nanorc: colorize the Sh-M-X format as a valid key name
+      syntax: nanorc: colorize all-lowercase Meta key binds as valid too
+      tweaks: add a little change that was overlooked in the previous commit
+      tweaks: add an error message for something that should never occur
+      tweaks: adjust or reword a few items in the FAQ
+      tweaks: adjust the indentation after the previous change
+      tweaks: allocate the lock data only when ready to write them
+      tweaks: avoid analyzing the key string when the target key code is known
+      tweaks: avoid determining the key code from the key string twice
+      tweaks: avoid fiddling with the keybuffer when it's not needed
+      tweaks: comment fully, so that all handled escape sequences are findable
+      tweaks: condense a fragment of code
+      tweaks: condense five more fragments of repetitious code
+      tweaks: condense three comments to one, and do the masking more directly
+      tweaks: condense three fragments of repetitious code
+      tweaks: condense two comments, and reshuffle an #endif
+      tweaks: correct a comment
+      tweaks: correct a couple of comments about escape sequences
+      tweaks: correct the description of what nano writes into the lock file
+      tweaks: delete some fragments of code that have become irrelevant
+      tweaks: do not leak a file descriptor when fdopen() fails
+      tweaks: don't bother including Haiku escape sequences in the tiny version
+      tweaks: don't enable bracketed pasting when not handling such pastes
+      tweaks: drop a message that will never be seen
+      tweaks: drop an unneeded call of keypad() -- we never read from topwin
+      tweaks: drop a pointless suffix from two function names
+      tweaks: elide a function that has become too small for its two calls
+      tweaks: elide a helper function, in preparation for an improvement
+      tweaks: elide an 'if', by moving the relevant code to a better place
+      tweaks: elide a small function, as it's in fact needed just once
+      tweaks: elide a somewhat costly call by remembering some state
+      tweaks: elide a variable, and rename its sister
+      tweaks: elide three checks of a shortcut's meta flag
+      tweaks: ensure that editor name and user name are NUL terminated
+      tweaks: exclude an unneeded fragment of code from the tiny version
+      tweaks: exclude two unneeded fragments of code from the tiny version
+      tweaks: free two strings as soon as they are no longer needed
+      tweaks: frob a couple of indentations and white lines
+      tweaks: fuse two nearly identical functions into a single one
+      tweaks: gather four calls that are always done together into a function
+      tweaks: harmonize the amount of lock data that we read and write
+      tweaks: improve a comment by indirectly referring to the ncurses docs
+      tweaks: in comments, reword "titlebar" and "statusbar" to two words each
+      tweaks: initialize three booleans straightaway, when they are declared
+      tweaks: initialize three more booleans straightaway, at declaration
+      tweaks: judge from the key code itself whether it is a Meta keystroke
+      tweaks: make a couple of comments more precise
+      tweaks: move a function to after the one that it calls
+      tweaks: move a function to be before the ones that call it
+      tweaks: move a function to before the one that calls it
+      tweaks: move a function to related ones, and after one that it calls
+      tweaks: move a function to right before the one that calls it
+      tweaks: move another function to after the one that it calls
+      tweaks: move another function to before the one that calls it
+      tweaks: move another function, to group the deleting ones together
+      tweaks: move three functions to the file where they are mainly used
+      tweaks: rearrange a few global variables, to group things better
+      tweaks: recompute the wrapping point just once
+      tweaks: reduce the scope of a variable, and reshuffle a declaration
+      tweaks: reduce the scope of two constants and of four variables
+      tweaks: reformat a comment, and resuffle a line to match byte order
+      tweaks: remove a feedback message that is never shown
+      tweaks: remove a redundant call, as there is nothing to free there
+      tweaks: remove a superfluous check
+      tweaks: remove some superfluous conditions for rewriting a lock file
+      tweaks: remove the now-unneeded code related to bracketed pasting
+      tweaks: remove the now-unused meta flag from 'keystruct'
+      tweaks: remove two superfluous assignments, and rename a variable
+      tweaks: rename a function and its parameter, to be more fitting
+      tweaks: rename a function, to be a bit more expressive
+      tweaks: rename a function, to make it not contain the name of another
+      tweaks: rename a parameter and invert its logic, and correct a comment
+      tweaks: rename five variables, away from a single letter
+      tweaks: rename two functions, to make more sense
+      tweaks: rename two parameters, to be more general and to sound shorter
+      tweaks: rename two variables, to make more sense
+      tweaks: renumber some FAQ items in preparation for adding another
+      tweaks: reorder two symbols
+      tweaks: reshuffle some assignments for a return value
+      tweaks: reshuffle some declarations
+      tweaks: reshuffle some declarations, and expand a few variable names
+      tweaks: reshuffle some lines, to avoid tallying the menus when not needed
+      tweaks: reshuffle some lines, to group all ignored keystrokes together
+      tweaks: reshuffle three lines, to make the grouping tighther
+      tweaks: reshuffle two lines, to do the linking first, then the content
+      tweaks: reword two comments, and rewrap another
+      tweaks: rewrap a comment and a line, and reshuffle a fragment of code
+      tweaks: rewrap two lines, for consistency with similar lines
+      tweaks: rewrite the same file name into the lock file as the first time
+      tweaks: slightly condense a function by conflating case
+      tweaks: stop recognizing escape sequences for a key without meaning
+      tweaks: suggest a few more alternative key bindings and unbindings
+      tweaks: take just one shot at reading the lock file, and correct a type
+      tweaks: trim some excessive error checking and key-name frobbing
+      tweaks: tumble three conditions, for consistency in comparisons
+      tweaks: unabbreviate "argument" in the documentation
+      tweaks: use a simple subtraction instead of a function call
+      usage: improve the description of --restricted and --quickblank
+
+Brand Huntsman (2):
+      input: beep when invalid key is pressed at yesno prompt or in linter menu
+      input: recognize the start and stop sequences of a bracketed paste
+
+
+Changes between v4.6 and v4.7:
+------------------------------
+
+Benno Schulenberg (39):
+      build: add the uploading of PDF and cheatsheet to the release script
+      build: avoid three compiler warnings when using gcc-9.2 or newer
+      build: fix compilation for --enable-tiny --enable-wrapping
+      build: fix compilation on macOS, where 'st_mtim' is unknown
+      build: fix compilation when configured with --disable-justify
+      bump version numbers and add a news item for the 4.7 release
+      display: don't color the space that separates line numbers from text
+      docs: add or improve the 'description' meta tag in the two HTML pages
+      docs: add the 'lang' attribute in the right place to the two HTML pages
+      docs: mention that all keywords in a nanorc file should be in lowercase
+      docs: mention that a negative number after "+" counts from the end
+      gnulib: update to its current upstream state
+      input: make <Tab> indent only when mark and cursor are on different lines
+      justify: distinguish between tabs and spaces when comparing indentation
+      justify: treat consecutive indentations that look the same as the same
+      linter: beep when trying to go beyond first or last message
+      rcfile: accept also function names and menu names only in lowercase
+      rcfile: accept only keywords in all lowercase, for speed of comparison
+      rcfile: demand that function 'exit' is bound in the file browser
+      syntax: nanohelp: colorize also ^/ as a possible keystroke
+      syntax: sh: recognize shell rc files also in dedicated directories
+      tweaks: avoid using strlen() where it is not needed
+      tweaks: drop M-Space and ^Space from the browser's key list
+      tweaks: improve two comments and the ordering of some operands
+      tweaks: move three functions to the file where they are used
+      tweaks: optimize the trimming of trailing whitespace
+      tweaks: remove a stray space
+      tweaks: rename a function, to get out of the way for another rename
+      tweaks: rename a function, to get rid of a useless suffix
+      tweaks: reshuffle a few lines, for brevity or speed or consistency
+      tweaks: reshuffle a few lines, for symmetry with the preceding function
+      tweaks: reshuffle a fragment of code, for efficiency
+      tweaks: reshuffle and rename a few things, to elide duplication
+      tweaks: reshuffle an item, to avoid a lone 'else'
+      tweaks: reshuffle two declarations, for compactness
+      tweaks: slightly streamline the search for a possible wrapping point
+      tweaks: trim or adjust some whitespace in HTML, and add two keywords
+      tweaks: unwrap a few lines, and move some strings to among their peers
+      wrapping: never break in the quoting part nor in the indentation part
+
+
+Changes between v4.5 and v4.6:
+------------------------------
+
+Benno Schulenberg (128):
+      bindings: allow to rebind ^/, even though it is synonymous with ^_
+      bindings: don't hard-bind ^H in the help viewer or the file browser
+      bindings: the 'all' keyword should encompass the browser menu too
+      bindings: the 'all' keyword should include the browser menu always
+      build: fix compilation for --enable-tiny --enable-histories
+      build: fix compilation when configured with --disable-color
+      build: slightly speed up the compilation of the tiny version
+      bump version numbers and add a news item for the 4.6 release
+      chars: add a faster version of the character-parsing function
+      commands: rename 'fixer' to 'formatter', to be less misleading
+      cutting: do nothing when trying to chop a word leftward at start of file
+      display: do refresh the edit window when exiting from the help viewer
+      docs: add a note saying that rebinding ^M or ^I is not advisable
+      docs: add the M-F and M-N keystrokes to the cheatsheet
+      docs: adjust the compilation instructions to two-digit version numbers
+      docs: correct the description of the 'spell' menu
+      docs: document the 'fixer' command, a per-syntax content arranger
+      docs: mention that color rules are applied in the order they are listed
+      docs: mention that 'hunspell' is now the first default spelling program
+      docs: mention that the 'nopauses' option is obsolete
+      docs: remove some excessive detail from the sample nanorc file
+      docs: remove the note about the formatter having been removed
+      feedback: say it when spell check or manipulation did not change anything
+      files: distinguish between read error and write error when prepending
+      files: don't mention the name of the temp file when reading goes wrong
+      files: when opening a file for copying, it should NOT be created
+      formatter: accept the formatted result also upon a nonzero exit status
+      formatter: don't let output from the program pollute the screen
+      gnulib: update to its current upstream state
+      history: don't wait when there is something wrong with the history files
+      linter: report it as an error when running the linting program fails
+      rcfile: allow binding also F17...F24
+      rcfile: process extensions to file-matching commands straightaway
+      restored feature: a per-syntax 'fixer' command that processes the buffer
+      softwrap: when switching to another buffer, re-align the starting column
+      speller: prefer 'hunspell' over 'spell', because it can handle UTF-8
+      speller: when 'spell' is not found, try running 'hunspell -l' instead
+      statusbar: show only the first error message, with dots to indicate more
+      syntax: c: recognize some C++ header files by their Emacs modeline
+      syntax: default: don't colorize stuff between two pairs of brackets
+      syntax: html: add a formatter command, making use of 'tidy'
+      syntax: html: colorize only full attributes, and colorize strings later
+      syntax: javascript: colorize also special values 'null' and 'undefined'
+      syntax: javascript: colorize the boolean values 'true' and 'false' too
+      syntax: nanorc: colorize all arguments of 'fixer' and 'linter' as valid
+      syntax: nanorc: colorize in bright red everything that is invalid
+      syntax: nanorc: colorize only lowercase keywords as valid
+      syntax: nanorc: colorize the 'fixer' command as valid
+      syntax: ruby: colorize also lowercase global/instance variables
+      syntaxes: put the 'linter' and 'formatter' commands on a separate line
+      tweaks: add a helper function without the ubiquitous NULL argument
+      tweaks: add a local variable, for clarity, to not preuse another one
+      tweaks: add some "fall-through" comments, and reshuffle some breaks
+      tweaks: add two translator hints
+      tweaks: adjust the indentation after the previous change
+      tweaks: adjust the indentation after the previous change
+      tweaks: adjust the indentation after the previous change, and another
+      tweaks: adjust two comments, to better fit the actual functions
+      tweaks: avoid setting and resetting a variable when there is no need
+      tweaks: avoid three unneeded calls of umask() in the normal case
+      tweaks: be explicit about which program complained
+      tweaks: check the return value of copy_file() also after its other uses
+      tweaks: close the unused reading ends of two more output pipes
+      tweaks: condense a fragment of code by making use of a helper function
+      tweaks: condense or improve some comments
+      tweaks: condense two comments, and rename two parameters
+      tweaks: condense two comments, and rewrap a line
+      tweaks: correct a comment, and retype a variable
+      tweaks: die on an impossible condition -- to be removed later
+      tweaks: don't do in the parent something that only the child needs
+      tweaks: don't wrap calls of statusline() that slightly overshoot 80 cols
+      tweaks: drop the unneeded closing of descriptors when exiting anyway
+      tweaks: elide a duplicate opening of the existing file when prepending
+      tweaks: elide a function call for the plain ASCII case
+      tweaks: elide another two calls of umask(), and rename two variables
+      tweaks: elide an unneeded and leaky function
+      tweaks: elide an unneeded check when making a backup
+      tweaks: elide a variable, and add a condition to elide an assignment
+      tweaks: elide a variable that is the same as another
+      tweaks: exclude two fragments of code from the tiny version
+      tweaks: fuse two regexes into one
+      tweaks: group the closing of descriptors together, for compactness
+      tweaks: group the closing of two descriptors, and reword two comments
+      tweaks: harmonize a message with another
+      tweaks: improve some comments, and trim some repetitive ones
+      tweaks: make a function do a check so its calls don't need to
+      tweaks: mark two strings for translation
+      tweaks: move a call of umask() closer to where it is relevant
+      tweaks: move two functions to after the one that they make use of
+      tweaks: normalize the indentation after the previous change
+      tweaks: order two functions more sensibly
+      tweaks: pass an empty string as an answer instead of a NULL pointer
+      tweaks: pass an empty string for copying instead of a non-existent one
+      tweaks: pass any special undo/redo messages to the add_undo() function
+      tweaks: remove a pointless updating of the title bar
+      tweaks: remove a redundant check for an existing emergency file
+      tweaks: remove the superfluous closing of a file descriptor
+      tweaks: remove two pointless re-inclusion guards
+      tweaks: remove two superfluous conditions when prepending
+      tweaks: rename a function and add a parameter, so it becomes more general
+      tweaks: rename a function, and elide a parameter that is always NULL
+      tweaks: rename a function and elide its first parameter
+      tweaks: rename a local variable, to not shadow another
+      tweaks: rename a variable, to be a bit more fitting
+      tweaks: rename a variable, to be distinct and visible
+      tweaks: rename three variables, and reshuffle some lines
+      tweaks: rename three variables, to be consistent with other linestructs
+      tweaks: rename three variables, to be more descriptive
+      tweaks: rename three variables, to match others elsewhere
+      tweaks: rename two parameters, for contrast and to match others
+      tweaks: rename two parameters plus a variable, to match others
+      tweaks: rename two variables, and add a third, for more contrast
+      tweaks: reshuffle a few declarations, and reduce the scope of one
+      tweaks: reshuffle a fragment of code into two alternatives
+      tweaks: reshuffle an 'if' to avoid a negation, and improve a comment
+      tweaks: reshuffle some declarations, and rename a variable
+      tweaks: reword an undo/redo string that was overlooked during the rename
+      tweaks: silence a warning when configured with --enable-tiny
+      tweaks: simplify the opening of files when prepending
+      tweaks: slightly reword some fragments in the manual's rebinding section
+      tweaks: use a better variable name for the argument of an option
+      tweaks: use a literal NULL instead of a variable that is NULL
+      tweaks: use a simpler positive/negative check for after copy_file()
+      tweaks: use a string-copy function that checks for out-of-memory
+      tweaks: use the given string instead of the found match, for clarity
+      undo: don't try to copy a string that doesn't exist
+      undo: put the cursor back on the original row for a full-buffer operation
+      utils: don't accept NULL for the string to be copied
+
+Jeroen Roovers (1):
+      syntax: gentoo: highlight the BDEPEND variable as well
+
+
+Changes between v4.4 and v4.5:
+------------------------------
+
+Benno Schulenberg (60):
+      bindings: add a dedicated keycode for <Tab> for when a region is marked
+      bump version numbers and add a news item for the 4.5 release
+      color: don't concatenate an absolute path with the working directory
+      docs: add two examples of the 'tabgives' command to the sample nanorc
+      docs: describe the new syntax-specific 'tabgives' command
+      docs: mark the undoing of justifications as done in the TODO list
+      docs: mention that gcc must be at least version 5.0
+      gnulib: update to its current upstream state
+      mouse: make the clickable width of menu items more consistent
+      new feature: a 'tabgives' command to define what the Tab key produces
+      search: after search-at-startup, store the column (for vertical movement)
+      tweaks: add a translator hint, and correct two others
+      tweaks: add some translator hints, be more precise on permissible length
+      tweaks: add two hints for translators, to try and help avoid mistakes
+      tweaks: adjust indentation after previous change, reshuffle declarations
+      tweaks: avoid a comparison between signed and unsigned  [coverity]
+      tweaks: avoid leaking memory when finding an invalid string  [coverity]
+      tweaks: avoid recomputing a maximum value every time round the loop
+      tweaks: don't burden all menus with something meant for the WriteOut menu
+      tweaks: elide a function from a non-UTF8 build
+      tweaks: elide two multiplications with something that is always 1
+      tweaks: frob a few comments
+      tweaks: improve a bunch of comments, and reshuffle some declarations
+      tweaks: improve a handful of comments, and reduce the needed padding
+      tweaks: mark as 'const' a parameter that takes fixed strings  [coverity]
+      tweaks: meld two calls of free() into a single one, to elide an 'else'
+      tweaks: move a fragment of common code into the appropriate function
+      tweaks: move a function to a better file, to be amongst its kind
+      tweaks: move a function to before its callers and next to its kind
+      tweaks: move two functions to after the ones that they call
+      tweaks: remove some timing code that has served its purpose
+      tweaks: remove two superfluous macros, as sizeof(char) is always 1
+      tweaks: rename a function, to be a bit more fitting
+      tweaks: rename another type, again to better fit the general pattern
+      tweaks: rename another type, to also better fit the general pattern
+      tweaks: rename another variable, for a better fit
+      tweaks: rename a type, to better fit the general pattern
+      tweaks: rename a variable, normalize a comment, and reshuffle a free()
+      tweaks: rename a variable, to be more compact
+      tweaks: rename three variables, for contrast and more sense
+      tweaks: rename three variables, for more contrast
+      tweaks: rename three variables, to better indicate what they hold
+      tweaks: rename two variables, away from single letters
+      tweaks: rename two variables, to better describe what they contain
+      tweaks: reshuffle a fragment, to group some toggles together
+      tweaks: reshuffle a line, to group things better
+      tweaks: reshuffle some lines, to elide an unneeded assignment
+      tweaks: reshuffle some lines, to have the same order as elsewhere
+      tweaks: reshuffle two fragments, to group things better
+      tweaks: rewrap a line, reshuffle a declaration, and improve some comments
+      tweaks: simplify a calculation, as done elsewhere
+      tweaks: simplify the determination of a canonical path
+      tweaks: sort two keywords strictly alphabetically
+      tweaks: speed up determining the width of plain ASCII characters
+      tweaks: speed up the counting of the menu entries to be shown
+      tweaks: use a more effecient way to skip storing an empty file name
+      tweaks: use an early return when there is no tilde
+      tweaks: use 'void' in prototypes of parameterless functions  [coverity]
+      usage: mark the -J/--guidestripe option plus argument as translatable
+      usage: properly align --help output also when it has accented characters
+
+Brand Huntsman (1):
+      search: accept a match at start of file when searching from command line
+
+Dirkjan Ochtman (1):
+      syntax: rust: add the words reserved in 2018, and remove unreserved ones
+
+
+Changes between v4.3 and v4.4:
+------------------------------
+
+Benno Schulenberg (53):
+      browser: draw a bar of spaces only where needed -- for the selected item
+      build: exclude the search-at-startup feature from the tiny version
+      bump version numbers and add a news item for the 4.4 release
+      copying: do not prevent M-6 from copying emptiness into the cutbuffer
+      display: blank the status bar on a successful cut or paste
+      display: clear the remainder of a row only when there actually is some
+      display: don't clear a row beforehand -- just clear the remainder
+      display: use a somewhat faster method to clear a row
+      display: when linenumbering, correctly spotlight text that spans two rows
+      display: where needed, use slow blanking, but elsewhere do it much faster
+      docs: change a few URLs over to https, and rewrap a couple of NEWS items
+      docs: document the search-at-startup feature (+/string or +?string)
+      docs: make the synopsis of --speller and 'set speller' more accurate
+      docs: mention the M-N toggle instead of the obsolete M-# one
+      docs: slightly reword some of the descriptions around syntax highlighting
+      docs: slightly reword the descriptions of most configure options
+      docs: stop mentioning the 'unjustify' function, as it no longer exists
+      gnulib: update to its current upstream state
+      new document: a condensed overview of nano's shortcut keystrokes
+      new feature: allow specifying a search string to "jump to" at startup
+      rcfile: properly handle an empty syntax before an 'include' statement
+      scrolling: don't overscroll when the edit window has just one row
+      search: don't wipe the status bar at startup when there was an error
+      search: wipe the status bar before searching again (M-W / M-Q)
+      syntax: c: allow an underscore in lowercase type names
+      syntax: default: colorize bracketed section headers in some config files
+      syntaxes: change some unneeded 'icolor' commands to 'color' commands
+      syntaxes: recognize .ctp extension as a PHP file, and .cu as a C/C++ file
+      syntax: perl: avoid recognizing embedded hash signs as a comment starter
+      syntax: perl: avoid upsetting older glibcs with crafty range expression
+      syntax: perl: don't color the character after a variable name
+      syntax: po: colorize numbers only when they form a self-contained word
+      text: copy leading quote characters when automatic hard-wrapping occurs
+      tweaks: add a translator hint, to clarify four short words
+      tweaks: call the correct lighting function directly when softwrapping
+      tweaks: condense some comments, and drop two unneeded initializations
+      tweaks: drop two parameters that are no longer needed
+      tweaks: improve a comment, and drop a superfluous one
+      tweaks: improve a handful of comments
+      tweaks: make a function name unique, to not overlap with others
+      tweaks: move a call from two different places to a single place
+      tweaks: move a function to before the first one that calls it
+      tweaks: move a general function to a better place
+      tweaks: remove a saving and restoring that has become superfluous
+      tweaks: rename a function, to suit better, and reshuffle its parameters
+      tweaks: rename a parameter in three functions, to say what it points to
+      tweaks: reshuffle an assignment, and trim some excessive blank lines
+      tweaks: reshuffle an 'if' out of a function, and rename the function
+      tweaks: reword and condense two comments, and correct another
+      tweaks: rewrap two lines, and reshuffle some logic to make more sense
+      tweaks: shorten two messages that translators tend to make too long
+      tweaks: try the allocation of a multidata cache just once per line
+      tweaks: when precalculating, allocate all the cache space upfront
+
+Brand Huntsman (3):
+      rcfile: for an empty syntax, show the line number of the 'syntax' command
+      rcfile: report the correct command location for an invalid 'include'
+      search: accept toggles for case and regex when searching at startup
+
+
 Changes between v4.2 and v4.3:
 ------------------------------
 

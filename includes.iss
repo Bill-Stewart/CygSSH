@@ -10,8 +10,9 @@
 #define SetupFullVersion SetupMajorVersion + "." + SetupMinorVersion
 #define InstallDirName "CygSSH"
 #define SetupName "CygSSH-Setup"
-#define SetupAuthor "Bill Stewart"
-#define SetupCompany SetupAuthor + " (bstewart@iname.com)"
+#define SetupAuthor ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "Setup", "Author", "")
+#define SetupEmail ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "Setup", "Email", "")
+#define SetupCompany SetupAuthor + " (" + SetupEmail + ")"
 #define SetupVersion AppFullVersion + "." + SetupFullVersion
 #define IconFilename "OpenSSH.ico"
 #define ServiceName "opensshd"

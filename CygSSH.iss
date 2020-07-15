@@ -45,6 +45,10 @@ Name: client; Description: "{cm:TypesClientDescription}"
 Name: server; Description: "{cm:ComponentsServerDescription}"; Types: full
 Name: client; Description: "{cm:ComponentsClientDescription}"; Types: client; Flags: disablenouninstallwarning fixed
 
+[InstallDelete]
+Type: filesandordirs; Name: "{app}\usr\share\*"
+Type: filesandordirs; Name: "{app}\usr\src\*"
+
 [Files]
 ; cygwin x64 - /bin
 Source: "bin-x64\*.dll";                     DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
@@ -176,7 +180,7 @@ Source: "etc\defaults\etc\passwd";         DestDir: "{app}\etc\defaults\etc"; Co
 Source: "etc\defaults\etc\profile";        DestDir: "{app}\etc\defaults\etc"; Components: server
 Source: "etc\defaults\etc\sshd_config";    DestDir: "{app}\etc\defaults\etc"; Components: server
 ; shared - /usr/share
-Source: "usr\share\*"; DestDir: "{app}\usr\share"; Components: server; Flags: recursesubdirs createallsubdirs
+Source: "usr\share\*"; DestDir: "{app}\usr\share"; Components: client server; Flags: recursesubdirs createallsubdirs
 ; shared - /usr/src
 Source: "usr\src-was\*"; DestDir: "{app}\usr\src"; Components: client server; Flags: recursesubdirs
 ; shared - /users

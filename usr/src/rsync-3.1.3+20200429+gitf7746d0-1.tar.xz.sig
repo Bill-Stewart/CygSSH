@@ -1,0 +1,7 @@
+-----BEGIN PGP SIGNATURE-----
+Comment: GPG signature of rsync-3.1.3+20200429+gitf7746d0-1.tar.xz (2020-05-05 15:12)
+
+iEYEABECAAYFAl6xWBIACgkQTafyhJVakthlCACeLWpLdPZFDF7yTS6ZLQkScsN9
+g40An3yvEkNTxYj6J9XL0Ia5RlZ+pZW6
+=fdLs
+-----END PGP SIGNATURE-----

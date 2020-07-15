@@ -4,15 +4,14 @@
 #define AppName ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "OpenSSH", "Name", "")
 #define AppMajorVersion ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "OpenSSH", "Major", "0")
 #define AppMinorVersion ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "OpenSSH", "Minor", "0")
-#define AppFullVersion AppMajorVersion + "." + AppMinorVersion
 #define SetupMajorVersion ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "Setup", "Major", "0")
 #define SetupMinorVersion ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "Setup", "Minor", "0")
-#define SetupFullVersion SetupMajorVersion + "." + SetupMinorVersion
+#define AppFullVersion AppMajorVersion + "." + AppMinorVersion + "." + SetupMajorVersion + "." + SetupMinorVersion
 #define InstallDirName "CygSSH"
 #define SetupName "CygSSH-Setup"
 #define SetupAuthor ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "Setup", "Author", "")
 #define SetupEmail ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "Setup", "Email", "")
 #define SetupCompany SetupAuthor + " (" + SetupEmail + ")"
-#define SetupVersion AppFullVersion + "." + SetupFullVersion
+#define SetupVersion AppFullVersion
 #define IconFilename "OpenSSH.ico"
 #define ServiceName "opensshd"

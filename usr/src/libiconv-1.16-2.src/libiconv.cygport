@@ -1,0 +1,59 @@
+NAME="libiconv"
+VERSION=1.16
+RELEASE=2
+CATEGORY="Libs"
+SUMMARY="Unicode iconv() implementation"
+DESCRIPTION="This library provides an iconv() implementation, for use on systems
+which don't have one, or whose implementation cannot convert from/to Unicode."
+HOMEPAGE="http://www.gnu.org/software/libiconv/"
+SRC_URI="mirror://gnu/libiconv/libiconv-${VERSION}.tar.gz"
+
+PATCH_URI="
+1.16-wchar.patch
+1.16-cross-install.patch
+1.16-aliases.patch
+"
+
+abi=2
+libcharset_abi=1
+
+PKG_NAMES="${NAME} ${PN}${abi} libcharset${libcharset_abi} ${PN}-devel"
+
+printf -v "${NAME}_CONTENTS" "%s" "usr/bin/iconv.exe usr/share/doc/ usr/share/locale/ usr/share/man/man1/"
+printf -v "${PN}${abi}_CONTENTS" "%s" "usr/bin/cygiconv-${abi}.dll"
+printf -v "libcharset${libcharset_abi}_CONTENTS" "%s" "usr/bin/cygcharset-${libcharset_abi}.dll"
+printf -v "${PN}_devel_CONTENTS" "%s" "usr/include/ usr/lib/ usr/share/man/man3/"
+
+DIFF_EXCLUDES="*.html"
+
+DISTCLEANFILES="m4/libtool.m4 m4/lt*.m4 libcharset/m4/libtool.m4 libcharset/m4/lt*.m4"
+
+CYGPORT_USE_UNSTABLE_API=1
+src_patch_hook() {
+	cygmake -j1 -f Makefile.devel lib/aliases.h
+}
+
+# NOTE: '--enable-static' is deliberately set.
+#   Static libiconv is used when building Cygwin dumper.exe (as a
+#   dependency of libbfd.a, which is static only).
+#   cf. Yaakov Selkowitz, https://cygwin.com/pipermail/cygwin-apps/2020-July/040302.html
+src_compile() {
+	cd ${S}
+	ACLOCAL_FLAGS="-I ${S}/m4 -I ${S}/srcm4"
+	cygautoreconf
+	cd ${B}
+	cygconf --enable-shared \
+		--enable-static \
+		--enable-extra-encodings \
+		am_cv_proto_iconv_arg1= \
+		am_cv_proto_iconv="extern size_t iconv (iconv_t cd, char * *inbuf, size_t *inbytesleft, char * *outbuf, size_t *outbytesleft);"
+	cygmake -j1
+}
+
+src_install() {
+	cd ${B}
+	cyginstall
+
+	# this belongs to gettext
+	rm -f ${D}/usr/lib/charset.alias
+}

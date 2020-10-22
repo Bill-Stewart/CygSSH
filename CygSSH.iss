@@ -163,6 +163,7 @@ Source: "bin-scripts\Set-S4ULogonFix.ps1"; DestDir: "{app}\bin"; Components: ser
 ; shared - /etc
 Source: "etc\cygserver.conf"; DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "etc\nsswitch.conf";  DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "etc\nanorc";         DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "etc\ssh_config";     DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "etc\virc";           DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "etc\banner.txt";     DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
@@ -172,6 +173,7 @@ Source: "etc\sshd_config";    DestDir: "{app}\etc"; Components: server;        F
 Source: "etc\moduli";         DestDir: "{app}\etc"; Components: server
 ; shared - /etc/defaults/etc
 Source: "etc\defaults\etc\cygserver.conf"; DestDir: "{app}\etc\defaults\etc"; Components: client server
+Source: "etc\defaults\etc\nanorc";         DestDir: "{app}\etc\defaults\etc"; Components: client server
 Source: "etc\defaults\etc\nsswitch.conf";  DestDir: "{app}\etc\defaults\etc"; Components: client server
 Source: "etc\defaults\etc\ssh_config";     DestDir: "{app}\etc\defaults\etc"; Components: client server
 Source: "etc\defaults\etc\virc";           DestDir: "{app}\etc\defaults\etc"; Components: client server

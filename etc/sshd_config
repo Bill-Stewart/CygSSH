@@ -34,7 +34,7 @@
 #MaxAuthTries 6
 #MaxSessions 10
 
-# Cygwin-OpenSSH - Disable StrictModes (not needed on Windows)
+# CygSSH - Disable StrictModes (not needed on Windows)
 StrictModes no
 
 #PubkeyAuthentication yes
@@ -43,7 +43,7 @@ StrictModes no
 # but this is overridden so installations will only check .ssh/authorized_keys
 #AuthorizedKeysFile	.ssh/authorized_keys
 
-# Cygwin-OpenSSH - Specify path
+# CygSSH - Specify path
 AuthorizedKeysFile /users/%u/.ssh/authorized_keys
 
 #AuthorizedPrincipalsFile none
@@ -108,7 +108,7 @@ AuthorizedKeysFile /users/%u/.ssh/authorized_keys
 #ChrootDirectory none
 #VersionAddendum none
 
-# Cygwin-OpenSSH - Specify banner
+# CygSSH - Specify banner
 Banner /etc/banner.txt
 
 # override default of no subsystems
@@ -121,14 +121,14 @@ Subsystem	sftp	/usr/sbin/sftp-server
 #	PermitTTY no
 #	ForceCommand cvs server
 
-# Cygwin-OpenSSH - Allow only "SSH Users" group
+# CygSSH - Allow only "SSH Users" group
 AllowGroups "SSH Users"
 
-# Cygwin-OpenSSH - Sample user config for public key authentication
+# CygSSH - Sample user config for public key authentication
 #Match User username
 #	AuthenticationMethods publickey
 
-# Cygwin-OpenSSH - Sample user config for sftp-only
+# CygSSH - Sample user config for sftp-only
 #Match User username
 #	X11Forwarding no
 #	AllowTcpForwarding no

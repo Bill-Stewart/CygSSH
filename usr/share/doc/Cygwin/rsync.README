@@ -23,11 +23,19 @@ Mini-HOWTO for using the program as a service:
    cygrunsrv -R rsyncd
 
 Runtime requirements:
+  bash  - rsync-ssl script
   libgcc1
   libiconv2
+  liblz4_1
+  libzstd1
+  libssl1.1
 
 Build requirements:
+  python3*-commonmark  (check /usr/bin/python3 which version)
   libiconv2-devel
+  liblz4-devel
+  libzstd-devel
+  libllvm-devel
 
 Canonical homepage:
   http://rsync.samba.org
@@ -60,7 +68,7 @@ Language:
 ------------------------------------------
 
 Build instructions:
-  unpack rsync-*-src.tar.bz2
+  unpack rsync-*-src.tar.*
     if you use setup to install this source package, it will be
     unpacked under /usr/src automatically
   cd /usr/src
@@ -75,6 +83,20 @@ Files included in the binary distribution:
 
 Port Notes:
 
+----- version 3.2.3+20200903+git9f9240b-3 -----
+- New upstream release 2020-09-07 Jari Aalto
+- Debian 3.2.3 patches included in sources, but NOT relevant to Cygwin
+  + disable_reconfigure_req.diff - Remove need to run reconfigure target
+  + perl_shebang.patch - Removes usage of env on perl shebang as per Debian Policy 10.4
+  + skip_devices_test.patch - Skip "devices" test as it fails on kfreebsd and hurd
+
+----- version 3.2.3+20200903+git9f9240b-2 -----
+- New upstream release 2020-09-06 Jari Aalto
+- Compile with python36-commonmark
+
+----- version 3.2.3+20200903+git9f9240b-1 -----
+- New upstream release 2020-09-05 Jari Aalto
+
 ----- version 3.1.3+20200429+gitf7746d0-1 -----
 - New upstream release 2020-05-05 Jari Aalto
 
@@ -83,15 +105,15 @@ Port Notes:
 - Includes security fix CVE-2014-9512
 - Debian 3.1.1 patches included
 
-  logdir.patch        
+  logdir.patch
   - fix the location of the logdir
 
   ssh-6-option.patch
 
-  - call ssh with -6 option if rsync was called 
+  - call ssh with -6 option if rsync was called
     with -6, ditto with -4
 
-  noatime.patch       
+  noatime.patch
 
   - add an option --noatime to request the kernel not to update files'
     access times while reading them. See
@@ -187,4 +209,4 @@ No patch used.
 Licensed under GPL v2 or later
 Cygwin port maintained by Jari Aalto
 Copyright (C) 2014-2020 Jari Aalto <jari.aalto@cante.net>
-Copyright (C) 2002-2014 Lapo Luchini <lapo@lapo.it>
+Copyright (C) 2002-2020 Lapo Luchini <lapo@lapo.it>

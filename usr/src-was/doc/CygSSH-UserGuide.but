@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 1.4
+\define{version} 1.5
 
 \define{rightarrow} \u2192
 
@@ -941,6 +941,10 @@ The \c{/usr/src} directory contains the source code. The source code files are g
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{1.5}
+
+\b Added missing DLLs that broke rsync.
 
 \s{1.4}
 

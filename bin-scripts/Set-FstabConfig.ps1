@@ -1,5 +1,5 @@
 # Set-FstabConfig.ps1
-# Written by Bill Stewart (bstewart@iname.com)
+# Written by Bill Stewart (bstewart at iname.com)
 
 #requires -version 2
 
@@ -24,11 +24,9 @@ param(
   [Switch] $Force
 )
 
-if ( -not $PSScriptRoot ) {
-  $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-}
+$ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent
 
-$CYGPATH = Join-Path $PSScriptRoot "cygpath"
+$CYGPATH = Join-Path $ScriptPath "cygpath"
 
 Get-Command $CYGPATH -ErrorAction Stop | Out-Null
 

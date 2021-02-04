@@ -1,5 +1,5 @@
 # Edit-SSHKey.ps1
-# Written by Bill Stewart (bstewart@iname.com)
+# Written by Bill Stewart (bstewart at iname.com)
 
 #requires -version 2
 
@@ -37,9 +37,7 @@ param(
   [Switch] $Help
 )
 
-if ( -not $PSScriptRoot ) {
-  $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-}
+$ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent
 
 if ( $PSCmdlet.ParameterSetName -eq "Help" ) {
   Get-Help $MyInvocation.MyCommand.Path
@@ -47,11 +45,11 @@ if ( $PSCmdlet.ParameterSetName -eq "Help" ) {
 }
 
 # Validate executables
-$CYGPATH = Join-Path $PSScriptRoot "cygpath"
+$CYGPATH = Join-Path $ScriptPath "cygpath"
 Get-Command $CYGPATH -ErrorAction Stop | Out-Null
-$DASH = Join-Path $PSScriptRoot "dash"
+$DASH = Join-Path $ScriptPath "dash"
 Get-Command $DASH -ErrorAction Stop | Out-Null
-$SSH_KEYGEN = Join-Path $PSScriptRoot "ssh-keygen"
+$SSH_KEYGEN = Join-Path $ScriptPath "ssh-keygen"
 Get-Command $SSH_KEYGEN -ErrorAction Stop | Out-Null
 
 $ERROR_FILE_NOT_FOUND = 2

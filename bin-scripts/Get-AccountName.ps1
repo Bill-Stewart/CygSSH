@@ -1,5 +1,5 @@
 # Get-AccountName.ps1
-# Written by Bill Stewart (bstewart@iname.com)
+# Written by Bill Stewart (bstewart at iname.com)
 
 #requires -version 2
 
@@ -28,15 +28,14 @@ param(
 )
 
 begin {
-  if ( -not $PSScriptRoot ) {
-    $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-  }
+  $ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent
 
   # Adds Win32API type definitions
   Add-Type -Name Win32API `
-    -MemberDefinition (Get-Content -LiteralPath (Join-Path $PSScriptRoot "Win32API.def") -ErrorAction Stop | Out-String -Width 4096) `
+    -MemberDefinition (Get-Content -LiteralPath (Join-Path $ScriptPath "Win32API.def") -ErrorAction Stop | Out-String -Width ([Int]::MaxValue)) `
     -Namespace "BCA37B9C41264685AD47EEBBD02F40EF" `
     -ErrorAction Stop
+  $Win32API = [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]
 
   # Uses NetGetJoinInformation Windows API to determine current computer's
   # join information; if successful, returns a PSObject with two members:
@@ -48,7 +47,7 @@ begin {
     $nameBuffer = [IntPtr]::Zero
     $joinStatus = 0
     try {
-      $result = [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetGetJoinInformation(
+      $result = $Win32API::NetGetJoinInformation(
         $null,              # lpServer
         [Ref] $nameBuffer,  # lpNameBuffer
         [Ref] $joinStatus)  # BufferType
@@ -61,7 +60,7 @@ begin {
     }
     finally {
       if ( $nameBuffer -ne [IntPtr]::Zero ) {
-        [Void] [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetApiBufferFree($nameBuffer)
+        [Void] $Win32API::NetApiBufferFree($nameBuffer)
       }
     }
   }

@@ -26,7 +26,7 @@ IconsUserGuideName=User Guide
 IconsUserGuideComment=Cygwin OpenSSH User Guide
 
 ; Tasks
-TasksStartServiceDescription=Start service
+TasksStartServiceDescription=Start OpenSSH server service
 TasksModifyPathDescription=Add to %1
 TasksS4ULogonFixDescription=Implement MsV1_0S4ULogon fix
 
@@ -39,15 +39,13 @@ RunConfigureMsV1_0S4ULogonFixStatusMsg=Configuring MsV1_0S4ULogon fix...
 RunInstallServiceStatusMsg=Installing OpenSSH server service...
 RunStartServiceStatusMsg=Starting OpenSSH server service...
 
-; PowerShell 2.0 messages
-ErrorNoPowerShellLogMessage=ERROR: Windows PowerShell 2.0 or later is required
-ErrorNoPowerShellGUIMessage=This package requires Windows PowerShell version 2.0 or later.
-
 ; Path messages
 PathTypeSystemMessage=system Path
 PathTypeUserMessage=user Path
-PathUpdateSuccessMessage=Successfully modified %1 path: %2 directory "%3"
-PathUpdateFailMessage=Failed to modify %1 path: %2 directory "%3"
+PathAddSuccessMessage=Successfully added "%1" to %2 Path
+PathAddFailMessage=Failed to add "%1" to %2 Path - error %3
+PathRemoveSuccessMessage=Successfully removed "%1" from %2 Path
+PathRemoveFailMessage=Failed to remove "%1" from %2 Path - error %3
 
 ; Executable detection messages
 ApplicationsRunningLogMessage=Applications are using files that need to be updated by Setup.
@@ -64,3 +62,9 @@ StartedServicesMessage=Service restart command(s) executed successfully.
 AppProgressPageInstallingCaption=Please wait while Setup installs %1 on your computer.
 AppProgressPageStoppingMessage=Stopping applications...
 AppProgressPageStartingMessage=Restarting stopped services...
+
+; Uninstall
+DeleteFileSuccess=Deleted file: %1
+DeleteFileFail=Failed to delete file: %1
+RemoveDirSuccess=Removed directory: %1
+RemoveDirFail=Failed to remove directory: %1

@@ -29,6 +29,7 @@ Runtime requirements:
   liblz4_1
   libzstd1
   libssl1.1
+  libxxhash0
 
 Build requirements:
   python3*-commonmark  (check /usr/bin/python3 which version)
@@ -82,6 +83,9 @@ Files included in the binary distribution:
 ------------------------------------------
 
 Port Notes:
+
+----- version 3.2.3+20200903+git9f9240b-4 -----
+- Compile with xxhah support (Cygwin now includes the library)
 
 ----- version 3.2.3+20200903+git9f9240b-3 -----
 - New upstream release 2020-09-07 Jari Aalto

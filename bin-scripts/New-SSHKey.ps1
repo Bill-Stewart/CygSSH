@@ -1,5 +1,5 @@
 # New-SSHKey.ps1
-# Written by Bill Stewart (bstewart@iname.com)
+# Written by Bill Stewart (bstewart at iname.com)
 
 #requires -version 2
 
@@ -57,20 +57,18 @@ param(
   [Switch] $Quiet
 )
 
-if ( -not $PSScriptRoot ) {
-  $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-}
+$ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent
 
 #------------------------------------------------------------------------------
 # Validate executables
 #------------------------------------------------------------------------------
-$CYGPATH = Join-Path $PSScriptRoot "cygpath"
+$CYGPATH = Join-Path $ScriptPath "cygpath"
 Get-Command $CYGPATH -ErrorAction Stop | Out-Null
-$DASH = Join-Path $PSScriptRoot "dash"
+$DASH = Join-Path $ScriptPath "dash"
 Get-Command $DASH -ErrorAction Stop | Out-Null
-$SSH_KEYGEN = Join-Path $PSScriptRoot "ssh-keygen"
+$SSH_KEYGEN = Join-Path $ScriptPath "ssh-keygen"
 Get-Command $SSH_KEYGEN -ErrorAction Stop | Out-Null
-$SETACL = Join-Path $PSScriptRoot "setacl"
+$SETACL = Join-Path $ScriptPath "setacl"
 Get-Command $SETACL -ErrorAction Stop | Out-Null
 
 #------------------------------------------------------------------------------
@@ -260,7 +258,7 @@ $ArgList = @(
 if ( $Comment -ne "" ) {
   $ArgList += "-C",$Comment
 }
-if ( -not ($KeyType -eq "ecdsa-sk") -or ($KeyType -eq "ed25519") -or ($KeyType -eq "ed25519-sk") ) {
+if ( -not (($KeyType -eq "ecdsa-sk") -or ($KeyType -eq "ed25519") -or ($KeyType -eq "ed25519-sk")) ) {
   $ArgList += "-b",$Bits
 }
 if ( $PSBoundParameters.ContainsKey("Rounds") ) {

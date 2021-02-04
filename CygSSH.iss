@@ -16,7 +16,7 @@ Compression=lzma2/ultra
 DefaultDirName={autopf}\{#InstallDirName}
 DefaultGroupName={#AppName}
 DisableWelcomePage=no
-MinVersion=6
+MinVersion=6.1sp1
 OutputBaseFilename={#SetupName}_{#SetupVersion}
 OutputDir=.
 PrivilegesRequired=admin
@@ -50,102 +50,104 @@ Type: filesandordirs; Name: "{app}\usr\share\*"
 Type: filesandordirs; Name: "{app}\usr\src\*"
 
 [Files]
+; 32-bit PathMgr.dll (deleted manually at DeinitializeUninstall)
+Source: "bin\PathMgr.dll"; DestDir: "{app}\bin"; Components: server; Flags: uninsneveruninstall
 ; cygwin x64 - /bin
-Source: "bin-x64\*.dll";                     DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\cygpath.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\cygrunsrv.exe";             DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\cygstart.exe";              DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\editrights.exe";            DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\false.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\getent.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\id.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\less.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\mintty.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\mkgroup.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\mkpasswd.exe";              DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\mount.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\nano.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\passwd.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\rebase.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\rsync.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\scp.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\sftp.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh-add.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh-agent.exe";             DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh-keygen.exe";            DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh-keyscan.exe";           DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh-pageant.exe";           DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\touch.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\true.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\umount.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\uname.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\unzip.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\vi.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\xz.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\zip.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x64\cygwin-console-helper.exe"; DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: server;        Flags: ignoreversion
-Source: "bin-x64\dash.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: server;        Flags: ignoreversion
-Source: "bin-x64\tty.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: server;        Flags: ignoreversion
+Source: "bin-x64\*.dll";                     DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\cygpath.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\cygrunsrv.exe";             DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\cygstart.exe";              DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\editrights.exe";            DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\false.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\getent.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\id.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\less.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\mintty.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\mkgroup.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\mkpasswd.exe";              DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\mount.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\nano.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\passwd.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\rebase.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\rsync.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\scp.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\sftp.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-add.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-agent.exe";             DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-keygen.exe";            DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-keyscan.exe";           DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-pageant.exe";           DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\touch.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\true.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\umount.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\uname.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\unzip.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\vi.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\xz.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\zip.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\cygwin-console-helper.exe"; DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
+Source: "bin-x64\dash.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
+Source: "bin-x64\tty.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
 ; supplemental x64 - /bin
-Source: "binsupp-x64\runposh.exe"; DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "binsupp-x64\setacl.exe";  DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "binsupp-x64\posh.exe";    DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: server;        Flags: ignoreversion
-Source: "binsupp-x64\winpty*";     DestDir: "{app}\bin"; Check: Is64BitInstallMode; Components: server;        Flags: ignoreversion
+Source: "binsupp-x64\runposh.exe"; DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "binsupp-x64\setacl.exe";  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "binsupp-x64\posh.exe";    DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
+Source: "binsupp-x64\winpty*";     DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
 ; x64 - /usr/sbin
-Source: "usr\sbin-x64\ssh-keysign.exe";       DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x64\ssh-pkcs11-helper.exe"; DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x64\cygserver.exe";         DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x64\sftp-server.exe";       DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode; Components: server;        Flags: ignoreversion
-Source: "usr\sbin-x64\sshd.exe";              DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode; Components: server;        Flags: ignoreversion
+Source: "usr\sbin-x64\ssh-keysign.exe";       DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "usr\sbin-x64\ssh-pkcs11-helper.exe"; DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "usr\sbin-x64\cygserver.exe";         DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "usr\sbin-x64\sftp-server.exe";       DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
+Source: "usr\sbin-x64\sshd.exe";              DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
 ; cygwin x86 - /bin
-Source: "bin-x86\*.dll";                     DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion solidbreak
-Source: "bin-x86\cygpath.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\cygrunsrv.exe";             DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\cygstart.exe";              DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\editrights.exe";            DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\false.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\getent.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\id.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\less.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\mintty.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\mkgroup.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\mkpasswd.exe";              DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\mount.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\nano.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\passwd.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\rebase.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\rsync.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\scp.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\sftp.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh-add.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh-agent.exe";             DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh-keygen.exe";            DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh-keyscan.exe";           DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh-pageant.exe";           DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\touch.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\true.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\umount.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\uname.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\unzip.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\vi.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\xz.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\zip.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "bin-x86\cygwin-console-helper.exe"; DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: server;        Flags: ignoreversion
-Source: "bin-x86\dash.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: server;        Flags: ignoreversion
-Source: "bin-x86\tty.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: server;        Flags: ignoreversion
+Source: "bin-x86\*.dll";                     DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion solidbreak
+Source: "bin-x86\cygpath.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\cygrunsrv.exe";             DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\cygstart.exe";              DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\editrights.exe";            DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\false.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\getent.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\id.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\less.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\mintty.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\mkgroup.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\mkpasswd.exe";              DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\mount.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\nano.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\passwd.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\rebase.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\rsync.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\scp.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\sftp.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\ssh-add.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\ssh-agent.exe";             DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\ssh-keygen.exe";            DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\ssh-keyscan.exe";           DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\ssh-pageant.exe";           DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\ssh.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\touch.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\true.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\umount.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\uname.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\unzip.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\vi.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\xz.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\zip.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x86\cygwin-console-helper.exe"; DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
+Source: "bin-x86\dash.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
+Source: "bin-x86\tty.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
 ; supplemental x86 - /bin
-Source: "binsupp-x86\runposh.exe"; DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "binsupp-x86\setacl.exe";  DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "binsupp-x86\posh.exe";    DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: server;        Flags: ignoreversion
-Source: "binsupp-x86\winpty*";     DestDir: "{app}\bin"; Check: not Is64BitInstallMode; Components: server;        Flags: ignoreversion
+Source: "binsupp-x86\runposh.exe"; DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "binsupp-x86\setacl.exe";  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "binsupp-x86\posh.exe";    DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
+Source: "binsupp-x86\winpty*";     DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
 ; x86 - /usr/sbin
-Source: "usr\sbin-x86\ssh-keysign.exe";       DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x86\ssh-pkcs11-helper.exe"; DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x86\cygserver.exe";         DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode; Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x86\sftp-server.exe";       DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode; Components: server;        Flags: ignoreversion
-Source: "usr\sbin-x86\sshd.exe";              DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode; Components: server;        Flags: ignoreversion
+Source: "usr\sbin-x86\ssh-keysign.exe";       DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "usr\sbin-x86\ssh-pkcs11-helper.exe"; DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "usr\sbin-x86\cygserver.exe";         DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "usr\sbin-x86\sftp-server.exe";       DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
+Source: "usr\sbin-x86\sshd.exe";              DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
 ; shared - /
 Source: "{#IconFilename}";      DestDir: "{app}"; Components: client server; Flags: solidbreak
 Source: "CygSSH-UserGuide.chm"; DestDir: "{app}"; Components: client server
@@ -200,7 +202,7 @@ Name: "{group}\{cm:IconsUserGuideName}"; Filename: "{app}\CygSSH-UserGuide.chm";
 
 [Tasks]
 Name: startservice; Description: "{cm:TasksStartServiceDescription}"; Components: server; Check: not ServiceExists('{#ServiceName}')
-Name: modifypath;   Description: "{cm:TasksModifyPathDescription,{code:GetSystemOrUserPath}}"; Check: not IsDirInPath()
+Name: modifypath;   Description: "{cm:TasksModifyPathDescription,{code:GetSystemOrUserPath}}"; Check: not IsDirInPath(ExpandConstant('{app}\bin'))
 Name: s4ulogonfix;  Description: "{cm:TasksS4ULogonFixDescription}"; Components: server; Flags: unchecked; OnlyBelowVersion: 6.3
 
 [Run]
@@ -266,8 +268,7 @@ Filename: "{app}\bin\runposh.exe"; \
 [Code]
 
 // Code support:
-// * Verify PowerShell v2 or later installed before allowing install
-// * Add to Path or remove from Path
+// * Add to Path or remove from Path (uses PathMgr.dll)
 // * Enable S4ULogonFix by default when OS < v6.3, not domain member, and
 //   interactive install
 // * Executable detection: Automatic service stop/process termination and
@@ -275,8 +276,9 @@ Filename: "{app}\bin\runposh.exe"; \
 //   Cygwin services and processes); uses WMI and progress page
 
 const
-  SC_MANAGER_CONNECT   = 1;
-  SERVICE_QUERY_STATUS = 4;
+  MODIFY_PATH_TASK_NAME = 'modifypath';
+  SC_MANAGER_CONNECT    = 1;
+  SERVICE_QUERY_STATUS  = 4;
 
 type
   TSCHandle = THandle;
@@ -305,36 +307,98 @@ type
 
 var
   AppProgressPage: TOutputProgressWizardPage;
-  ModifyPathTaskName: string;
   PathIsModified, S4UTaskDefaultChanged: boolean;
   SWbemLocator, WMIService: variant;
   RunningServices: TCygwinServiceList;
 
-// Windows API function declarations
+// Windows API functions
+// netapi32.dll functions for setup only
 function NetGetJoinInformation(lpServer:         string;
                                var lpNameBuffer: DWORD;
                                var BufferType:   DWORD): DWORD;
   external 'NetGetJoinInformation@netapi32.dll stdcall setuponly';
-
 function NetApiBufferFree(Buffer: DWORD): DWORD;
   external 'NetApiBufferFree@netapi32.dll stdcall setuponly';
-
+// advapi32.dll functions for service info
 function OpenSCManager(lpMachineName:   string;
                        lpDatabaseName:  string;
                        dwDesiredAccess: DWORD): TSCHandle;
   external 'OpenSCManagerW@advapi32.dll stdcall';
-
 function OpenService(hSCManager:      TSCHandle;
                      lpServiceName:   string;
                      dwDesiredAccess: DWORD): TSCHandle;
   external 'OpenServiceW@advapi32.dll stdcall';
-
 function QueryServiceStatus(hService:            TSCHandle;
                             Out lpServiceStatus: TServiceStatus): BOOL;
   external 'QueryServiceStatus@advapi32.dll stdcall';
-
 function CloseServiceHandle(hSCObject: TSCHandle): BOOL;
   external 'CloseServiceHandle@advapi32.dll stdcall';
+
+// PathMgr.dll functions - https://github.com/Bill-Stewart/PathMgr/
+// Import AddDirToPath() and IsDirInPath() at setup time
+function DLLAddDirToPath(DirName: string; PathType, AddType: DWORD): DWORD;
+  external 'AddDirToPath@files:PathMgr.dll stdcall setuponly';
+function DLLIsDirInPath(DirName: string; PathType: DWORD; var FindType: DWORD): DWORD;
+  external 'IsDirInPath@files:PathMgr.dll stdcall setuponly';
+// Import RemoveDirFromPath() at uninstall time
+function DLLRemoveDirFromPath(DirName: string; PathType: DWORD): DWORD;
+  external 'RemoveDirFromPath@{app}\bin\PathMgr.dll stdcall uninstallonly';
+
+// Wrapper for AddDirToPath() DLL function
+function AddDirToPath(const DirName: string): DWORD;
+  var
+    PathType: DWORD;
+    PathTypeName: string;
+  begin
+  if IsAdminInstallMode() then
+    begin
+    PathType := 0;
+    PathTypeName := 'system';
+    end
+  else
+    begin
+    PathType := 1;
+    PathTypeName := 'user';
+    end;
+  // 3rd parameter 0 = append to path
+  result := DLLAddDirToPath(DirName, PathType, 0);
+  if result = 0 then
+    Log(FmtMessage(CustomMessage('PathAddSuccessMessage'), [DirName,PathTypeName]))
+  else
+    Log(FmtMessage(CustomMessage('PathAddFailMessage'), [DirName,PathTypeName,IntToStr(result)]));
+  end;
+
+// Wrapper for IsDirInPath() DLL function
+function IsDirInPath(const DirName: string): boolean;
+  var
+    PathType, FindType: DWORD;
+  begin
+  if IsAdminInstallMode() then PathType := 0 else PathType := 1;
+  result := DLLIsDirInPath(DirName, PathType, FindType) = 0;
+  end;
+
+// Wrapper for RemoveDirFromPath() DLL function
+function RemoveDirFromPath(const DirName: string): DWORD;
+  var
+    PathType: DWORD;
+    PathTypeName: string;
+  begin
+  if IsAdminInstallMode() then
+    begin
+    PathType := 0;
+    PathTypeName := 'system';
+    end
+  else
+    begin
+    PathType := 1;
+    PathTypeName := 'user';
+    end;
+  result := DLLRemoveDirFromPath(DirName, PathType);
+  if result = 0 then
+    Log(FmtMessage(CustomMessage('PathRemoveSuccessMessage'), [DirName,PathTypeName]))
+  else
+    Log(FmtMessage(CustomMessage('PathRemoveFailMessage'), [DirName,PathTypeName,IntToStr(result)]));
+  end;
 
 // Used by:
 //   NextButtonClick() function
@@ -349,11 +413,6 @@ function ParamStrExists(const Param: string): boolean;
     end;
   end;
 
-// Requires:
-//   OpenSCManager() Windows API function
-//   OpenService() Windows API function
-//   QueryServiceStatus() Windows API function
-//   CloseServiceHandle() Windows API function
 // Used by:
 //   [Tasks] section
 //   [Run] section
@@ -382,50 +441,17 @@ function ServiceExists(ServiceName: string): boolean;
     RaiseException('OpenSCManager failed: ' + SysErrorMessage(DLLGetLastError()));
   end;
 
-// Used by:
-//   InitializeSetup() function
-// Return true if we detect at least PowerShell v2, or false otherwise
-function IsPowerShell2OrHigherInstalled(): boolean;
-  var
-    RootPath, VersionString: string;
-    SubkeyNames: TArrayOfString;
-    HighestPSVersion, I, PSVersion: integer;
-  begin
-  RootPath := 'SOFTWARE\Microsoft\PowerShell';
-  result := RegGetSubkeyNames(HKEY_LOCAL_MACHINE, RootPath, SubkeyNames);
-  if not result then exit;
-  HighestPSVersion := 0;
-  for I := 0 to GetArrayLength(SubkeyNames) - 1 do
-    begin
-    if RegQueryStringValue(HKEY_LOCAL_MACHINE, RootPath + '\' + SubkeyNames[I] + '\PowerShellEngine', 'PowerShellVersion', VersionString) then
-      begin
-      PSVersion := StrToIntDef(Copy(VersionString, 0, 1), 0);
-      if PSVersion > HighestPSVersion then
-        HighestPSVersion := PSVersion;
-      end;
-    end;
-  result := HighestPSVersion >= 2;
-  end;
-
 // Requires:
-//   ModifyPathTaskName global variable
 //   PathIsModified global variable
 //   S4UTaskDefaultChanged global variable
 //   SWbemLocator global variable
 //   WMIService global variable
-//   IsPowerShell2OrHigherInstalled() function
 function InitializeSetup(): boolean;
   begin
-  result := IsPowerShell2OrHigherInstalled();
-  if not result then
-    begin
-    Log(CustomMessage('ErrorNoPowerShellLogMessage'));
-    if not WizardSilent() then
-      MsgBox(CustomMessage('ErrorNoPowerShellGUIMessage'), mbCriticalError, MB_OK);
-    exit;
-    end;
-  ModifyPathTaskName := 'modifypath';
-  PathIsModified := GetPreviousData('Modify Path', '') = 'true';
+  result := true;
+  // Was modifypath task selected during a previous install?
+  PathIsModified := GetPreviousData(MODIFY_PATH_TASK_NAME, '') = 'true';
+  // S4U task not visited yet
   S4UTaskDefaultChanged := false;
   try
     SWbemLocator := CreateOleObject('WbemScripting.SWbemLocator');
@@ -448,12 +474,10 @@ procedure InitializeWizard();
 function InitializeUninstall(): boolean;
   begin
   result := true;
-  PathIsModified := GetPreviousData('Modify Path', '') = 'true';
+  // Was modifypath task selected during a previous install?
+  PathIsModified := GetPreviousData(MODIFY_PATH_TASK_NAME, '') = 'true';
   end;
 
-// Requires:
-//   NetGetJoinInformation() Windows API function
-//   NetApiBufferFree() Windows API function
 // Used by:
 //   CurPageChanged() procedure
 // Returns true if computer is a domain member, or false otherwise
@@ -501,254 +525,14 @@ function GetSystemOrUserPath(Param: string): string;
     result := CustomMessage('PathTypeUserMessage');
   end;
 
-// Used by:
-//   ModifyPath() function
-//   IsDirInPath() function
-// Gets the directory are we adding to (or removing from) the path
-function GetPathDirName(): string;
-  begin
-  result := ExpandConstant('{app}\bin');
-  end;
-
-// Used by:
-//   SplitPathString() procedure
-// Splits S into array Dest using Delim as delimiter
-procedure SplitString(S, Delim: string; var Dest: TArrayOfString);
-  var
-    Temp: string;
-    I, P: integer;
-  begin
-  Temp := S;
-  I := StringChangeEx(Temp, Delim, '', true);
-  SetArrayLength(Dest, I + 1);
-  for I := 0 to GetArrayLength(Dest) - 1 do
-    begin
-    P := Pos(Delim, S);
-    if P > 0 then
-      begin
-      Dest[I] := Copy(S, 1, P - 1);
-      Delete(S, 1, P + Length(Delim) - 1);
-      end
-    else
-      Dest[I] := S;
-    end;
-  end;
-
-// Used by:
-//   PathStringContainsDir() function
-//   AddDirToPathString() function
-//   RemoveDirFromPathString() function
-//   UpdatePath() function
-// Splits the specified semicolon-delimited path string into an array such
-// that each element in the string array contains a properly formed
-// directory name; array might contain empty string elements
-procedure SplitPathString(Path: string; var Dest: TArrayOfString);
-  var
-    I: integer;
-  begin
-  SplitString(Path, ';', Dest);
-  for I := 0 to GetArrayLength(Dest) - 1 do
-    Dest[I] := RemoveBackslashUnlessRoot(Trim(Dest[I]));
-  end;
-
-// Requires:
-//   SplitPathString() procedure
-// Returns whether the semicolon-delimited path string contains the named
-// directory or not; not case-sensitive; if Dir is empty or only whitespace,
-// the function returns false
-function PathStringContainsDir(Path, Dir: string): boolean;
-  var
-    PathArray: TArrayOfString;
-    I: integer;
-  begin
-  result := false;
-  Dir := RemoveBackslashUnlessRoot(Trim(Dir));
-  if Dir = '' then exit;
-  SplitPathString(Path, PathArray);
-  for I := 0 to GetArrayLength(PathArray) - 1 do
-    begin
-    result := CompareText(PathArray[I], Dir) = 0;
-    if result then exit;
-    end;
-  end;
-
-// Requires:
-//   PathStringContainsDir() function
-//   SplitPathString() procedure
-// Adds a named directory to a semicolon-delimited path string; returns path
-// string with the named directory added; if Dir is empty, only whitespace, or
-// already exists in the path string, the function returns the path string
-// unchanged
-function AddDirToPathString(Path, Dir: string): string;
-  var
-    PathArray: TArrayOfString;
-    I: integer;
-  begin
-  result := Path;
-  Dir := RemoveBackslashUnlessRoot(Trim(Dir));
-  if Dir = '' then exit;
-  if PathStringContainsDir(Path, Dir) then exit;
-  SplitPathString(Path, PathArray);
-  result := '';
-  for I := 0 to GetArrayLength(PathArray) - 1 do
-    begin
-    if Trim(PathArray[I]) <> '' then
-      begin
-      if result = '' then
-        result := PathArray[I]
-      else
-        result := result + ';' + PathArray[I];
-      end;
-    end;
-  if result <> '' then
-    result := result + ';' + Dir
-  else
-    result := Dir;
-  end;
-
-// Requires:
-//   PathStringContainsDir() function
-//   SplitPathString() procedure
-// Removes a named directory from a semicolon-delimited path string; returns
-// path string with all instances of the named directory removed; if Dir is
-// empty, only whitespace, or doesn't exist in the path string, the function
-// returns the path string unchanged
-function RemoveDirFromPathString(Path, dir: string): string;
-  var
-    PathArray: TArrayOfString;
-    I: integer;
-  begin
-  result := Path;
-  Dir := RemoveBackslashUnlessRoot(Trim(Dir));
-  if Dir = '' then exit;
-  if not PathStringContainsDir(Path, Dir) then exit;
-  SplitPathString(Path, PathArray);
-  for I := 0 to GetArrayLength(PathArray) - 1 do
-    begin
-    if CompareText(PathArray[I], Dir) = 0 then
-      PathArray[I] := '';
-    end;
-  result := '';
-  for I := 0 to GetArrayLength(PathArray) - 1 do
-    begin
-    if Trim(PathArray[I]) <> '' then
-      begin
-      if result = '' then
-        result := PathArray[I]
-      else
-        result := result + ';' + PathArray[I];
-      end;
-    end;
-  end;
-
-// Requires:
-//   SplitPathString() function
-//   AddDirToPathString() function
-//   RemoveDirFromPathString() function
-// Used by:
-//   ModifyPath() function
-// AddOrRemove: 'add' or 'remove' (default = 'add')
-// PathType: 'user' or 'system' (default = 'user')
-// Dir: semicolon-delimited list of directories to add or remove
-// Returns false only when a registry update fails
-// (NOTE: Do not enclose path names in quotes!)
-function UpdatePath(AddOrRemove, PathType, Dir: string): boolean;
-  var
-    AddToPath: boolean;
-    RegRoot, I: integer;
-    RegPath, Path, NewPath: string;
-    DirArray: TArrayOfString;
-  begin
-  result := true;
-  AddToPath := CompareText(AddOrRemove, 'remove') <> 0;
-  if CompareText(PathType, 'system') = 0 then
-    begin
-    RegRoot := HKEY_LOCAL_MACHINE;
-    RegPath := 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
-    end
-  else
-    begin
-    RegRoot := HKEY_CURRENT_USER;
-    RegPath := 'Environment';
-    end;
-  SplitPathString(Dir, DirArray);
-  for I := 0 to GetArrayLength(DirArray) - 1 do
-    begin
-    if Trim(DirArray[I]) = '' then continue;
-    Path := '';
-    RegQueryStringValue(RegRoot, RegPath, 'Path', Path);
-    if AddToPath then
-      NewPath := AddDirToPathString(Path, DirArray[I])
-    else
-      NewPath := RemoveDirFromPathString(Path, DirArray[I]);
-    if NewPath <> Path then
-      begin
-      result := RegWriteExpandStringValue(RegRoot, RegPath, 'Path', NewPath);
-      if not result then exit;
-      end;
-    end;
-  end;
-
-// Requires:
-//   GetPathDirName() function
-//   UpdatePath() function
-// Used by:
-//   CurStepChanged() function
-//   CurUninstallStepChanged() function
-function ModifyPath(const AddOrRemove: string): boolean;
-  var
-    Action, Context, DirName: string;
-  begin
-  result := true;
-  if CompareText(AddOrRemove, 'remove') <> 0 then
-    Action := 'add'
-  else
-    Action := 'remove';
-  if IsAdminInstallMode() then
-    Context := 'system'
-  else
-    Context := 'user';
-  DirName := GetPathDirName();
-  result := UpdatePath(Action, Context, DirName);
-  if result then
-    Log(FmtMessage(CustomMessage('PathUpdateSuccessMessage'), [Context,Action,DirName]))
-  else
-    Log(FmtMessage(CustomMessage('PathUpdateFailMessage'), [Context,Action,DirName]));
-  end;
-
-// Requires:
-//   PathStringContainsDir() function
-//   GetPathDirName() function
-// Used by:
-//   [Tasks] section
-function IsDirInPath(): boolean;
-  var
-    RegRoot: integer;
-    RegPath, Path: string;
-  begin
-  result := false;
-  if IsAdminInstallMode() then
-    begin
-    RegRoot := HKEY_LOCAL_MACHINE;
-    RegPath := 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
-    end
-  else
-    begin
-    RegRoot := HKEY_CURRENT_USER;
-    RegPath := 'Environment';
-    end;
-  if RegQueryStringValue(RegRoot, RegPath, 'Path', Path) then
-    result := PathStringContainsDir(Path, GetPathDirName());
-  end;
-
 // Requires:
 //   PathIsModified global variable
-//   ModifyPath() function
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
   begin
   if CurUninstallStep = usUninstall then
     begin
-    if PathIsModified then ModifyPath('remove');
+    if PathIsModified then
+      RemoveDirFromPath(ExpandConstant('{app}\bin'));
     end;
   end;
 
@@ -764,16 +548,13 @@ function ShouldSkipPage(PageID: integer): boolean;
 
 // Requires:
 //   PathIsModified global variable
-//   ModifyPathTaskName global variable
-// IS removes and rewrites 'previous data' values at every reinstall, so at
-// initialize time we cache whether modify path task had already been selected
-// from a previous install
 procedure RegisterPreviousData(PreviousDataKey: integer);
   begin
+  // Note: IS removes and rewrites 'previous data' values at every reinstall
   SetPreviousData(PreviousDataKey, 'Setup Type', WizardSetupType(false));
-  // If task was previously or currently selected, write data again
-  if PathIsModified or WizardIsTaskSelected(ModifyPathTaskName) then
-    SetPreviousData(PreviousDataKey, 'Modify Path', 'true');
+  // Store previous or current path task selection as custom user setting
+  if PathIsModified or WizardIsTaskSelected(MODIFY_PATH_TASK_NAME) then
+    SetPreviousData(PreviousDataKey, MODIFY_PATH_TASK_NAME, 'true');
   end;
 
 // Used by:
@@ -1129,8 +910,8 @@ procedure CurStepChanged(CurStep: TSetupStep);
   begin
   if CurStep = ssPostInstall then
     begin
-    if WizardIsTaskSelected(ModifyPathTaskName) then
-      ModifyPath('add');
+    if WizardIsTaskSelected(MODIFY_PATH_TASK_NAME) then
+      AddDirToPath(ExpandConstant('{app}\bin'));
     if GetArrayLength(RunningServices) > 0 then
       begin
       AppProgressPage.SetText(CustomMessage('AppProgressPageStartingMessage'), '');
@@ -1146,4 +927,22 @@ procedure CurStepChanged(CurStep: TSetupStep);
       end; //try
       end;
     end;
+  end;
+
+procedure DeinitializeUninstall();
+  var
+    DLLFilename, DLLPath: string;
+  begin
+  // Unload and delete PathMgr.dll and remove dir when uninstalling
+  DLLFilename := ExpandConstant('{app}\bin\PathMgr.dll');
+  UnloadDLL(DllFilename);
+  if DeleteFile(DLLFilename) then
+    Log(FmtMessage(CustomMessage('DeleteFileSuccess'), [DLLFilename]))
+  else
+    Log(FmtMessage(CustomMessage('DeleteFileFail'), [DLLFilename]));
+  DLLPath := ExtractFileDir(DLLFilename);
+  if RemoveDir(DLLPath) then
+    Log(FmtMessage(CustomMessage('RemoveDirSuccess'), [DLLPath]))
+  else
+    Log(FmtMessage(CustomMessage('RemoveDirFail'), [DLLPath]));
   end;

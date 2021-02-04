@@ -1,6 +1,6 @@
 // Win32API.def
-// Win32 API definitions for PowerShell scripts
-// Author: Bill Stewart (bstewart@iname.com)
+// Win32 API definitions for CygSSH PowerShell scripts
+// Author: Bill Stewart (bstewart at iname.com)
 
 // [BCA37B9C41264685AD47EEBBD02F40EF.Win32API+LOCALGROUP_INFO_1]
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

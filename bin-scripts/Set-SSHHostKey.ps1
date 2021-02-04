@@ -1,5 +1,5 @@
 # Set-SSHHostKey.ps1
-# Written by Bill Stewart (bstewart@iname.com)
+# Written by Bill Stewart (bstewart at iname.com)
 
 # Runs ssh-keygen -A and configures the file permissions on the host key files
 # such that only SYSTEM and and Administrators have full control (no other
@@ -15,15 +15,13 @@ Creates SSH host key files using ssh-keygen and sets restricted permissions on t
 Creates SSH host key files using ssh-keygen and sets restricted permissions on the private key files.
 #>
 
-if ( -not $PSScriptRoot ) {
-  $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-}
+$ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent
 
-$CYGPATH = Join-Path $PSScriptRoot "cygpath"
+$CYGPATH = Join-Path $ScriptPath "cygpath"
 Get-Command $CYGPATH -ErrorAction Stop | Out-Null
-$SSH_KEYGEN = Join-Path $PSScriptRoot "ssh-keygen"
+$SSH_KEYGEN = Join-Path $ScriptPath "ssh-keygen"
 Get-Command $SSH_KEYGEN -ErrorAction Stop | Out-Null
-$SETACL = Join-Path $PSScriptRoot "setacl"
+$SETACL = Join-Path $ScriptPath "setacl"
 Get-Command $SETACL -ErrorAction Stop | Out-Null
 
 if ( (-not (& $CYGPATH -aw /)) ) {

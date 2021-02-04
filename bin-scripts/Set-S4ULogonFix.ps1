@@ -1,5 +1,5 @@
 # Set-S4ULogonFix.ps1
-# Written by Bill Stewart (bstewart@iname.com)
+# Written by Bill Stewart (bstewart at iname.com)
 
 #requires -version 2
 
@@ -67,9 +67,7 @@ param(
   [Switch] $NoConfirm
 )
 
-if ( -not $PSScriptRoot ) {
-  $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-}
+$ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent
 
 if ( $PSCmdlet.ParameterSetName -eq "Help" ) {
   Get-Help $MyInvocation.MyCommand.Path
@@ -78,9 +76,10 @@ if ( $PSCmdlet.ParameterSetName -eq "Help" ) {
 
 # Adds Win32API type definitions
 Add-Type -Name Win32API `
-  -MemberDefinition (Get-Content -LiteralPath (Join-Path $PSScriptRoot "Win32API.def") -ErrorAction Stop | Out-String -Width 4096) `
+  -MemberDefinition (Get-Content -LiteralPath (Join-Path $ScriptPath "Win32API.def") -ErrorAction Stop | Out-String -Width ([Int]::MaxValue)) `
   -Namespace "BCA37B9C41264685AD47EEBBD02F40EF" `
   -ErrorAction Stop
+$Win32API = [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]
 
 # API constants
 $ERROR_INVALID_DATA       = 0x00D
@@ -133,7 +132,7 @@ function New-LocalUserAccount {
     # Copy the managed object to it
     [Runtime.InteropServices.Marshal]::StructureToPtr($userInfo2,$puserInfo2,$false)
     $parmErr = 0
-    [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetUserAdd(
+    $Win32API::NetUserAdd(
       $null,           # servername
       2,               # level
       $pUserInfo2,     # buf
@@ -155,7 +154,7 @@ function Invoke-NetUserGetInfo {
   $result = 0
   $pUserInfo2 = [IntPtr]::Zero
   try {
-    $result = [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetUserGetInfo(
+    $result = $Win32API::NetUserGetInfo(
       $null,              # servername
       $userName,          # username
       2,                  # level
@@ -169,7 +168,7 @@ function Invoke-NetUserGetInfo {
   finally {
     if ( $pUserInfo2 -ne [IntPtr]::Zero ) {
       # Free the unmanaged buffer
-      [Void] [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetApiBufferFree($pUserInfo2)
+      [Void] $Win32API::NetApiBufferFree($pUserInfo2)
     }
   }
   return $result
@@ -204,7 +203,7 @@ function Reset-LocalUserAccount {
     # Copy the managed object to it
     [Runtime.InteropServices.Marshal]::StructureToPtr($userInfo2,$pUserInfo2,$false)
     $parmErr = 0
-    [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetUserSetInfo(
+    $Win32API::NetUserSetInfo(
       $null,           # servername
       $userName,       # username
       2,               # level
@@ -241,7 +240,7 @@ function Disable-LocalUserAccount {
     # Copy the managed object to it
     [Runtime.InteropServices.Marshal]::StructureToPtr($userInfo2,$pUserInfo2,$false)
     $parmErr = 0
-    [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetUserSetInfo(
+    $Win32API::NetUserSetInfo(
       $null,           # servername
       $userName,       # username
       2,               # level
@@ -546,7 +545,7 @@ if ( -not (Test-Elevation) ) {
 }
 
 # Exit if we can't find editrights.exe
-$EDITRIGHTS = Join-Path $PSScriptRoot "editrights"
+$EDITRIGHTS = Join-Path $ScriptPath "editrights"
 Get-Command $EDITRIGHTS -ErrorAction Stop | Out-Null
 
 # Added this because passing "-Confirm:0" on the powershell.exe -File command

@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 1.5
+\define{version} 1.6
 
 \define{rightarrow} \u2192
 
@@ -47,7 +47,7 @@
 
 \title CygSSH User Guide
 
-\copyright Copyright 2020 by Bill Stewart
+\copyright Copyright 2020-2021 by Bill Stewart
 
 \versionid \version
 
@@ -63,9 +63,9 @@ This software is covered by the license agreements listed in \k{licenses}.
 
 The \i{system requirements} are the following:
 
-\b Windows Vista or Windows Server 2008 or later
+\b Windows 7 SP1 or or Windows Server 2008 R2 SP1 or later
 
-\b Windows PowerShell 2.0 or later
+Vista/Server 2008 support has been dropped to increase security of the installer.
 
 The \i{installer} installs the appropriate version of the package based on the OS architecture; that is, it installs the \i{64-bit} version on x64 versions of Windows, or the \i{32-bit} version otherwise. (See \k{wow64downlevelauth} for an important caveat about running the 32-bit version of the OpenSSH server service on 64-bit non-x64 downlevel OS versions.)
 
@@ -83,6 +83,8 @@ The installer performs the following tasks:
 
 \b If the setup type is \s{full} (see \k{setuptype}), creates the local access group and updates the \c{sshd_config} file (see \k{localaccessgroup})
 
+\b If the setup type is \s{full} (see \k{setuptype}), adds a rule to the Windows \i{firewall} to allow communication to the OpenSSH server service
+
 \b If the setup type is \s{full} (see \k{setuptype}) and the \s{startservice} task is selected (see \k{setuptasks}), starts the OpenSSH server service
 
 \b Performs any other tasks selected on the \s{Select Additional Tasks} page (see \k{setuptasks})
@@ -94,7 +96,7 @@ Example installation command:
 \c CygSSH_version /SILENT /CLOSEAPPLICATIONS
 \e        iiiiiii
 
-Replace \e{version} with the version (e.g., \s{8.3.1.3}).
+Replace \e{version} with the version (e.g., \s{8.4.1.6}).
 
 The above command installs the package silently (i.e., without user interaction). The \c{/CLOSEAPPLICATIONS} parameter automatically stops running services and closes programs so that the installer can reinstall or upgrade the files. Stopped services will be automatically restarted after the installation completes. \I{/CLOSEAPPLICATIONS parameter} \I{/SILENT parameter} \I{install, silent} \I{silent install}
 
@@ -122,7 +124,7 @@ You can specify a different destination path on the installer's command line by 
 
 Throughout this documentation, the installation directory is referred to as \e{installpath}. \I{installpath}
 
-Note that this page doesn't appear if you are reinstalling.
+Note that this page doesn't appear if you are reinstalling or upgrading.
 
 \H{setuptype} Select Setup Type
 
@@ -146,15 +148,15 @@ The \s{Select Start Menu Folder} \I{Start menu} page of the installer wizard all
 
 You can specify the folder name on the command line using the \c{/GROUP="}\e{name}\c{"} command line parameter (where \e{name} is the folder name). Alternatively, you can specify \c{/NOICONS} to prevent creation of any Start menu shortcuts. \I{shortcuts}
 
-Note that this page doesn't appear if you are reinstalling.
+Note that this page doesn't appear if you are reinstalling or upgrading.
 
 \H{setuptasks} Select Additional Tasks
 
 The \s{Select Additional Tasks} page of the installer wizard allows you to select additional tasks the installer should perform. The additional tasks are as follows: \I{additional tasks (installer)} \I{installer additional taks}
 
-\b \s{startservice} - Corresponds to the \s{Start service} check box. Starts the OpenSSH server service. This task is not applicable if the setup type is \s{client} (see \k{setuptype}). This task is selected by default. \I{startservice installer task} \I{service, start}
+\b \s{startservice} - Corresponds to the \s{Start OpenSSH server service} check box. Starts the OpenSSH server service. This task is not applicable if the setup type is \s{client} (see \k{setuptype}). This task is selected by default. \I{startservice installer task} \I{service, start}
 
-\b \s{modifypath} - Corresponds to the \s{Add to system Path} (or \s{Add to user Path}) check box. Adds the \e{installpath}\c{\\bin} directory to the system or user Path environment variable if it does not already exist. This task is selected by default. (If you started the installer with the \c{/CURRENTUSER} parameter, this checkbox adds to the user path rather than the system path.) (Note that this task does not appear if \e{installpath}\c{\\bin} is already in the system or user path.) \I{modifypath installer task} \I{system path} \I{user path} \I{/CURRENTUSER parameter}
+\b \s{modifypath} - Corresponds to the \s{Add to system Path} (or \s{Add to user Path}) check box. Adds the \e{installpath}\c{\\bin} directory to the system or user Path environment variable if it does not already exist. This task is selected by default. (If you started the installer with the \c{/CURRENTUSER} parameter, this checkbox adds to the user Path rather than the system Path.) (Note that this task does not appear if \e{installpath}\c{\\bin} is already in the system or user Path.) \I{modifypath installer task} \I{system Path} \I{user Path} \I{/CURRENTUSER parameter}
 
 \b \s{s4ulogonfix} - Corresponds to the \s{Implement MsV1_0S4ULogon fix} check box (see \k{s4ulogonfix}). \I{s4ulogonfix installer task} This task only appears in downlevel OS versions and is not applicable if the setup type is \s{client} (see \k{setuptype}). This task is selected by default \e{only} under the following conditions:
 
@@ -555,7 +557,7 @@ The \s{New\-SSHKey.ps1} script will attempt to restrict the permissions on the p
 
 The file paths output by the \s{ssh\-keygen} command are in POSIX format (see \k{posixpathnames}).
 
-\S2{puttygen} Create a Key Pair Using \s{PuTTYgen}
+\S2{puttygen} Create a Key Pair Using PuTTYgen
 
 To create a key pair using \W{https://www.chiark.greenend.org.uk/~sgtatham/putty/}{\s{PuTTYgen}}, do the following:
 
@@ -729,7 +731,7 @@ This workaround is only needed on downlevel OS versions if you need to authentic
 
 The workaround has two limitations:
 
-\b If the account loses the \s{Log on as a batch job user right}, the workaround will fail - this can occur if a \i{Group Policy} Object (GPO) in a domain configures this user right and removes the account
+\b If the account loses the \s{Log on as a batch job} user right, the workaround will fail - this can occur if a \i{Group Policy} Object (GPO) in a domain configures this user right and removes the account
 
 \b If the \s{Network access: Do not allow storage of passwords and credentials for network authentication} security policy is set to \s{Enabled}, the workaround will fail - this can occur if a Group Policy Object (GPO) in a domain changes this setting to \s{Enabled} (it is not set to \s{Enabled} by default)
 
@@ -885,6 +887,8 @@ Special thanks to the authors of the following software packages for their gener
 
 \s{Halibut} - \W{https://www.chiark.greenend.org.uk/~sgtatham/halibut/}{https://www.chiark.greenend.org.uk/~sgtatham/halibut/}
 
+\s{PathMgr.dll} - \W{https://github.com/Bill-Stewart/PathMgr/}{https://github.com/Bill-Stewart/PathMgr/}
+
 \# ----------------------------------------------------------------------------
 \# APPENDIX
 \# ----------------------------------------------------------------------------
@@ -904,13 +908,15 @@ This package contains software from multiple sources:
 
 \b \s{setacl} - \W{https://helgeklein.com/setacl/}{https://helgeklein.com/setacl/}
 
+\b \s{PathMgr.dll} - \W{https://github.com/Bill-Stewart/PathMgr/}{https://github.com/Bill-Stewart/PathMgr/}
+
 See \k{opensource} for source code availability for software components that require making the source code available.
 
 \s{Windows PowerShell Script License}
 
 In addition to the above, the package contains a set of Windows PowerShell scripts written by Bill Stewart that are used for installing and managing the software. The Windows PowerShell scripts are covered by the MIT license:
 
-Copyright \copyright 2019-2020 by Bill Stewart.
+Copyright \copyright 2019-2021 by Bill Stewart.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -941,6 +947,20 @@ The \c{/usr/src} directory contains the source code. The source code files are g
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{1.6}
+
+\b Dropped support for Windows Vista/Windows Server 2008 to increase the security of the installer.
+
+\b Updated Cygwin packages.
+
+\b Updated installer to use \s{PathMgr.dll} for system/user Path management.
+
+\b Updated PowerShell scripts to avoid informational messages from PowerShell parsers and to improve readibility.
+
+\b Fixed typo in \s{New\-SSHKey.ps1} script that caused an error message "Bits has bad value 0 (too small)".
+
+\b Updated documentation to mention addition of Windows firewall rule addition and fix some typos.
 
 \s{1.5}
 

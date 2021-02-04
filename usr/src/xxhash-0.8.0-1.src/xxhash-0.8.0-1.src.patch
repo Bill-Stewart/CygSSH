@@ -1,0 +1,144 @@
+--- origsrc/xxHash-0.8.0/Makefile	2020-07-27 12:57:06.000000000 -0600
++++ src/xxHash-0.8.0/Makefile	2020-09-06 17:03:06.513737100 -0600
+@@ -48,8 +48,8 @@ FLAGS   = $(CFLAGS) $(CPPFLAGS)
+ XXHSUM_VERSION = $(LIBVER)
+ UNAME := $(shell uname)
+ 
+-# Define *.exe as extension for Windows systems
+-ifneq (,$(filter Windows%,$(OS)))
++# Define *.exe as extension for Windows systems, including Cygwin.
++ifneq (,$(filter Windows% Cygwin%, $(OS)))
+ EXT =.exe
+ else
+ EXT =
+@@ -62,6 +62,16 @@ ifeq ($(UNAME), Darwin)
+ 	SHARED_EXT_MAJOR = $(LIBVER_MAJOR).$(SHARED_EXT)
+ 	SHARED_EXT_VER = $(LIBVER).$(SHARED_EXT)
+ 	SONAME_FLAGS = -install_name $(LIBDIR)/libxxhash.$(SHARED_EXT_MAJOR) -compatibility_version $(LIBVER_MAJOR) -current_version $(LIBVER)
++else ifeq (Cygwin, $(OS))
++	SHARED_PFX = cyg
++	SHARED_EXT = dll.a
++	SHARED_EXT_VER = -$(LIBVER_MAJOR).dll
++	SONAME_FLAGS = -Wl,--out-implib,libxxhash.$(SHARED_EXT)
++else ifneq (,$(filter Windows%, $(OS)))
++	SHARED_PFX = lib
++	SHARED_EXT = dll.a
++	SHARED_EXT_VER = -$(LIBVER_MAJOR).dll
++	SONAME_FLAGS = -Wl,--out-implib,libxxhash.$(SHARED_EXT)
+ else
+ 	SONAME_FLAGS = -Wl,-soname=libxxhash.$(SHARED_EXT).$(LIBVER_MAJOR)
+ 	SHARED_EXT = so
+@@ -69,7 +79,9 @@ else
+ 	SHARED_EXT_VER = $(SHARED_EXT).$(LIBVER)
+ endif
+ 
+-LIBXXH = libxxhash.$(SHARED_EXT_VER)
++SHARED_PFX ?= lib
++
++LIBXXH = $(SHARED_PFX)xxhash$(SHARED_EXT_VER)
+ 
+ 
+ ## generate CLI and libraries in release mode (default for `make`)
+@@ -116,19 +128,25 @@ xxhsum_inlinedXXH: xxhsum.c
+ 
+ libxxhash.a: ARFLAGS = rcs
+ libxxhash.a: xxhash.o
++	@echo buiding static library libxxhash.a
+ 	$(AR) $(ARFLAGS) $@ $^
+ 
+ $(LIBXXH): LDFLAGS += -shared
+-ifeq (,$(filter Windows%,$(OS)))
++ifeq (,$(filter Windows% Cygwin%, $(OS)))
+ $(LIBXXH): CFLAGS += -fPIC
+ endif
+ ifeq ($(DISPATCH),1)
+ $(LIBXXH): xxh_x86dispatch.c
+ endif
+ $(LIBXXH): xxhash.c
++	@echo compiling dynamic library $(LIBXXH)
++ifeq (,$(filter Cygwin%, $(OS)))
++	@$(CC) $(FLAGS) -shared $^ -DPIC $(SONAME_FLAGS) -o $(LIBXXH)
++else
+ 	$(CC) $(FLAGS) $^ $(LDFLAGS) $(SONAME_FLAGS) -o $@
+ 	ln -sf $@ libxxhash.$(SHARED_EXT_MAJOR)
+ 	ln -sf $@ libxxhash.$(SHARED_EXT)
++endif
+ 
+ .PHONY: libxxhash
+ libxxhash:  ## generate dynamic xxhash library
+@@ -369,7 +387,7 @@ trailingWhitespace:
+ # =========================================================
+ # make install is validated only for the following targets
+ # =========================================================
+-ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS CYGWIN% , $(UNAME)))
++ifneq (,$(filter Linux Darwin GNU/kFreeBSD GNU OpenBSD FreeBSD NetBSD DragonFly SunOS CYGWIN%, $(UNAME)))
+ 
+ DESTDIR     ?=
+ # directory variables: GNU conventions prefer lowercase
+@@ -388,27 +406,29 @@ BINDIR      ?= $(bindir)
+ datarootdir ?= $(PREFIX)/share
+ mandir      ?= $(datarootdir)/man
+ man1dir     ?= $(mandir)/man1
++DLLDIR      ?= $(BINDIR)
+ 
+-ifneq (,$(filter $(UNAME),FreeBSD NetBSD DragonFly))
++ifneq (,$(filter FreeBSD NetBSD DragonFly, $(UNAME)))
+ PKGCONFIGDIR ?= $(PREFIX)/libdata/pkgconfig
+ else
+ PKGCONFIGDIR ?= $(LIBDIR)/pkgconfig
+ endif
+ 
+-ifneq (,$(filter $(UNAME),OpenBSD FreeBSD NetBSD DragonFly SunOS))
++ifneq (,$(filter OpenBSD FreeBSD NetBSD DragonFly SunOS, $(UNAME)))
+ MANDIR  ?= $(PREFIX)/man/man1
+ else
+ MANDIR  ?= $(man1dir)
+ endif
+ 
+-ifneq (,$(filter $(UNAME),SunOS))
++ifneq (,$(filter SunOS, $(UNAME)))
+ INSTALL ?= ginstall
+ else
+ INSTALL ?= install
+ endif
+ 
+-INSTALL_PROGRAM ?= $(INSTALL)
++INSTALL_PROGRAM ?= $(INSTALL) -m 755
+ INSTALL_DATA    ?= $(INSTALL) -m 644
++INSTALL_LIB     ?= $(INSTALL) -m 755
+ 
+ 
+ PCLIBDIR ?= $(shell echo "$(LIBDIR)"     | $(SED) -n $(SED_ERE_OPT) -e "s@^$(EXEC_PREFIX)(/|$$)@@p")
+@@ -444,11 +464,18 @@ libxxhash.pc: libxxhash.pc.in
+ .PHONY: install
+ install: lib libxxhash.pc xxhsum  ## install libraries, CLI, links and man page
+ 	@echo Installing libxxhash
++	@echo Installing libxxhash for .$(OS).
+ 	$(Q)$(INSTALL) -d -m 755 $(DESTDIR)$(LIBDIR)
++ifneq (,$(filter Windows_NT Cygwin, $(OS)))
++	$(INSTALL_DATA) libxxhash.$(SHARED_EXT) $(DESTDIR)$(LIBDIR)/
++	$(INSTALL_LIB) -d $(DESTDIR)$(DLLDIR)/
++	$(INSTALL_LIB) $(SHARED_PFX)xxhash$(SHARED_EXT_VER) $(DESTDIR)$(DLLDIR)/
++else
+ 	$(Q)$(INSTALL_DATA) libxxhash.a $(DESTDIR)$(LIBDIR)
+ 	$(Q)$(INSTALL_PROGRAM) $(LIBXXH) $(DESTDIR)$(LIBDIR)
+ 	$(Q)ln -sf $(LIBXXH) $(DESTDIR)$(LIBDIR)/libxxhash.$(SHARED_EXT_MAJOR)
+ 	$(Q)ln -sf $(LIBXXH) $(DESTDIR)$(LIBDIR)/libxxhash.$(SHARED_EXT)
++endif
+ 	$(Q)$(INSTALL) -d -m 755 $(DESTDIR)$(INCLUDEDIR)   # includes
+ 	$(Q)$(INSTALL_DATA) xxhash.h $(DESTDIR)$(INCLUDEDIR)
+ 	$(Q)$(INSTALL_DATA) xxh3.h $(DESTDIR)$(INCLUDEDIR) # for compatibility, will be removed in v0.9.0
+@@ -475,8 +502,13 @@ endif
+ uninstall:  ## uninstall libraries, CLI, links and man page
+ 	$(Q)$(RM) $(DESTDIR)$(LIBDIR)/libxxhash.a
+ 	$(Q)$(RM) $(DESTDIR)$(LIBDIR)/libxxhash.$(SHARED_EXT)
++ifneq (,$(filter Windows_NT Cygwin, $(OS)))
++	$(RM) $(DESTDIR)$(DLLDIR)/$(SHARED_PFX)xxhash$(SHARED_EXT_VER)
++	$(RM) $(DESTDIR)$(LIBDIR)/libxxhash.$(SHARED_EXT)
++else
+ 	$(Q)$(RM) $(DESTDIR)$(LIBDIR)/libxxhash.$(SHARED_EXT_MAJOR)
+ 	$(Q)$(RM) $(DESTDIR)$(LIBDIR)/$(LIBXXH)
++endif
+ 	$(Q)$(RM) $(DESTDIR)$(INCLUDEDIR)/xxhash.h
+ 	$(Q)$(RM) $(DESTDIR)$(INCLUDEDIR)/xxh3.h
+ 	$(Q)$(RM) $(DESTDIR)$(INCLUDEDIR)/xxh_x86dispatch.h

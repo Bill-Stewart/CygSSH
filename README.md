@@ -4,16 +4,17 @@ CygSSH is a convenient packaging of the Cygwin port of OpenSSH.
 
 ## System Requirements
 
-* Windows Vista or Windows Server 2008 or later
-* Windows PowerShell 2.0 or later
+* Windows 7 SP1 or Server 2008 R2 SP1 or later
 
-On Windows Vista and Windows Server 2008, Windows Management Framework (WMF)
-2.0 is also required to meet the Windows PowerShell prerequisite.
+Vista/Server 2008 support has been dropped to increase security of the installer.
+
+## Download
+
+https://github.com/Bill-Stewart/CygSSH/releases/
 
 ## Acknowledgments
 
-Special thanks to the authors of the following software packages for their
-generous contributions:
+Special thanks to the authors of the following software packages for their generous contributions:
 
 * Cygwin: https://www.cygwin.com/
 
@@ -30,6 +31,8 @@ generous contributions:
 * Free Pascal: https://www.freepascal.org/
 
 * Halibut: https://www.chiark.greenend.org.uk/~sgtatham/halibut/
+
+* PathMgr.dll: https://github.com/Bill-Stewart/PathMgr/
 
 ## Contributions
 

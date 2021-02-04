@@ -1,3 +1,6 @@
+# Set-SSHGroup.ps1
+# Written by Bill Stewart (bstewart at iname.com)
+
 #requires -version 2
 
 <#
@@ -24,15 +27,14 @@ param(
 
 $ERROR_ELEVATION_REQUIRED = 740
 
-if ( -not $PSScriptRoot ) {
-  $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-}
+$ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent
 
 # Adds Win32API type definitions
 Add-Type -Name Win32API `
-  -MemberDefinition (Get-Content -LiteralPath (Join-Path $PSScriptRoot "Win32API.def") -ErrorAction Stop | Out-String -Width 4096) `
+  -MemberDefinition (Get-Content -LiteralPath (Join-Path $ScriptPath "Win32API.def") -ErrorAction Stop | Out-String -Width ([Int]::MaxValue)) `
   -Namespace "BCA37B9C41264685AD47EEBBD02F40EF" `
   -ErrorAction Stop
+$Win32API = [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]
 
 $LOCAL_GROUP_COMMENT = "Members are permitted to log on to this computer using secure shell (SSH)."
 
@@ -51,7 +53,7 @@ function Invoke-NetLocalGroupAdd {
     # Copy the managed object to it
     [Runtime.InteropServices.Marshal]::StructureToPtr($lgrpi1,$pLgrpi1,$false)
     $parmErr = 0
-    [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetLocalGroupAdd(
+    $Win32API::NetLocalGroupAdd(
       $null,           # servername
       1,               # level
       $pLgrpi1,        # buf
@@ -73,7 +75,7 @@ function Invoke-NetLocalGroupGetInfo {
   $result = 0
   $pLgrpi1 = [IntPtr]::Zero
   try {
-    $result = [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetLocalGroupGetInfo(
+    $result = $Win32API::NetLocalGroupGetInfo(
       $null,           # servername
       $groupName,      # groupName
       1,               # level
@@ -86,7 +88,7 @@ function Invoke-NetLocalGroupGetInfo {
   finally {
     if ( $pLgrpi1 -ne [IntPtr]::Zero ) {
       # Free the unmanaged buffer
-      [Void] [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetApiBufferFree($pLgrpi1)
+      [Void] $Win32API::NetApiBufferFree($pLgrpi1)
     }
   }
   return $result
@@ -120,7 +122,7 @@ function Set-LocalGroupComment {
       $pLgrpi1 = [Runtime.InteropServices.Marshal]::AllocHGlobal([Runtime.InteropServices.Marshal]::SizeOf($lgrpi1))
       [Runtime.InteropServices.Marshal]::StructureToPtr($lgrpi1,$pLgrpi1,$false)
       $parmErr = 0
-      $result = [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]::NetLocalGroupSetInfo(
+      $result = $Win32API::NetLocalGroupSetInfo(
         $null,           # servername
         $groupName,      # groupname
         1,               # level
@@ -166,9 +168,9 @@ function Test-Elevation {
   ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-$CYGPATH = Join-Path $PSScriptRoot "cygpath"
+$CYGPATH = Join-Path $ScriptPath "cygpath"
 Get-Command $CYGPATH -ErrorAction Stop | Out-Null
-$GET_ACCOUNTNAME = Join-Path $PSScriptRoot "Get-AccountName.ps1"
+$GET_ACCOUNTNAME = Join-Path $ScriptPath "Get-AccountName.ps1"
 Get-Command $GET_ACCOUNTNAME -ErrorAction Stop | Out-Null
 
 # Get absolute Windows path of /etc/sshd_config file

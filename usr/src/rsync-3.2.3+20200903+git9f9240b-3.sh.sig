@@ -1,7 +1,0 @@
------BEGIN PGP SIGNATURE-----
-Comment: GPG signature of rsync-3.2.3+20200903+git9f9240b-3.sh (2020-09-08 08:55)
-
-iEYEABECAAYFAl9XHN0ACgkQTafyhJVaktg0FQCfXlgfFQF/6epkXUCZnGuzEEvY
-B2kAn1OB81I/wzOgqb6vn/mWfeTBrG1b
-=wViK
------END PGP SIGNATURE-----

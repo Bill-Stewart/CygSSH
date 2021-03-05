@@ -93,8 +93,8 @@ The installer package is built using the \W{http://www.jrsoftware.org/isinfo.php
 
 Example installation command:
 
-\c CygSSH_version /SILENT /CLOSEAPPLICATIONS
-\e        iiiiiii
+\c CygSSH-Setup-version /SILENT /CLOSEAPPLICATIONS
+\e              iiiiiii
 
 Replace \e{version} with the version (e.g., \s{8.4.1.6}).
 
@@ -948,7 +948,11 @@ The \c{/usr/src} directory contains the source code. The source code files are g
 \I{release history}
 \I{version history}
 
-\s{1.6}
+\s{1.6} (2021-03-05)
+
+\b Updated to OpenSSH 8.5 and mintty 3.4.6.
+
+\s{1.6} (2021-02-04)
 
 \b Dropped support for Windows Vista/Windows Server 2008 to increase the security of the installer.
 
@@ -960,7 +964,7 @@ The \c{/usr/src} directory contains the source code. The source code files are g
 
 \b Fixed typo in \s{New\-SSHKey.ps1} script that caused an error message "Bits has bad value 0 (too small)".
 
-\b Updated documentation to mention addition of Windows firewall rule addition and fix some typos.
+\b Updated documentation to mention addition of Windows firewall rule addition and fixed some typos.
 
 \s{1.5}
 

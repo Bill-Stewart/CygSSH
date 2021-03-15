@@ -54,6 +54,7 @@ Type: filesandordirs; Name: "{app}\usr\src\*"
 Source: "bin\PathMgr.dll"; DestDir: "{app}\bin"; Components: server; Flags: uninsneveruninstall
 ; cygwin x64 - /bin
 Source: "bin-x64\*.dll";                     DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
+Source: "bin-x64\cygcheck.exe";              DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
 Source: "bin-x64\cygpath.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
 Source: "bin-x64\cygrunsrv.exe";             DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
 Source: "bin-x64\cygstart.exe";              DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
@@ -102,6 +103,7 @@ Source: "usr\sbin-x64\sftp-server.exe";       DestDir: "{app}\usr\sbin"; Check: 
 Source: "usr\sbin-x64\sshd.exe";              DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
 ; cygwin x86 - /bin
 Source: "bin-x86\*.dll";                     DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion solidbreak
+Source: "bin-x86\cygcheck.exe";              DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
 Source: "bin-x86\cygpath.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
 Source: "bin-x86\cygrunsrv.exe";             DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
 Source: "bin-x86\cygstart.exe";              DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
@@ -247,7 +249,7 @@ Filename: "{app}\bin\runposh.exe"; \
 
 ; Install service
 Filename: "{app}\bin\runposh.exe"; \
-  Parameters: "-b --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -EnvVarOptions disable_pcon -Install -NoConfirm"; \
+  Parameters: "-b --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -Install -NoConfirm"; \
   StatusMsg: "{cm:RunInstallServiceStatusMsg}"; \
   Components: server; \
   Check: not ServiceExists('{#ServiceName}')
@@ -360,8 +362,8 @@ function AddDirToPath(const DirName: string): DWORD;
     PathType := 1;
     PathTypeName := 'user';
     end;
-  // 3rd parameter 0 = append to path
-  result := DLLAddDirToPath(DirName, PathType, 0);
+  // 3rd parameter 0 = append to end of path, 1 = add to beginning of path
+  result := DLLAddDirToPath(DirName, PathType, 1);
   if result = 0 then
     Log(FmtMessage(CustomMessage('PathAddSuccessMessage'), [DirName,PathTypeName]))
   else

@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 1.6
+\define{version} 1.7
 
 \define{rightarrow} \u2192
 
@@ -79,7 +79,7 @@ The installer performs the following tasks:
 
 \b If the setup type is \s{full} (see \k{setuptype}), creates the OpenSSH server host keys (see \k{hostkeys})
 
-\b If the setup type is \s{full} (see \k{setuptype}), creates the local \c{sshd}\I{sshd account} account (see \k{chrootdirectory})
+\b If the setup type is \s{full} (see \k{setuptype}), creates the local \c{sshd} account (see \k{chrootdirectory}) \I{sshd account}
 
 \b If the setup type is \s{full} (see \k{setuptype}), creates the local access group and updates the \c{sshd_config} file (see \k{localaccessgroup})
 
@@ -89,14 +89,14 @@ The installer performs the following tasks:
 
 \b Performs any other tasks selected on the \s{Select Additional Tasks} page (see \k{setuptasks})
 
-The installer package is built using the \W{http://www.jrsoftware.org/isinfo.php}{Inno Setup} \I{Inno Setup} installer, so it supports Inno Setup's \W{http://www.jrsoftware.org/ishelp/index.php?topic=setupcmdline}{command line parameters}.
+The installer package is built using the \W{http://www.jrsoftware.org/isinfo.php}{Inno Setup} installer, so it supports Inno Setup's \W{http://www.jrsoftware.org/ishelp/index.php?topic=setupcmdline}{command line parameters}. \I{Inno Setup}
 
 Example installation command:
 
 \c CygSSH-Setup-version /SILENT /CLOSEAPPLICATIONS
 \e              iiiiiii
 
-Replace \e{version} with the version (e.g., \s{8.4.1.6}).
+Replace \e{version} with the version (e.g., \s{8.5.1.7}).
 
 The above command installs the package silently (i.e., without user interaction). The \c{/CLOSEAPPLICATIONS} parameter automatically stops running services and closes programs so that the installer can reinstall or upgrade the files. Stopped services will be automatically restarted after the installation completes. \I{/CLOSEAPPLICATIONS parameter} \I{/SILENT parameter} \I{install, silent} \I{silent install}
 
@@ -144,7 +144,7 @@ Note that this page doesn't appear under the following conditions:
 
 \H{setupfolder} Select Start Menu Folder
 
-The \s{Select Start Menu Folder} \I{Start menu} page of the installer wizard allows you to specify the name of the Start menu folder where it will install application shortcut \i{icons}.
+The \s{Select Start Menu Folder} page of the installer wizard allows you to specify the name of the Start menu folder where it will install application shortcut \i{icons}. \I{Start menu}
 
 You can specify the folder name on the command line using the \c{/GROUP="}\e{name}\c{"} command line parameter (where \e{name} is the folder name). Alternatively, you can specify \c{/NOICONS} to prevent creation of any Start menu shortcuts. \I{shortcuts}
 
@@ -156,9 +156,9 @@ The \s{Select Additional Tasks} page of the installer wizard allows you to selec
 
 \b \s{startservice} - Corresponds to the \s{Start OpenSSH server service} check box. Starts the OpenSSH server service. This task is not applicable if the setup type is \s{client} (see \k{setuptype}). This task is selected by default. \I{startservice installer task} \I{service, start}
 
-\b \s{modifypath} - Corresponds to the \s{Add to system Path} (or \s{Add to user Path}) check box. Adds the \e{installpath}\c{\\bin} directory to the system or user Path environment variable if it does not already exist. This task is selected by default. (If you started the installer with the \c{/CURRENTUSER} parameter, this checkbox adds to the user Path rather than the system Path.) (Note that this task does not appear if \e{installpath}\c{\\bin} is already in the system or user Path.) \I{modifypath installer task} \I{system Path} \I{user Path} \I{/CURRENTUSER parameter}
+\b \s{modifypath} - Corresponds to the \s{Add to system Path} (or \s{Add to user Path}) check box. Adds the \e{installpath}\c{\\bin} directory to the system or user Path environment variable if it does not already exist. This task is selected by default. (This task does not appear if \e{installpath}\c{\\bin} is already in the system or user Path.) \I{modifypath installer task} \I{system Path} \I{user Path} \I{/CURRENTUSER parameter}
 
-\b \s{s4ulogonfix} - Corresponds to the \s{Implement MsV1_0S4ULogon fix} check box (see \k{s4ulogonfix}). \I{s4ulogonfix installer task} This task only appears in downlevel OS versions and is not applicable if the setup type is \s{client} (see \k{setuptype}). This task is selected by default \e{only} under the following conditions:
+\b \s{s4ulogonfix} - Corresponds to the \s{Implement MsV1_0S4ULogon fix} check box (see \k{s4ulogonfix}). This task only appears in downlevel OS versions and is not applicable if the setup type is \s{client} (see \k{setuptype}). This task is selected by default \e{only} under the following conditions:  \I{s4ulogonfix installer task}
 
 \lcont{
 
@@ -198,7 +198,7 @@ Reinstalling or upgrading the package is as simple as running the installer:
 
 A reinstall or upgrade cannot proceed if the OpenSSH server service or any of the programs in the package are currently running. If any are running, the installer will prompt for permission to stop running services and close any programs.
 
-You can prevent the prompt from appearing by specifying the \c{/CLOSEAPPLICATIONS} parameter \I{/CLOSEAPPLICATIONS parameter} on the installer's command line. This is particularly useful when using the \c{/SILENT} parameter \I{/SILENT parameter} (see \k{installer}).
+You can prevent the prompt from appearing by specifying the \c{/CLOSEAPPLICATIONS} parameter on the installer's command line. This is particularly useful when using the \c{/SILENT} parameter (see \k{installer}). \I{/CLOSEAPPLICATIONS parameter} \I{/SILENT parameter}
 
 \# ----------------------------------------------------------------------------
 \# CHAPTER
@@ -228,7 +228,7 @@ The uninstall program does not remove the following items:
 
 \b Any other user created files
 
-\b The local \c{sshd}\I{sshd account} user account
+\b The local \c{sshd} user account \I{sshd account}
 
 In addition, if you are running a downlevel OS (see \k{downlevelosversionlimitations}), the unistall program does not reverse the changes made by the \c{s4ulogonfix} installer task (see \k{setuptasks}). If you want to reverse this change, run the following command from an elevated Windows PowerShell window before uninstalling: \I{MsV1_0S4ULogon}
 
@@ -248,11 +248,11 @@ This chapter describes how to authenticate to an OpenSSH server using SSH client
 
 The CygSSH package provides several SSH client commands:
 
-\b The \s{scp} command \I{scp command} copies files to an SSH server
+\b The \s{scp} command copies files to an SSH server \I{scp command}
 
-\b The \s{ssh} command \I{ssh command} establishes an \i{interactive shell} session with an SSH server
+\b The \s{ssh} command establishes an \i{interactive shell} session with an SSH server \I{ssh command}
 
-\b The \s{sftp} command \I{sftp command} establishes a file transfer session with an SSH server
+\b The \s{sftp} command establishes a file transfer session with an SSH server \I{sftp command}
 
 \s{Note:} It's recommended to run the \s{ssh} and \s{sftp} SSH client commands using the \s{mintty} command (e.g., \s{mintty ssh} rather than just \s{ssh}). If you run these SSH client commands without the \s{mintty} command, line wrapping and other features may not work as expected. \I{mintty}
 
@@ -277,7 +277,7 @@ Example 3:
 
 When using the Cygwin SSH client commands, note that path names must be in POSIX format, using the \c{\\} character to \q{escape} spaces where necessary (see \k{posixpathnames}).
 
-If you haven't connected to an SSH server before, the command will prompt you to store the server's host key (see \k{hostkeys}) in the \i\c{known_hosts} file. The default path of the \c{known_hosts} file is in the \c{.ssh} directory \I{.ssh directory} in the user's home directory (see \k{cygwinhome}).
+If you haven't connected to an SSH server before, the command will prompt you to store the server's host key (see \k{hostkeys}) in the \i\c{known_hosts} file. The default path of the \c{known_hosts} file is in the \c{.ssh} directory in the user's home directory (see \k{cygwinhome}). \I{.ssh directory}
 
 You can also use the \s{rsync} command over an SSH connection to transfer files more efficiently (see \k{usingrsync}).
 
@@ -303,7 +303,7 @@ This chapter describes how to configure the OpenSSH server service to permit log
 
 \H{localaccessgroup} Using the Local Access Group
 
-By default, the OpenSSH server service only allows accounts that are members of the \c{SSH\_Users} local group  \I{local access group} \I{access group, local} \I{SSH Users group} to log on. The installer (see \k{installer}) will create the \c{SSH\_Users} local group if it does not exist. This local group is referred to as the \e{local access group}.
+By default, the OpenSSH server service only allows accounts that are members of the \c{SSH\_Users} local group to log on. The installer (see \k{installer}) will create the \c{SSH\_Users} local group if it does not exist. This local group is referred to as the \e{local access group}. \I{local access group} \I{access group, local} \I{SSH Users group}
 
 The local access group is empty by default, which means you must explicitly add accounts to the local access group to allow logon via SSH.
 
@@ -368,11 +368,11 @@ In this example you would create the following directories on the server:
 
 \S1{setacl} Grant the Account Permission to the Directories
 
-To allow an account to authenticate using a public key (see \k{usingpublickeyauth}), you must update the directory's access control list (ACL) \I{Access Control List} to grant the account at least read (\s{RX}) access to the directory and it subdirectories.
+To allow an account to authenticate using a public key (see \k{usingpublickeyauth}), you must update the directory's access control list (ACL) to grant the account at least read (\s{RX}) access to the directory and it subdirectories. \I{Access Control List}
 
 This section also applies to setting up an SFTP-only account (see \k{sftponly}).
 
-You can use the \s{setacl} \I{setacl} command to grant the \i{permissions}.
+You can use the \s{setacl} command to grant the \i{permissions}. \I{setacl}
 
 First, open an elevated PowerShell console (i.e., right-click the PowerShell icon and choose \c{Run as administrator}).
 
@@ -398,7 +398,7 @@ If you want to grant change (\s{RWXD}) instead of just read (\s{RX}) access, rep
 
 To allow an account to authenticate using a public key (see \k{usingpublickeyauth}), you must add the account's public key to the \c{authorized_keys} file. \I{authorized_keys file}
 
-The \c{authorized_keys} file is a text file in the account's \c{.ssh} directory \I{.ssh directory} that contains one line for each public key for the account. (The \W{https://man.openbsd.org/sshd.8#AUTHORIZED_KEYS_FILE_FORMAT}{OpenSSH documentation} describes the \c{authorized_keys} file format.)
+The \c{authorized_keys} file is a text file in the account's \c{.ssh} directory that contains one line for each public key for the account. (The \W{https://man.openbsd.org/sshd.8#AUTHORIZED_KEYS_FILE_FORMAT}{OpenSSH documentation} describes the \c{authorized_keys} file format.) \I{.ssh directory}
 
 If you use the \s{New\-SSHKey.ps1} script to generate a key pair (see \k{newsshkey}), you can use the generated public key (\c{.pub}) file as the \c{authorized_keys} file for the account.
 
@@ -455,7 +455,7 @@ Then, add the following lines to the end of the \c{sshd_config} file: \I{Match U
 \c         ChrootDirectory /users/%u/sftp
 \c         ForceCommand internal-sftp
 
-If the account will authenticate using a public key instead of a password (see \k{usingpublickeyauth}), add the \c{AuthenticationMethods publickey} \I{AuthenticationMethods} setting; e.g.:
+If the account will authenticate using a public key instead of a password (see \k{usingpublickeyauth}), add the \c{AuthenticationMethods publickey} setting; e.g.: \I{AuthenticationMethods}
 
 \c Match User COMPUTER1+sftponly
 \c         AuthenticationMethods publickey
@@ -604,7 +604,7 @@ Hint: If you lose the public key file associated with a private key file, simply
 
 \C{cygwin} About Cygwin
 
-\W{https://www.cygwin.com/}{Cygwin} \I{Cygwin} is a set of Windows DLLs (dynamically linked libraries) that provides substantial \i{POSIX}-compatible API (application programming interface) compatibility.
+\W{https://www.cygwin.com/}{Cygwin} is a set of Windows DLLs (dynamically linked libraries) that provides substantial \i{POSIX}-compatible API (application programming interface) compatibility. \I{Cygwin}
 
 In effect, Cygwin is a POSIX \i{emulation} layer that allows programmers to compile POSIX-compatible source code into Windows executables with minimal changes.
 
@@ -612,9 +612,9 @@ This has several effects on programs that use the Cygwin emulation layer, as des
 
 \H{cygwinfstabfile} Cygwin File System Permissions
 
-By default, Cygwin programs will attempt to reproduce POSIX-style file \i{permissions} using Windows access control lists (ACLs). \I{Access Control List} This can result in unexpected permission problems when running Cygwin-based file management tools such as \s{rsync}. \I{rsync}
+By default, Cygwin programs will attempt to reproduce POSIX-style file \i{permissions} using Windows access control lists (ACLs). This can result in unexpected permission problems when running Cygwin-based file management tools such as \s{rsync}. \I{Access Control List} \I{rsync}
 
-To avoid this problem, the installer (see \k{installer}) configures the file systems in the \e{installpath}\c{\\fstab} file \I{fstab file} to use the \c{noacl} \I{noacl} option for all directories.
+To avoid this problem, the installer (see \k{installer}) configures the file systems in the \e{installpath}\c{\\fstab} file to use the \c{noacl} option for all directories. \I{fstab file} \I{noacl}
 
 Please see the following references in the Cygwin documentation for more information:
 
@@ -643,7 +643,7 @@ Cygwin's account naming rules are as follows:
 
 See \W{https://cygwin.com/cygwin-ug-net/ntsec.html#ntsec-mapping}{the Cygwin documentation} for more details about how Cygwin maps between Windows and POSIX account names.
 
-The \s{Get\-AccountName.ps1} script \I{Get-AccountName.ps1} outputs one or more account names in both Windows and Cygwin formats:
+The \s{Get\-AccountName.ps1} script outputs one or more account names in both Windows and Cygwin formats: \I{Get-AccountName.ps1}
 
 \b The script will output the Windows and Cygwin account names for the current account if you run it without parameters
 
@@ -651,17 +651,17 @@ The \s{Get\-AccountName.ps1} script \I{Get-AccountName.ps1} outputs one or more 
 
 Run the command \s{Get\-Help Get\-AccountName} for more information about the script.
 
-\s{Note:} OpenSSH server versions older than 8.0 required that Cygwin account names be specified using \e{exact case}. \I{case-sensitive account names} This requirement was removed starting in OpenSSH version 8.0.
+\s{Note:} OpenSSH server versions older than 8.0 required that Cygwin account names be specified using \e{exact case}. This requirement was removed starting in OpenSSH version 8.0. \I{case-sensitive account names}
 
 \H{posixpathnames} POSIX Path Names
 
-Cygwin programs use POSIX path names (such as \c{/etc/fstab}) \I{path names, POSIX} \I{POSIX path names} rather than Windows path names (such as \c{C:\\Program Files\\CygSSH\\etc\\fstab}).
+Cygwin programs use POSIX path names (such as \c{/etc/fstab}) rather than Windows path names (such as \c{C:\\Program Files\\CygSSH\\etc\\fstab}). \I{path names, POSIX} \I{POSIX path names}
 
 For example, the root directory (\c{/}) corresponds to \e{installpath} (e.g., \c{C:\\Program Files\\CygSSH}).
 
 Windows drive letters (e.g., \c{C:}) are found in the \c{/cygdrive} directory (e.g., \c{/cygdrive/c} corresponds to \c{C:}).
 
-The \s{cygpath} command \I{cygpath command} allows you to easily translate Windows path names into a POSIX path names and vice-versa. Use the \c{\-w} parameter to tell \s{cygpath} you want the Windows path.
+The \s{cygpath} command allows you to easily translate Windows path names into a POSIX path names and vice-versa. Use the \c{\-w} parameter to tell \s{cygpath} you want the Windows path. \I{cygpath command}
 
 \c Example Command               Example Output
 \c ---------------------------------------------------------------
@@ -676,7 +676,7 @@ If you need to specify a path name that contains spaces on a Cygwin program's co
 
 \H{cygwinhome} The Cygwin Home Directory
 
-A user's \e{home directory} \I{home directory} is the default path location for files owned by that user. By default, Cygwin maps the user's home directory to \c{/home/}\e{accountname} (see \k{posixpathnames} for more about POSIX path names).
+A user's \e{home directory} is the default path location for files owned by that user. By default, Cygwin maps the user's home directory to \c{/home/}\e{accountname} (see \k{posixpathnames} for more about POSIX path names). \I{home directory}
 
 The default can cause confusion, though, because it means that Cygwin and Windows have two separate home directory paths. For example, the Windows home directory for the \c{KenDyer} account might be \c{C:\\Users\\KenDyer} but the default Cygwin home directory would be something like \c{C:\\Program Files\\CygSSH\\home\\KenDyer}.
 
@@ -698,7 +698,7 @@ In this documentation, operating system versions older than Windows 8.1/Server 2
 
 \H{wow64downlevelauth} 32-bit SSH Server on 64-bit OS Cannot Authenticate Local Account Logons
 
-The \i{32-bit} version of the OpenSSH server service on \i{64-bit} downlevel OS versions cannot authenticate local account logons. This is because the \s{MsV1_0S4ULogon} logon type \I{MsV1_0S4ULogon} used by the OpenSSH service to impersonate local accounts is not implemented in the 32-bit emulator on 64-bit Windows OS versions until Windows 8.1/Server 2012 R2.
+The \i{32-bit} version of the OpenSSH server service on \i{64-bit} downlevel OS versions cannot authenticate local account logons. This is because the \s{MsV1_0S4ULogon} logon type used by the OpenSSH service to impersonate local accounts is not implemented in the 32-bit emulator on 64-bit Windows OS versions until Windows 8.1/Server 2012 R2. \I{MsV1_0S4ULogon}
 
 There are two scenarios where the above limitation does \e{not} apply:
 
@@ -718,12 +718,11 @@ In this specific scenario, the OpenSSH server service will not be able to authen
 
 \H{s4ulogonfix} Local Account Logons After Restart Fail Until Another Logon Occurs
 
-The OpenSSH server service on downlevel OS versions will fail to authenticate local account logons after a restart until another logon occurs first. The installer provides the \s{s4ulogonfix} task \I{s4ulogonfix installer task}
-(see \k{setuptasks}) that works around this problem by doing the following:
+The OpenSSH server service on downlevel OS versions will fail to authenticate local account logons after a restart until another logon occurs first. The installer provides the \s{s4ulogonfix} task (see \k{setuptasks}) that works around this problem by doing the following: \I{s4ulogonfix installer task}
 
-\n Creates a local user account named \c{MsV1_0S4ULogon} \I{MsV1_0S4ULogon} with a long, complex password
+\n Creates a local user account named \c{MsV1_0S4ULogon} with a long, complex password \I{MsV1_0S4ULogon}
 
-\n Grants the \s{Log on as a batch job} user right \I{Log on as a batch job} to the local user account
+\n Grants the \s{Log on as a batch job} user right to the local user account \I{Log on as a batch job}
 
 \n Creates a \i{scheduled task} named \c{MsV1_0S4ULogon} that causes a logon at system startup (it simply runs the Windows \s{hostname} command)
 
@@ -757,7 +756,7 @@ If you specify \c{\-Disable} rather than \c{\-Enable} on the script's command li
 
 \A{chrootdirectory} The ChrootDirectory Setting
 
-On a POSIX-compliant operating system (e.g., Linux), the OpenSSH \c{ChrootDirectory} setting \I{ChrootDirectory setting} uses the \i\c{chroot} system call to restrict an account's access to a specific path in the file system: The account cannot access any file or directory outside of that specific path. In POSIX terminology, this is sometimes referred to as a \e{\i{chroot jail}}.
+On a POSIX-compliant operating system (e.g., Linux), the OpenSSH \c{ChrootDirectory} setting uses the \i\c{chroot} system call to restrict an account's access to a specific path in the file system: The account cannot access any file or directory outside of that specific path. In POSIX terminology, this is sometimes referred to as a \e{\i{chroot jail}}. \I{ChrootDirectory setting}
 
 The Cygwin emulation layer used by OpenSSH on Windows (see \k{cygwin}) has a limited implementation of \c{chroot} because the Windows operating system does not have a direct equivalent of this system call. Consequently, Cygwin's limited implementation of \c{chroot} is not a true security control because it can sometimes permit the account to \q{escape} from the \q{jail.} (It's important to understand that even if the account \q{escapes} from the \q{jail,} the account is still restricted by Windows security controls; it's just that the limited Cygwin \i{chroot jail} isn't enforced as an \e{additional} security control.)
 
@@ -765,9 +764,9 @@ Even though Cygwin's implementation \c{chroot} is not a true security control, w
 
 Using the \c{ChrootDirectory} setting in \c{sshd_config} requires the following two items be in place:
 
-\n The \c{passwd} file \I{passwd file} in the \c{etc} directory must specify that the Windows \c{SYSTEM} account is user number \c{0} (this corresponds to the POSIX \c{root} user account) \I{root user account}
+\n The \c{passwd} file in the \c{etc} directory must specify that the Windows \c{SYSTEM} account is user number \c{0} (this corresponds to the POSIX \c{root} user account) \I{passwd file} \I{root user account}
 
-\n The local \c{sshd} account\I{sshd account} (known as the \e{privsep account}) \I{privsep account} must exist, and it must be \s{enabled} (it must \e{not} be disabled as stated in the OpenSSH documentation)
+\n The local \c{sshd} account (known as the \e{privsep account}) must exist, and it must be \s{enabled} (it must \e{not} be disabled as stated in the OpenSSH documentation) \I{sshd account} \I{privsep account}
 
 These two items are taken care of automatically at installation time (they don't need to be configured manually).
 
@@ -777,7 +776,7 @@ These two items are taken care of automatically at installation time (they don't
 
 \A{usingrsync} Using rsync with SSH
 
-The \s{rsync} command \I{rsync} is an efficient file and directory replication tool that supports replication over an SSH connection so that the data is encrypted in transit.
+The \s{rsync} command is an efficient file and directory replication tool that supports replication over an SSH connection so that the data is encrypted in transit. \I{rsync}
 
 The syntax for replicating data to a remote computer using an SSH connection is as follows:
 
@@ -840,7 +839,7 @@ See \k{documentationlinks} for a link to \s{rsync}'s documentation.
 
 \A{powershellscripts} Windows PowerShell Scripts
 
-The following list describes the \i{Windows PowerShell scripts} \I{PowerShell scripts} provided by the CygSSH package.
+The following list describes the \i{Windows PowerShell scripts} provided by the CygSSH package. \I{PowerShell scripts}
 
 \s{Edit\-SSHKey.ps1} - Updates a private key file's comment or passphrase (see \k{editprivatekey}) \I{Edit-SSHKey.ps1}
 
@@ -947,6 +946,14 @@ The \c{/usr/src} directory contains the source code. The source code files are g
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{1.7} (2021-03-12)
+
+\b Updated Cygwin packages.
+
+\b Installer behavior change: If adding to the Path is selected, the installer will add to the beginning of the Path rather than the end. This change was made because newer versions of Windows have OpenSSH client utilities in the system Path by default that can cause compatibility problems with the Cygwin programs. (Note that this change will not be effective if installing in non-administrative installation mode because the directories in the system Path always appear before the current user Path.)
+
+\b Removed clickable hyperlinks in RTF documents displayed by the installer to prevent accidental launching of an elevated browser.
 
 \s{1.6} (2021-03-05)
 

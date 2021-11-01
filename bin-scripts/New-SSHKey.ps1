@@ -68,8 +68,8 @@ $DASH = Join-Path $ScriptPath "dash"
 Get-Command $DASH -ErrorAction Stop | Out-Null
 $SSH_KEYGEN = Join-Path $ScriptPath "ssh-keygen"
 Get-Command $SSH_KEYGEN -ErrorAction Stop | Out-Null
-$SETACL = Join-Path $ScriptPath "setacl"
-Get-Command $SETACL -ErrorAction Stop | Out-Null
+$ICACLS = Join-Path ([Environment]::GetFolderPath([Environment+SpecialFolder]::System)) "icacls.exe"
+Get-Command $ICACLS -ErrorAction Stop | Out-Null
 
 #------------------------------------------------------------------------------
 # Define Windows error code constants
@@ -278,7 +278,7 @@ Remove-Variable Passphrase2
 
 # If ssh-keygen succeeded and private key file exists, restrict permissions
 if ( ($ExitCode -eq 0) -and (Test-Path -LiteralPath $FileName) ) {
-  & $SETACL -ot file -on $FileName -actn ace -ace "n:S-1-5-18;p:full" -actn ace -ace ("n:{0};p:full" -f [Security.Principal.WindowsIdentity]::GetCurrent().Name) -actn setprot -op "dacl:p_nc" > $null
+  & $ICACLS $FileName /inheritance:r /grant "*S-1-5-18:F" ("{0}:F" -f [Security.Principal.WindowsIdentity]::GetCurrent().Name) > $null
   $ExitCode = $LASTEXITCODE
   if ( $ExitCode -eq 0 ) {
     if ( -not $Quiet ) {

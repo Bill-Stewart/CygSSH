@@ -1,4 +1,4 @@
-#preproc ispp
+﻿#preproc ispp
 
 ; Cygwin-OpenSSH - Inno Setup messages file
 
@@ -9,6 +9,7 @@ SetupWindowTitle=Setup - %1 [{#AppFullVersion}]
 WizardSelectComponents=Select Setup Type
 SelectComponentsDesc=Which components should be installed?
 SelectComponentsLabel2=Select the setup type you want to use. Click Next when you are ready to continue.
+CannotContinue=Setup cannot continue. Click Back to try again, or Cancel to exit.
 FinishedLabel=Setup has finished installing [name] on your computer.
 
 [CustomMessages]
@@ -26,9 +27,11 @@ IconsUserGuideName=User Guide
 IconsUserGuideComment=Cygwin OpenSSH User Guide
 
 ; Tasks
-TasksStartServiceDescription=Start OpenSSH server service
-TasksModifyPathDescription=Add to %1
-TasksS4ULogonFixDescription=Implement MsV1_0S4ULogon fix
+TasksStartServiceDescription=&Start OpenSSH server service
+TasksModifyPathDescription=&Add to %1
+TasksS4ULogonFixDescription=Implement &MsV1_0S4ULogon fix
+TasksResetConfigDescription=&Reset OpenSSH configuration files to default (use with caution!)
+TasksDownloadSourceDescription=&Download source code
 
 ; Run
 RunSetPermissionsStatusMsg=Setting file system permissions...
@@ -39,6 +42,11 @@ RunConfigureMsV1_0S4ULogonFixStatusMsg=Configuring MsV1_0S4ULogon fix...
 RunInstallServiceStatusMsg=Installing OpenSSH server service...
 RunStartServiceStatusMsg=Starting OpenSSH server service...
 
+; Reset config messages
+ResetConfigFileConfirmationMessage=Restting the OpenSSH configuration files to default means you will lose any configuration customizations.%n%nAre you sure you want to continue?
+ResetConfigFileRenameSuccessMessage=Successfully renamed "%1" to "%2"
+ResetConfigFileRenameFailMessage=Failed to rename "%1" to "%2"
+
 ; Path messages
 PathTypeSystemMessage=system Path
 PathTypeUserMessage=user Path
@@ -46,6 +54,14 @@ PathAddSuccessMessage=Successfully added "%1" to %2 Path
 PathAddFailMessage=Failed to add "%1" to %2 Path - error %3
 PathRemoveSuccessMessage=Successfully removed "%1" from %2 Path
 PathRemoveFailMessage=Failed to remove "%1" from %2 Path - error %3
+
+; Package messages
+PackageDetectedLogMessage=Existing installation of package detected
+PackageNotDetectedLogMessage=No existing installations of package detected
+PackageVersionLessLogMessage=This version (%1) less than installed version
+PackageVersionEqualLogMessage=This version (%1) equal to installed version
+PackageVersionGreaterLogMessage=This version (%1) greater than installed version
+PackageUninstallStatusLogMessage=Uninstall existing package exit code = %1
 
 ; Executable detection messages
 ApplicationsRunningLogMessage=Applications are using files that need to be updated by Setup.
@@ -57,6 +73,9 @@ ApplicationsStillRunningMessage=Applications are still using files that need to 
 RunCommandMessage=Run command: "%1" %2
 ClosedApplicationsMessage=Stopped running service(s) and closed running application(s).
 StartedServicesMessage=Service restart command(s) executed successfully.
+
+; Download page
+DownloadPageDownloadCompleteLogMessage=Successfully downloaded file: %1
 
 ; Application progress page
 AppProgressPageInstallingCaption=Please wait while Setup installs %1 on your computer.

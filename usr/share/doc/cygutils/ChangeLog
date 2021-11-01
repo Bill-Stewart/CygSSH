@@ -1,3 +1,37 @@
+2021-09-23  Mark Geisert  <mark@maxrnd.com>  (1.4.16-7)
+
+	* src/readshortcut/readshortcut.c: Fix mbstowcs usage so no chance
+	of buffer overflow to be caught at runtime by ssp.  Thanks to Keith
+	Christian for the report.
+
+2021-08-28  Mark Geisert  <mark@maxrnd.com>  (1.4.16-6)
+
+	* src/clip/putclip.c: Supply terminator for Unicode input lacking it.
+	Add diagnostic for OpenClipboard() failure that results in "Couldn't
+	write CF_TEXT format to the clipboard" error message.  Thanks to
+	Takashi Yano for the reports.
+	* Makefile.am: src_clip_getclip_LDADD no longer needs -lkernel32.
+
+2021-08-24  Mark Geisert  <mark@maxrnd.com>  (1.4.16-5)
+
+	* src/clip/putclip.c: Fix broken Unicode support. Don't GlobalFree a
+	handle that's been transferred to the system by SetClipboardData().
+	Thanks to Christian Franke for that last bit.
+
+2021-08-15  Mark Geisert  <mark@maxrnd.com>  (1.4.16-4)
+
+	* Makefile.am: Add -lkernel32 to src_clip_getclip_LDADD.  This somehow
+	didn't make it into the released -3 package.  Thank you Takashi Yano.
+	* Fix maintainer build environment issues that caused cygstart crash
+	on non-AVX user systems: Thank you Takashi Yano, Brian Inglis, Achim
+	Gratz and user Jay Abel for reporting the issue.
+	* src/cygdrop/cygdrop.cc: Fix crash with recent gcc and fix printf
+	format strings. Thank you Christian Franke.
+
+2021-07-05  Mark Geisert  <mark@maxrnd.com>  (1.4.16-3)
+
+	* src/clip/getclip.c: Add Unicode support.
+
 2017-07-03  Mark Geisert  <mark@maxrnd.com>
 
 	Release 1.4.16

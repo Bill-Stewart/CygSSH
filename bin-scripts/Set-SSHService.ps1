@@ -129,6 +129,7 @@ function Get-RandomString {
 function New-LocalUserAccount {
   param(
     [String] $userName,
+
     [String] $comment
   )
   $userInfo2 = New-Object "BCA37B9C41264685AD47EEBBD02F40EF.Win32API+USER_INFO_2"
@@ -171,6 +172,7 @@ function New-LocalUserAccount {
 function Invoke-NetUserGetInfo {
   param(
     [String] $userName,
+
     [Ref] $userInfo2
   )
   $result = 0
@@ -294,6 +296,7 @@ function Test-Elevation {
 function Get-MessageDescription {
   param(
     $messageId,
+
     [Switch] $asError
   )
   # message id must be Int32
@@ -323,7 +326,9 @@ function ConvertTo-Array {
 function Start-Executable {
   param(
     [String] $filePath,
+
     [String] $arguments,
+
     [Ref] $output
   )
   $result = 0
@@ -388,6 +393,7 @@ function Invoke-Cygrunsrv {
 function New-FirewallRule {
   param(
     [String] $ruleName,
+
     [String] $fileName
   )
   & $NETSH advfirewall firewall add rule name=$ruleName dir=in action=allow program=$fileName > $null 2>&1
@@ -397,6 +403,7 @@ function New-FirewallRule {
 function Remove-FirewallRule {
   param(
     [String] $ruleName,
+
     [String] $fileName
   )
   & $NETSH advfirewall firewall delete rule name=$ruleName dir=in program=$fileName > $null 2>&1

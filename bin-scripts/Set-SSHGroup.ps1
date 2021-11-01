@@ -42,6 +42,7 @@ $LOCAL_GROUP_COMMENT = "Members are permitted to log on to this computer using s
 function Invoke-NetLocalGroupAdd {
   param(
     [String] $groupName,
+
     [String] $comment
   )
   $lgrpi1 = New-Object "BCA37B9C41264685AD47EEBBD02F40EF.Win32API+LOCALGROUP_INFO_1"
@@ -70,6 +71,7 @@ function Invoke-NetLocalGroupAdd {
 function Invoke-NetLocalGroupGetInfo {
   param(
     [String] $groupName,
+
     [Ref] $lgrpi1
   )
   $result = 0
@@ -112,6 +114,7 @@ function Get-LocalGroupComment {
 function Set-LocalGroupComment {
   param(
     [String] $groupName,
+
     [String] $comment
   )
   $lgrpi1 = $null
@@ -150,6 +153,7 @@ function Test-LocalGroup {
 function Get-MessageDescription {
   param(
     $messageId,
+
     [Switch] $asError
   )
   # message id must be Int32

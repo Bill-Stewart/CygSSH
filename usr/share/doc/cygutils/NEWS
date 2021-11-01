@@ -3,6 +3,9 @@
   * Minor formatting fixes to quash compiler warnings.
   * Execute bits removed from files not needing them.
   * Temporarily rename /usr/lib/libpopt.la while building package.
+  * Unicode support added to getclip and putclip.
+  * Fix mbstowcs bug in readshortcut causing "buffer overflow detected" from
+    -fstack-protect at runtime.
 
 1.4.15
   New maintainer Mark Geisert <mark@maxrnd.com>.

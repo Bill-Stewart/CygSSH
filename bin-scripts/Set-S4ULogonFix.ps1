@@ -95,8 +95,8 @@ $UF_ACCOUNTDISABLE        = 0x00002
 $UF_DONT_EXPIRE_PASSWD    = 0x10000
 
 # Object descriptions
-$USER_ACCOUNT_DESCRIPTION   = "Added by Cygwin OpenSSH - See '{0}' scheduled task" -f $TaskName
-$SCHEDULED_TASK_DESCRIPTION = "Added by Cygwin OpenSSH - This task fixes the MsV1_0S4ULogon logon type on this computer by performing an initial logon at system startup. If this task does not run, MsV1_0S4ULogon logons (such as a logon to the OpenSSH server service using a local account) on this computer may not work after a system restart until after at least one user logs on."
+$USER_ACCOUNT_DESCRIPTION   = "Added by CygSSH - See '{0}' scheduled task" -f $TaskName
+$SCHEDULED_TASK_DESCRIPTION = "Added by CygSSH - This task fixes the MsV1_0S4ULogon logon type on this computer by performing an initial logon at system startup. If this task does not run, MsV1_0S4ULogon logons (such as a logon to the OpenSSH server service using a local account) on this computer may not work after a system restart until after at least one user logs on."
 
 #------------------------------------------------------------------------------
 # Functions
@@ -106,7 +106,9 @@ $SCHEDULED_TASK_DESCRIPTION = "Added by Cygwin OpenSSH - This task fixes the MsV
 function New-LocalUserAccount {
   param(
     [String] $userName,
+
     [Security.SecureString] $password,
+
     [String] $comment
   )
   $userInfo2 = New-Object "BCA37B9C41264685AD47EEBBD02F40EF.Win32API+USER_INFO_2"
@@ -149,6 +151,7 @@ function New-LocalUserAccount {
 function Invoke-NetUserGetInfo {
   param(
     [String] $userName,
+
     [Ref] $userInfo2
   )
   $result = 0
@@ -179,6 +182,7 @@ function Invoke-NetUserGetInfo {
 function Reset-LocalUserAccount {
   param(
     [String] $userName,
+
     [Security.SecureString] $password
   )
   $userInfo2 = $null
@@ -272,6 +276,7 @@ function Test-Elevation {
 function Get-MessageDescription {
   param(
     $messageId,
+
     [Switch] $asError
   )
   # message id must be Int32
@@ -346,8 +351,11 @@ function Test-ScheduledTask {
 function New-ScheduledTask {
   param(
     [String] $taskName,
+
     [String] $taskUserName,
+
     [Security.SecureString] $password,
+
     [String] $description
   )
   $result = 0
@@ -376,7 +384,9 @@ function New-ScheduledTask {
 function Reset-ScheduledTask {
   param(
     [String] $taskName,
+
     [String] $taskUserName,
+
     [Security.SecureString] $password
   )
   $result = 0
@@ -436,7 +446,9 @@ function ConvertTo-Array {
 function Start-Executable {
   param(
     [String] $filePath,
+
     [String] $arguments,
+
     [Ref] $output
   )
   $result = 0
@@ -481,7 +493,9 @@ function Invoke-Editrights {
   [CmdletBinding()]
   param(
     [String[]] $argList,
+
     [Ref] $output,
+
     [Ref] $errorMessage
   )
   $OFS = " "
@@ -505,7 +519,9 @@ function Invoke-Editrights {
 function Get-UserRights {
   param(
     [String] $userName,
+
     [Ref] $userRights,
+
     [Ref] $errorMessage
   )
   $output = $null
@@ -520,7 +536,9 @@ function Get-UserRights {
 function Grant-UserRight {
   param(
     [String] $userName,
+
     [String] $userRight,
+
     [Ref] $errorMessage
   )
   $output = $null
@@ -531,7 +549,9 @@ function Grant-UserRight {
 function Revoke-UserRight {
   param(
     [String] $userName,
+
     [String] $userRight,
+
     [Ref] $errorMessage
   )
   $output = $null

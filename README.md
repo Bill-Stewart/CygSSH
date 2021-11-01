@@ -1,6 +1,6 @@
 # CygSSH
 
-CygSSH is a convenient packaging of the Cygwin port of OpenSSH.
+CygSSH is a convenient packaging of the Cygwin port of OpenSSH that includes rsync and some other useful tools.
 
 ## System Requirements
 
@@ -31,6 +31,8 @@ Special thanks to the authors of the following software packages for their gener
 * Halibut - https://www.chiark.greenend.org.uk/~sgtatham/halibut/
 
 * PathMgr.dll - https://github.com/Bill-Stewart/PathMgr/
+
+* UninsIS.dll - https://github.com/Bill-Stewart/UninsIS/
 
 ## Contributions
 

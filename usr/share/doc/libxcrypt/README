@@ -2,6 +2,7 @@
 [![COPR Build Status](https://copr.fedorainfracloud.org/coprs/besser82/libxcrypt_CI/package/libxcrypt/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/besser82/libxcrypt_CI)
 [![codecov](https://codecov.io/gh/besser82/libxcrypt/branch/develop/graph/badge.svg)](https://codecov.io/gh/besser82/libxcrypt)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/17073/badge.svg)](https://scan.coverity.com/projects/besser82-libxcrypt)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1ebaa2314aca4bab92e14130906d5096)](https://www.codacy.com/manual/besser82/libxcrypt?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=besser82/libxcrypt&amp;utm_campaign=Badge_Grade)
 
 README for libxcrypt
 ====================
@@ -53,19 +54,18 @@ maintainers, so please be patient.
 Build Requirements and Instructions
 -----------------------------------
 
-To build from a tarball release, the only tools required are the
-standard Unix shell environment (including an implementation of AWK)
-and a C compiler.  Follow the generic build and installation
-instructions in the file `INSTALL`.  There are two package-specific
-configure switches: `--enable-obsolete-api` and `--enable-hashes`.
-Run `./configure --help` for more detail on these options.
+To build from a tarball release, the tools required are the standard
+Unix shell environment, a C compiler, and Perl (version 5.14 or
+later).  Follow the generic build and installation instructions in the
+file `INSTALL`.  There are several package-specific configure options;
+run `./configure --help` for more detail on these options.
 Run `man -l crypt.5` for more detail on the hashing algorithms that
 can be enabled or disabled by `--enable-hashes`.  You can do both of
 these things before building the software.
 
 Building from a Git checkout additionally requires the Autotools
 suite: `autoconf`, `automake`, `libtool`, and `pkg-config`.
-Run `./bootstrap` at the top level of the source tree, and then
+Run `./autogen.sh` at the top level of the source tree, and then
 follow the instructions in `INSTALL` (which is created by that command).
 
 The oldest versions of Autotools components that are known to work

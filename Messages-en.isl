@@ -76,6 +76,7 @@ StartedServicesMessage=Service restart command(s) executed successfully.
 
 ; Download page
 DownloadPageDownloadCompleteLogMessage=Successfully downloaded file: %1
+DownloadPageDownloadAbortedByUser=Download aborted by user.
 
 ; Application progress page
 AppProgressPageInstallingCaption=Please wait while Setup installs %1 on your computer.

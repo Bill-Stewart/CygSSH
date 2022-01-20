@@ -2,39 +2,51 @@ _autorebase
 ===========
 
 This package provides scripts to keep the Cygwin system properly
-rebased.  By default this happens incrementally, which means after
-each run of setup.exe it is determined which packages have been newly
-installed and only the dynamic objects provided by those packages are
-rebased, taking the rebase map of the existing installation into
-account.  The scripts are intended to be run by the system
-administrator or from another account that has all the necessary
-access rights.
+rebased.  By default this happens incrementally, which means only
+dynamic objects that have been installed after the last run of rebase
+will be considered and the current rebase map takes account of the
+already rebased parts of the installation.  The scripts must be run by
+the system administrator or from another account that has all the
+necessary access rights.
 
-Since over time the rebase map can fragment, it is possible to trigger
-a full rebase.  In this case all packages on the system are treated as
-newly installed and the existing rebase map is cleared before doing
-the rebase.
+Over time the rebase map can fragment.  By triggering a full rebase,
+all dynamic objects on the system are treated as newly installed and
+the existing rebase map is cleared before doing the rebase.  To
+perform a full rebase, execute "rebase-trigger fullrebase".  Then shut
+down Cygwin including any services you have installed and simply run
+setup.exe.  The rebase will be performed even when the installation
+did not get modified in any way.  Subsequent runs of setup.exe will
+again rebase in incremental mode.
 
 Some programs allow the user to create or install dynamic objects
 after installation.  Since these are not part of an installed package,
-they wouldn't be rebased automatically, as their location isn't known.
-Packages can make the potential locations of such dynamic objects
-known by dropping a file (named after the package) in
-/var/lib/rebase/dynpath.d/.  If any dynamic objects are installed by
-users, these locations should be advertised in /var/lib/rebase/user.d/
-(the file name should be identical to the user name if there are
-multiple users on this system).  The format of these files is one
-absolute path per line.  Those directory paths should not include
-locations of packaged dynamic objects, as these are already picked up
-from the installation.
+they wouldn't be rebased automatically, as their location isn't known
+to the package system. Entire subtrees to be searched for dynamic
+objects can be advertised in /var/lib/rebase/dynpath.d/,
+/var/lib/rebase/localpath.d/ and /var/lib/rebase/userpath.d/ for
+packaged paths, locally provided paths and user paths, respectively.
+The format of files in these directories is one absolute path per
+line.  The list of suffixes that files need to have to be considered
+dynamic objects in these locations is hardcoded as
+"dll|so|eln|oct|mex".  Files that should be rebased, but do not have
+one of these suffixes can be advertised in /var/lib/dynfile.d,
+/var/lib/localfile.d and /var/lib/userfile.d for packaged files,
+locally provided files and user files, respectively.  The format of
+files in these directories is one absolute file name per line.
+Packagers should name their files after the (main) application package
+that creates the dynamic objects at the advertised location and must
+not package anything in either the local*.d or user*.d directories.
+The local system administrator should only place files in local*.d
+directories and otherwise keep the naming scheme as used for packages.
+The user*.d file names should start with the account name of the user
+the advertised locations belong to.
+
+The user running the installation must have full access rights to all
+such paths and all such locations must be available (e.g. remote or
+encrypted volumes must be mounted and unlocked, respectively).
 
 The incremental rebase is controlled by the script /usr/bin/rebaselst.
-Except for debugging purposes this script should not be run directly by
-users, as (like any other attempt at rebasing) it doesn't work
+Except for debugging purposes this script should not be run directly
+by users.  Like any other attempt at rebasing it doesn't work
 correctly on a live Cygwin system.
 
-To perform a full rebase, execute "rebase-trigger fullrebase".  Then
-shut down Cygwin, including any services you have installed, and
-simply run setup.exe.  The rebase will be performed even when the
-installation did not get modified in any way.  Any subsequent runs of
-setup.exe will again rebase in incremental mode.

@@ -1,4 +1,4 @@
-# CygSSH
+﻿# CygSSH
 
 CygSSH is a convenient packaging of the Cygwin port of OpenSSH that includes rsync and some other useful tools.
 
@@ -21,8 +21,6 @@ Special thanks to the authors of the following software packages for their gener
 * winpty - https://github.com/rprichard/winpty/
 
 * rsync - https://rsync.samba.org/
-
-* SetACL - https://helgeklein.com/setacl/
 
 * Inno Setup - https://jrsoftware.org/isinfo.php
 

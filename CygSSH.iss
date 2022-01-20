@@ -1,4 +1,4 @@
-; CygSSH - Inno Setup installer script
+﻿; CygSSH - Inno Setup installer script
 
 #include AddBackslash(SourcePath) + "includes.iss"
 
@@ -15,7 +15,7 @@ CloseApplicationsFilter=*.chm,*.pdf,*.ps1
 Compression=lzma2/ultra
 DefaultDirName={autopf}\{#InstallDirName}
 DefaultGroupName={#AppName}
-DisableWelcomePage=no
+DisableWelcomePage=yes
 MinVersion=6.1sp1
 OutputBaseFilename={#SetupName}-{#SetupVersion}
 OutputDir=.
@@ -340,7 +340,7 @@ type
 var
   DownloadPage: TDownloadWizardPage;
   AppProgressPage: TOutputProgressWizardPage;
-  PathIsModified, S4UTaskDefaultChanged: Boolean;
+  FileDownloaded, PathIsModified, S4UTaskDefaultChanged: Boolean;
   SWbemLocator, WMIService: Variant;
   RunningServices: TCygwinServiceList;
 
@@ -508,6 +508,8 @@ end;
 function InitializeSetup(): Boolean;
 begin
   result := true;
+  // File not downloaded
+  FileDownloaded := false;
   // Was modifypath task selected during a previous install?
   PathIsModified := GetPreviousData(MODIFY_PATH_TASK_NAME, '') = 'true';
   // S4U task not visited yet
@@ -526,7 +528,10 @@ function OnDownloadProgress(const Url, FileName: string; const Progress, Progres
 begin
   result := true;
   if Progress = ProgressMax then
+  begin
+    FileDownloaded := true;
     Log(FmtMessage(CustomMessage('DownloadPageDownloadCompleteLogMessage'), [FileName]));
+  end;
 end;
 
 procedure InitializeWizard();
@@ -827,10 +832,10 @@ begin
   if Count > 0 then
   begin
     Command := ExpandConstant('{sys}\taskkill.exe');
-    Parameters := ' ';
-    for I := 0 to Count - 1 do
-      Parameters := Parameters + Format('/PID %d ', [Processes[I].ProcessId]);
-    Parameters := Parameters + '/F';
+    Parameters := Format('/PID %d', [Processes[0].ProcessId]);
+    for I := 1 to Count - 1 do
+      Parameters := Parameters + Format(' /PID %d', [Processes[I].ProcessId]);
+    Parameters := Parameters + ' /F';
     Log(FmtMessage(CustomMessage('RunCommandMessage'), [Command, Parameters]));
     Exec(Command, Parameters, '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
     result := GetCygwinRunningProcesses(CygwinRootDir, Processes) = 0;
@@ -862,6 +867,8 @@ begin
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
+var
+  ErrorMessage: string;
 begin
   result := true;
   if CurPageID = wpSelectTasks then
@@ -876,19 +883,30 @@ begin
   end
   else if CurPageID = wpReady then
   begin
-    // Download source code if task selected
-    if WizardIsTaskSelected('downloadsource') then
+    // Download source code if task selected and not already downloaded
+    if WizardIsTaskSelected('downloadsource') and (not FileDownloaded) then
     begin
       DownloadPage.Clear();
       DownloadPage.Add('{#SourceArchiveURL}', '{#SourceArchiveFileName}', '');
       DownloadPage.Show();
       try
-        DownloadPage.Download();
-      except
-        SuppressibleMsgBox(AddPeriod(GetExceptionMessage), mbCriticalError, MB_OK, IDOK);
+        try
+          DownloadPage.Download();
+        except
+          if DownloadPage.AbortedByUser then
+            Log(CustomMessage('DownloadPageDownloadAbortedByUser'))
+          else
+          begin
+            ErrorMessage := AddPeriod(GetExceptionMessage);
+            Log(ErrorMessage);
+            SuppressibleMsgBox(ErrorMessage, mbCriticalError, MB_OK, IDOK);
+          end;
+          FileDownloaded := false;
+          result := WizardSilent();  // Prevent continuing setup if not silent
+        end;
       finally
         DownloadPage.Hide();
-      end; // try
+      end;
     end;
   end;
 end;

@@ -1,3 +1,27 @@
+2022-01-28  Mark Geisert  <mark@maxrnd.com>
+
+	Release 1.4.17
+	* configure.ac: Bump version number to 1.4.17.
+	* BRANCHES: Ditto.
+	* cygutils.cygport: Ditto.
+	* src/clip/getclip.c: Fix segfault on xterm selections. Thanks to
+	Denis Excoffier for the report, Brian Inglis, Andrey Repin, and Jon
+	Turney for the discussion.
+	* src/clip/putclip.c: Add missing 32/64 timespec expansion. Thanks to
+	Takashi Yano for the report and investigation.
+	* src/clip/putclip.c: Make sure allocated buf is large enough to
+	append a NUL character. Thanks to Marco Atzeri for the report.
+	* src/clip/putclip.c: Add debugging feature to allow a file name in
+	argv (undocumented).
+
+2021-11-03  Mark Geisert  <mark@maxrnd.com>  (1.4.16-8)
+
+	* src/clip/{get,put}clip.c: Replace use of Windows UTF-8 conversion
+	functions with corresponding POSIX functions. MultiByteToWideChar->
+	mbstowcs, WideCharToMultiByte->wcstombs. Thanks to Takashi Yano.
+	* src/clip/putclip.c: Have putclip open the clipboard just once
+	instead of multiple times for multiple formats. Thanks to Takashi Yano.
+
 2021-09-23  Mark Geisert  <mark@maxrnd.com>  (1.4.16-7)
 
 	* src/readshortcut/readshortcut.c: Fix mbstowcs usage so no chance
@@ -24,7 +48,7 @@
 	didn't make it into the released -3 package.  Thank you Takashi Yano.
 	* Fix maintainer build environment issues that caused cygstart crash
 	on non-AVX user systems: Thank you Takashi Yano, Brian Inglis, Achim
-	Gratz and user Jay Abel for reporting the issue.
+	Gratz, and user Jay Abel for reporting the issue.
 	* src/cygdrop/cygdrop.cc: Fix crash with recent gcc and fix printf
 	format strings. Thank you Christian Franke.
 

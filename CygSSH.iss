@@ -340,7 +340,7 @@ type
 var
   DownloadPage: TDownloadWizardPage;
   AppProgressPage: TOutputProgressWizardPage;
-  FileDownloaded, PathIsModified, S4UTaskDefaultChanged: Boolean;
+  FileDownloaded, PathIsModified, S4UTaskDefaultChanged, ApplicationUninstalled: Boolean;
   SWbemLocator, WMIService: Variant;
   RunningServices: TCygwinServiceList;
 
@@ -547,6 +547,7 @@ begin
   result := true;
   // Was modifypath task selected during a previous install?
   PathIsModified := GetPreviousData(MODIFY_PATH_TASK_NAME, '') = 'true';
+  ApplicationUninstalled := false;
 end;
 
 function IsDomainMember(): Boolean;
@@ -595,6 +596,10 @@ begin
   begin
     if PathIsModified then
       RemoveDirFromPath(ExpandConstant('{app}\bin'));
+  end
+  else if CurUninstallStep = usPostUninstall then
+  begin
+    ApplicationUninstalled := true;
   end;
 end;
 
@@ -1028,16 +1033,19 @@ procedure DeinitializeUninstall();
 var
   DLLFileName, DLLPath: string;
 begin
-  // Unload and delete PathMgr.dll and remove dir when uninstalling
-  DLLFileName := ExpandConstant('{app}\bin\PathMgr.dll');
-  UnloadDLL(DLLFileName);
-  if DeleteFile(DLLFileName) then
-    Log(FmtMessage(CustomMessage('DeleteFileSuccess'), [DLLFileName]))
-  else
-    Log(FmtMessage(CustomMessage('DeleteFileFail'), [DLLFileName]));
-  DLLPath := ExtractFileDir(DLLFileName);
-  if RemoveDir(DLLPath) then
-    Log(FmtMessage(CustomMessage('RemoveDirSuccess'), [DLLPath]))
-  else
-    Log(FmtMessage(CustomMessage('RemoveDirFail'), [DLLPath]));
+  if ApplicationUninstalled then
+  begin
+    // Unload and delete PathMgr.dll and remove dir when uninstalling
+    DLLFileName := ExpandConstant('{app}\bin\PathMgr.dll');
+    UnloadDLL(DLLFileName);
+    if DeleteFile(DLLFileName) then
+      Log(FmtMessage(CustomMessage('DeleteFileSuccess'), [DLLFileName]))
+    else
+      Log(FmtMessage(CustomMessage('DeleteFileFail'), [DLLFileName]));
+    DLLPath := ExtractFileDir(DLLFileName);
+    if RemoveDir(DLLPath) then
+      Log(FmtMessage(CustomMessage('RemoveDirSuccess'), [DLLPath]))
+    else
+      Log(FmtMessage(CustomMessage('RemoveDirFail'), [DLLPath]));
+  end;
 end;

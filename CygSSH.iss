@@ -980,6 +980,24 @@ begin
   end;
 end;
 
+function FixUnquotedServicePath(): Boolean;
+var
+  RootKey: Integer;
+  SubKeyName, ImagePath: string;
+begin
+  result := true;
+  if Is64BitInstallMode() then
+    RootKey := HKEY_LOCAL_MACHINE_64
+  else
+    RootKey := HKEY_LOCAL_MACHINE;
+  SubKeyName := 'SYSTEM\CurrentControlSet\Services\{#ServiceName}';
+  if RegQueryStringValue(RootKey, SubKeyName, 'ImagePath', ImagePath) then
+  begin
+    if (Pos(' ', ImagePath) > 0) and (Pos('"', ImagePath) = 0) then
+      result := RegWriteExpandStringValue(RootKey, SubKeyName, 'ImagePath', AddQuotes(ImagePath));
+  end;
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 var
   FileList: TArrayOfString;
@@ -1010,6 +1028,7 @@ begin
   end
   else if CurStep = ssPostInstall then
   begin
+    FixUnquotedServicePath();
     if PathIsModified or WizardIsTaskSelected(MODIFY_PATH_TASK_NAME) then
       AddDirToPath(ExpandConstant('{app}\bin'));
     if GetArrayLength(RunningServices) > 0 then

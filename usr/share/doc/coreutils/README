@@ -7,15 +7,15 @@ arbitrary limits.
 
 The programs that can be built with this package are:
 
-  [ arch b2sum base32 base64 basename cat chcon chgrp chmod chown chroot cksum
-  comm coreutils cp csplit cut date dd df dir dircolors dirname du echo env
-  expand expr factor false fmt fold groups head hostid hostname id install
-  join kill link ln logname ls md5sum mkdir mkfifo mknod mktemp mv nice nl
-  nohup nproc numfmt od paste pathchk pinky pr printenv printf ptx pwd
-  readlink realpath rm rmdir runcon seq sha1sum sha224sum sha256sum sha384sum
-  sha512sum shred shuf sleep sort split stat stdbuf stty sum sync tac tail
-  tee test timeout touch tr true truncate tsort tty uname unexpand uniq
-  unlink uptime users vdir wc who whoami yes
+  [ arch b2sum base32 base64 basename basenc cat chcon chgrp chmod chown
+  chroot cksum comm coreutils cp csplit cut date dd df dir dircolors dirname
+  du echo env expand expr factor false fmt fold groups head hostid hostname
+  id install join kill link ln logname ls md5sum mkdir mkfifo mknod mktemp
+  mv nice nl nohup nproc numfmt od paste pathchk pinky pr printenv printf ptx
+  pwd readlink realpath rm rmdir runcon seq sha1sum sha224sum sha256sum
+  sha384sum sha512sum shred shuf sleep sort split stat stdbuf stty sum sync
+  tac tail tee test timeout touch tr true truncate tsort tty uname unexpand
+  uniq unlink uptime users vdir wc who whoami yes
 
 See the file NEWS for a list of major changes in the current release.
 
@@ -23,12 +23,10 @@ If you obtained this file as part of a "git clone", then see the
 README-hacking file.  If this file came to you as part of a tar archive,
 then see the file INSTALL for compilation and installation instructions.
 
-These programs are intended to conform to POSIX (with BSD and other
-extensions), like the rest of the GNU system.  By default they conform
-to older POSIX (1003.2-1992), and therefore support obsolete usages
-like "head -10" and "chown owner.group file".  This default is
-overridden at build-time by the value of <unistd.h>'s _POSIX2_VERSION
-macro, and this in turn can be overridden at runtime as described in
+Like the rest of the GNU system, these programs mostly conform to
+POSIX, with BSD and other extensions.  For closer conformance, or
+conformance to a particular POSIX version, set the POSIXLY_CORRECT
+and the _POSIX2_VERSION environment variables, as described in
 the documentation under "Standards conformance".
 
 The ls, dir, and vdir commands are all separate executables instead of
@@ -57,29 +55,6 @@ Note that each man page is now automatically generated from a template
 and from the corresponding --help usage message.  Patches to the template
 files (man/*.x) are welcome.  However, the authoritative documentation
 is in texinfo form in the doc directory.
-
-
-*********************************************
-On Mac OS X 10.5.1 (Darwin 9.1), test failure
----------------------------------------------
-
-Mac OS X 10.5.1 (Darwin 9.1) provides only partial (and incompatible)
-ACL support, so although "./configure && make" succeeds, "make check"
-exposes numerous failures.  The solution is to turn off ACL support
-manually via "./configure --disable-acl".  For details, see
-<http://thread.gmane.org/gmane.comp.gnu.coreutils.bugs/12292/focus=12318>.
-
-
-*****************************************
-Test failure with NLS and gettext <= 0.17
------------------------------------------
-
-Due to a conflict between libintl.h and gnulib's new xprintf module,
-when you configure with NLS support, and with a gettext installation
-older than 0.17.1 (not yet released, at the time of this writing),
-then some tests fail, at least on NetBSD 1.6.  To work around it in
-the mean time, you can configure with --disable-nls.  For details,
-see <http://thread.gmane.org/gmane.comp.lib.gnulib.bugs/12015/>.
 
 
 *********************
@@ -119,14 +94,28 @@ Here is one possible patch to correct the problem:
 
 
 ************************
-OSF/1 4.0d build failure
+OSF/1 4.0d and AIX build failures
 ------------------------
 
-If you use /usr/bin/make on an OSF/1 4.0d system, it will fail due
-to the presence of the "[" target.  That version of make appears to
-treat "[" as some syntax relating to locks.  To work around that,
+If you use /usr/bin/make on these systems, the build will fail due
+to the presence of the "[" target.  OSF/1 make(1) appears to
+treat "[" as some syntax relating to locks, while AIX make(1)
+appears to skip the "[" target.  To work around these issues
 the best solution is to use GNU make.  Otherwise, simply remove
 all mention of "[$(EXEEXT)" from src/Makefile.
+
+
+************************
+32 bit time_t build failures
+------------------------
+
+On systems where it's determined that 64 bit time_t is supported
+(indicated by touch -t <some time after 2038>), but that coreutils
+would be built with a narrower time_t, the build will fail.
+This can be allowed by passing TIME_T_32_BIT_OK=yes to configure,
+or avoided by enabling 64 bit builds.  For example GCC on AIX defaults
+to 32 bit, and to enable the 64 bit ABI one can use:
+./configure CFLAGS=-maix64 LDFLAGs=-maix64 AR='ar -X64'
 
 
 *************************************************
@@ -169,7 +158,7 @@ Send bug reports, questions, comments, etc. to bug-coreutils@gnu.org.
 To suggest a patch, see the files README-hacking and HACKING for tips.
 
 If you have a problem with 'sort', try running 'sort --debug', as it
-can can often help find and fix problems without having to wait for an
+can often help find and fix problems without having to wait for an
 answer to a bug report.  If the debug output does not suffice to fix
 the problem on your own, please compress and attach it to the rest of
 your bug report.
@@ -204,7 +193,7 @@ reproduce whatever problem prompted it.  Plus, you'll earn lots of
 karma if you include a test case to exercise any bug(s) you fix.
 Here are instructions for checking out the latest development sources:
 
-  http://savannah.gnu.org/git/?group=coreutils
+  https://savannah.gnu.org/git/?group=coreutils
 
 If your patch adds a new feature, please try to get some sort of consensus
 that it is a worthwhile change.  One way to do that is to send mail to
@@ -212,7 +201,7 @@ coreutils@gnu.org including as much description and justification
 as you can.  Based on the feedback that generates, you may be able to
 convince us that it's worth adding.  Please also consult the list of
 previously discussed but ultimately rejected feature requests at:
-http://www.gnu.org/software/coreutils/rejected_requests.html
+https://www.gnu.org/software/coreutils/rejected_requests.html
 
 
 WARNING:  Now that we use the ./bootstrap script, you should not run
@@ -231,8 +220,8 @@ When reporting bugs, please include in the subject line both the package
 name/version and the name of the program for which you found a problem.
 
 For general documentation on the coding and usage standards
-this distribution follows, see the GNU Coding Standards,
-http://www.gnu.org/prep/standards_toc.html.
+this distribution follows, see the GNU Coding Standards at:
+https://www.gnu.org/prep/standards/
 
 For any copyright year range specified as YYYY-ZZZZ in this package
 note that the range specifies every single year in that closed interval.
@@ -243,7 +232,7 @@ the address on the last line of --help output.
 
 ========================================================================
 
-Copyright (C) 1998-2016 Free Software Foundation, Inc.
+Copyright (C) 1998-2021 Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or

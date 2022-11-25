@@ -94,7 +94,7 @@ Example installation command:
 \c CygSSH-Setup-version /SILENT /CLOSEAPPLICATIONS /SUPPRESSMSGBOXES
 \e              iiiiiii
 
-Replace \e{version} with the version (e.g., \s{8.9.2.1}).
+Replace \e{version} with the version (e.g., \s{9.0.2.2}).
 
 \I{/CLOSEAPPLICATIONS parameter}\I{/SILENT parameter}\I{/SUPPRESSMSGBOXES parameter}\I{install, silent}\I{silent install}The above command installs the package silently (i.e., without user interaction). The \c{/CLOSEAPPLICATIONS} parameter automatically stops running services and closes programs so that the installer can reinstall or upgrade the files. Stopped services will be automatically restarted after the installation completes. The \c{/SUPPRESSMSGBOXES} parameter suppresses message dialog boxes that would normally appear in an interactive installation.
 
@@ -967,6 +967,12 @@ The source code is generally of interest only to developers. You can download th
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{2.2} (2022-08-11)
+
+\b Updated to OpenSSH 9.0.
+
+\b Updated Cygwin and Cygwin packages.
 
 \s{2.2} (2022-03-29)
 

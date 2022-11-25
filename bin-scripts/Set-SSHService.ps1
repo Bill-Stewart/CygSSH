@@ -409,6 +409,19 @@ function Remove-FirewallRule {
   & $NETSH advfirewall firewall delete rule name=$ruleName dir=in program=$fileName > $null 2>&1
 }
 
+# Fix silly "unquoted service path" vulnerability
+function Set-QuotedServicePath {
+  param(
+    [String] $serviceName
+  )
+  $regPath = "HKLM:\SYSTEM\CurrentControlSet\Services\{0}" -f $serviceName
+  $imagePath = (Get-ItemProperty $regPath -ErrorAction SilentlyContinue).ImagePath
+  if ( ($imagePath -match '\s') -and ($imagePath -notmatch '"') ) {
+    $imagePath = '"{0}"' -f $imagePath
+    Set-ItemProperty $regPath "ImagePath" $imagePath -ErrorAction SilentlyContinue
+  }
+}
+
 # Added this parameter because passing "-Confirm:0" on the powershell.exe -File
 # command line throws an error (this is arguably a bug, but easily worked
 # around)
@@ -461,6 +474,7 @@ switch ( $PSCmdlet.ParameterSetName ) {
     if ( $PSCmdlet.ShouldProcess($FullName,"Install service") ) {
       $ExitCode = Invoke-Cygrunsrv $ArgList
       if ( $ExitCode -eq 0 ) {
+        Set-QuotedServicePath $ServiceName
         New-FirewallRule $FullName (& $CYGPATH -aw /usr/sbin/sshd)
       }
     }

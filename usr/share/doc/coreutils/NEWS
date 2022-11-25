@@ -1,5 +1,679 @@
 GNU coreutils NEWS                                    -*- outline -*-
 
+* Noteworthy changes in release 9.0 (2021-09-24) [stable]
+
+** Bug fixes
+
+  chmod -v no longer misreports modes of dangling symlinks.
+  [bug introduced in coreutils-5.3.0]
+
+  cp -a --attributes-only now never removes destination files,
+  even if the destination files are hardlinked, or the source
+  is a non regular file.
+  [bug introduced in coreutils-8.6]
+
+  csplit --suppress-matched now elides the last matched line
+  when a specific number of pattern matches are performed.
+  [bug introduced with the --suppress-matched feature in coreutils-8.22]
+
+  df no longer outputs duplicate remote mounts in the presence of bind mounts.
+  [bug introduced in coreutils-8.26]
+
+  df no longer mishandles command-line args that it pre-mounts
+  [bug introduced in coreutils-8.29]
+
+  du no longer crashes on XFS file systems when the directory hierarchy is
+  heavily changed during the run.
+  [bug introduced in coreutils-8.25]
+
+  env -S no longer crashes when given unusual whitespace characters
+  [bug introduced in coreutils-8.30]
+
+  expr no longer mishandles unmatched \(...\) in regular expressions.
+  [bug introduced in coreutils-6.0]
+
+  ls no longer crashes when printing the SELinux context for unstatable files.
+  [bug introduced in coreutils-6.9.91]
+
+  mkdir -m no longer mishandles modes more generous than the umask.
+  [bug introduced in coreutils-8.22]
+
+  nl now handles single character --section-delimiter arguments,
+  by assuming a second ':' character has been specified, as specified by POSIX.
+  [This bug was present in "the beginning".]
+
+  pr again adjusts tabs in input, to maintain alignment in multi column output.
+  [bug introduced in coreutils-6.9]
+
+  rm no longer skips an extra file when the removal of an empty directory fails.
+  [bug introduced by the rewrite to use fts in coreutils-8.0]
+
+  split --number=K/N will again correctly split chunk K of N to stdout.
+  Previously a chunk starting after 128KiB, output the wrong part of the file.
+  [bug introduced in coreutils-8.26]
+
+  tail -f no longer overruns a stack buffer when given too many files
+  to follow and ulimit -n exceeds 1024.
+  [bug introduced in coreutils-7.5]
+
+  tr no longer crashes when using --complement with certain
+  invalid combinations of case character classes.
+  [bug introduced in coreutils-8.6]
+
+  basenc --base64 --decode no longer silently discards decoded characters
+  on (1024*5) buffer boundaries
+  [bug introduced in coreutils-8.31]
+
+** Changes in behavior
+
+  cp and install now default to copy-on-write (COW) if available.
+
+  cp, install and mv now use the copy_file_range syscall if available.
+  Also, they use lseek+SEEK_HOLE rather than ioctl+FS_IOC_FIEMAP on sparse
+  files, as lseek is simpler and more portable.
+
+  On GNU/Linux systems, ls no longer issues an error message on a
+  directory merely because it was removed.  This reverts a change
+  that was made in release 8.32.
+
+  ptx -T no longer attempts to substitute old-fashioned TeX escapes
+  for 8-bit non-ASCII alphabetic characters.  TeX indexes should
+  instead use '\usepackage[latin1]{inputenc}' or equivalent.
+
+  stat will use decomposed (major,minor) device numbers in its default format.
+  This is less ambiguous, and more consistent with ls.
+
+  sum [-r] will output a file name, even if only a single name is passed.
+  This is consistent with sum -s, cksum, and other sum(1) implementations.
+
+** New Features
+
+  cksum now supports the -a (--algorithm) option to select any
+  of the existing sum, md5sum, b2sum, sha*sum implementations etc.
+  cksum now subsumes all of these programs, and coreutils
+  will introduce no future standalone checksum utility.
+
+  cksum -a now supports the 'sm3' argument, to use the SM3 digest algorithm.
+
+  cksum --check now supports auto detecting the digest type to use,
+  when verifying tagged format checksums.
+
+  expr and factor now support bignums on all platforms.
+
+  ls --classify now supports the "always", "auto", or "never" flags,
+  to support only outputting classifier characters if connected to a tty.
+
+  ls now accepts the --sort=width option, to sort by file name width.
+  This is useful to more compactly organize the default vertical column output.
+
+  ls now accepts the --zero option, to terminate each output line with
+  NUL instead of newline.
+
+  nl --line-increment can now take a negative number to decrement the count.
+
+  stat supports more formats for representing decomposed device numbers.
+  %Hd,%Ld and %Hr,%Lr will output major,minor device numbers and device types
+  respectively.  %d corresponds to st_dev and %r to std_rdev.
+
+** Improvements
+
+  cat --show-ends will now show \r\n as ^M$.  Previously the \r was taken
+  literally, thus overwriting the first character in the line with '$'.
+
+  cksum [-a crc] is now up to 4 times faster by using a slice by 8 algorithm,
+  and at least 8 times faster where pclmul instructions are supported.
+  A new --debug option will indicate if pclmul is being used.
+
+  md5sum --check now supports checksum files with CRLF line endings.
+  This also applies to cksum, sha*sum, and b2sum.
+
+  df now recognizes these file systems as remote:
+  acfs, coda, fhgfs, gpfs, ibrix, ocfs2, and vxfs.
+
+  rmdir now clarifies the error if a symlink_to_dir/ has not been traversed.
+  This is the case on GNU/Linux systems, where the trailing slash is ignored.
+
+  stat and tail now know about the "devmem", "exfat", "secretmem", "vboxsf",
+  and "zonefs" file system types.  stat -f -c%T now reports the file system
+  type, and tail -f uses polling for "vboxsf" and inotify for the others.
+
+  timeout now supports sub-second timeouts on macOS.
+
+  wc is up to 5 times faster when counting only new line characters,
+  where avx2 instructions are supported.
+  A new --debug option will indicate if avx2 is being used.
+
+
+* Noteworthy changes in release 8.32 (2020-03-05) [stable]
+
+** Bug fixes
+
+  cp now copies /dev/fd/N correctly on platforms like Solaris where
+  it is a character-special file whose minor device number is N.
+  [bug introduced in fileutils-4.1.6]
+
+  dd conv=fdatasync no longer reports a "Bad file descriptor" error
+  when fdatasync is interrupted, and dd now retries interrupted calls
+  to close, fdatasync, fstat and fsync instead of incorrectly
+  reporting an "Interrupted system call" error.
+  [bugs introduced in coreutils-6.0]
+
+  df now correctly parses the /proc/self/mountinfo file for unusual entries
+  like ones with '\r' in a field value ("mount -t tmpfs tmpfs /foo$'\r'bar"),
+  when the source field is empty ('mount -t tmpfs "" /mnt'), and when the
+  filesystem type contains characters like a blank which need escaping.
+  [bugs introduced in coreutils-8.24 with the introduction of reading
+   the /proc/self/mountinfo file]
+
+  factor again outputs immediately when stdout is a tty but stdin is not.
+  [bug introduced in coreutils-8.24]
+
+  ln works again on old systems without O_DIRECTORY support (like Solaris 10),
+  and on systems where symlink ("x", ".") fails with errno == EINVAL
+  (like Solaris 10 and Solaris 11).
+  [bug introduced in coreutils-8.31]
+
+  rmdir --ignore-fail-on-non-empty now works correctly for directories
+  that fail to be removed due to permission issues.  Previously the exit status
+  was reversed, failing for non empty and succeeding for empty directories.
+  [bug introduced in coreutils-6.11]
+
+  'shuf -r -n 0 file' no longer mistakenly reads from standard input.
+  [bug introduced with the --repeat feature in coreutils-8.22]
+
+  split no longer reports a "output file suffixes exhausted" error
+  when the specified number of files is evenly divisible by 10, 16, 26,
+  for --numeric, --hex, or default alphabetic suffixes respectively.
+  [bug introduced in coreutils-8.24]
+
+  seq no longer prints an extra line under certain circumstances (such as
+  'seq -f "%g " 1000000 1000000').
+  [bug introduced in coreutils-6.10]
+
+** Changes in behavior
+
+  Several programs now check that numbers end properly.  For example,
+  'du -d 1x' now reports an error instead of silently ignoring the 'x'.
+  Affected programs and options include du -d, expr's numeric operands
+  on non-GMP builds, install -g and -o, ls's TABSIZE environment
+  variable, mknod b and c, ptx -g and -w, shuf -n, and sort --batch-size
+  and --parallel.
+
+  date now parses military time zones in accordance with common usage:
+    "A" to "M"  are equivalent to UTC+1 to UTC+12
+    "N" to "Y"  are equivalent to UTC-1 to UTC-12
+    "Z" is "zulu" time (UTC).
+  For example, 'date -d "09:00B" is now equivalent to 9am in UTC+2 time zone.
+  Previously, military time zones were parsed according to the obsolete
+  rfc822, with their value negated (e.g., "B" was equivalent to UTC-2).
+  [The old behavior was introduced in sh-utils 2.0.15 ca. 1999, predating
+  coreutils package.]
+
+  date now pads nanoseconds on the right, not the left.  For example,
+  if the time is currently 1590020079.003388470 seconds after the
+  Epoch, then "date '+%s.%-N'" formerly output "1590020079.3388470",
+  and it now outputs "1590020079.00338847".
+
+  ls issues an error message on a removed directory, on GNU/Linux systems.
+  Previously no error and no entries were output, and so indistinguishable
+  from an empty directory, with default ls options.
+
+  uniq no longer uses strcoll() to determine string equivalence,
+  and so will operate more efficiently and consistently.
+
+** New Features
+
+  ls now supports the --time=birth option to display and sort by
+  file creation time, where available.
+
+  od --skip-bytes now can use lseek even if the input is not a regular
+  file, greatly improving performance in some cases.
+
+  stat(1) supports a new --cached= option, used on systems with statx(2)
+  to control cache coherency of file system attributes,
+  useful on network file systems.
+
+** Improvements
+
+  stat and ls now use the statx() system call where available, which can
+  operate more efficiently by only retrieving requested attributes.
+
+  stat and tail now know about the "binderfs", "dma-buf-fs", "erofs",
+  "ppc-cmm-fs", and "z3fold" file systems.
+  stat -f -c%T now reports the file system type, and tail -f uses inotify.
+
+** Build-related
+
+  gzip-compressed tarballs are distributed once again
+
+
+* Noteworthy changes in release 8.31 (2019-03-10) [stable]
+
+** Bug fixes
+
+  'base64 a b' now correctly diagnoses 'b' as the extra operand, not 'a'.
+  [bug introduced in coreutils-5.3.0]
+
+  When B already exists, 'cp -il A B' no longer immediately fails
+  after asking the user whether to proceed.
+  [This bug was present in "the beginning".]
+
+  df no longer corrupts displayed multibyte characters on macOS.
+  [bug introduced with coreutils-8.18]
+
+  seq no longer outputs inconsistent decimal point characters
+  for the last number, when locales are misconfigured.
+  [bug introduced in coreutils-7.0]
+
+  shred, sort, and split no longer falsely report ftruncate errors
+  when outputting to less-common file types.  For example, the shell
+  command 'sort /dev/null -o /dev/stdout | cat' no longer fails with
+  an "error truncating" diagnostic.
+  [bug was introduced with coreutils-8.18 for sort and split, and
+   (for shared memory objects only) with fileutils-4.1 for shred]
+
+  sync no longer fails for write-only file arguments.
+  [bug introduced with argument support to sync in coreutils-8.24]
+
+  'tail -f file | filter' no longer exits immediately on AIX.
+  [bug introduced in coreutils-8.28]
+
+  'tail -f file | filter' no longer goes into an infinite loop
+  if filter exits and SIGPIPE is ignored.
+  [bug introduced in coreutils-8.28]
+
+** Changes in behavior
+
+  cksum, dd, hostid, hostname, link, logname, sleep, tsort, unlink,
+  uptime, users, whoami, yes: now always process --help and --version options,
+  regardless of any other arguments present before any optional '--'
+  end-of-options marker.
+
+  nohup now processes --help and --version as first options even if other
+  parameters follow.
+
+  'yes a -- b' now outputs 'a b' instead of including the end-of-options
+  marker as before: 'a -- b'.
+
+  echo now always processes backslash escapes when the POSIXLY_CORRECT
+  environment variable is set.
+
+  When possible 'ln A B' now merely links A to B and reports an error
+  if this fails, instead of statting A and B before linking.  This
+  uses fewer system calls and avoids some races.  The old statting
+  approach is still used in situations where hard links to directories
+  are allowed (e.g., NetBSD when superuser).
+
+  ls --group-directories-first will also group symlinks to directories.
+
+  'test -a FILE' is not supported anymore.  Long ago, there were concerns about
+  the high probability of humans confusing the -a primary with the -a binary
+  operator, so POSIX changed this to 'test -e FILE'.  Scripts using it were
+  already broken and non-portable; the -a unary operator was never documented.
+
+  wc now treats non breaking space characters as word delimiters
+  unless the POSIXLY_CORRECT environment variable is set.
+
+** New features
+
+  id now supports specifying multiple users.
+
+  'date' now supports the '+' conversion specification flag,
+  introduced in POSIX.1-2017.
+
+  printf, seq, sleep, tail, and timeout now accept floating point
+  numbers in either the current or the C locale.  For example, if the
+  current locale's decimal point is ',', 'sleep 0,1' and 'sleep 0.1'
+  now mean the same thing.  Previously, these commands accepted only
+  C-locale syntax with '.' as the decimal point.  The new behavior is
+  more compatible with other implementations in non-C locales.
+
+  test now supports the '-N FILE' unary operator (like e.g. bash) to check
+  whether FILE exists and has been modified since it was last read.
+
+  env now supports '--default-signal[=SIG]', '--ignore-signal[=SIG]', and
+  '--block-signal[=SIG], to setup signal handling before executing a program.
+
+  env now supports '--list-signal-handling' to indicate non-default
+  signal handling before executing a program.
+
+** New commands
+
+  basenc is added to complement existing base64,base32 commands,
+  and encodes and decodes printable text using various common encodings:
+  base64,base64url,base32,base32hex,base16,base2,z85.
+
+** Improvements
+
+  ls -l now better aligns abbreviated months containing digits,
+  which is common in Asian locales.
+
+  stat and tail now know about the "sdcardfs" file system on Android.
+  stat -f -c%T now reports the file system type, and tail -f uses inotify.
+
+  stat now prints file creation time when supported by the file system,
+  on GNU Linux systems with glibc >= 2.28 and kernel >= 4.11.
+
+
+* Noteworthy changes in release 8.30 (2018-07-01) [stable]
+
+** Bug fixes
+
+  'cp --symlink SRC DST' will again correctly validate DST.
+  If DST is a regular file and SRC is a symlink to DST,
+  then cp will no longer allow that operation to clobber DST.
+  Also with -d, if DST is a symlink, then it can always be replaced,
+  even if it points to SRC on a separate device.
+  [bugs introduced with coreutils-8.27]
+
+  'cp -n -u' and 'mv -n -u' now consistently ignore the -u option.
+  Previously, this option combination suffered from race conditions
+  that caused -u to sometimes override -n.
+  [bug introduced with coreutils-7.1]
+
+  'cp -a --no-preserve=mode' now sets appropriate default permissions
+  for non regular files like fifos and character device nodes etc.,
+  and leaves mode bits of existing files unchanged.
+  Previously it would have set executable bits on created special files,
+  and set mode bits for existing files as if they had been created.
+  [bug introduced with coreutils-8.20]
+
+  'cp --remove-destination file symlink' now removes the symlink
+  even if it can't be traversed.
+  [bug introduced with --remove-destination in fileutils-4.1.1]
+
+  ls no longer truncates the abbreviated month names that have a
+  display width between 6 and 12 inclusive.  Previously this would have
+  output ambiguous months for Arabic or Catalan locales.
+
+  'ls -aA' is now equivalent to 'ls -A', since -A now overrides -a.
+  [bug introduced in coreutils-5.3.0]
+
+  'mv -n A B' no longer suffers from a race condition that can
+  overwrite a simultaneously-created B.  This bug fix requires
+  platform support for the renameat2 or renameatx_np syscalls, found
+  in recent Linux and macOS kernels.  As a side effect, 'mv -n A A'
+  now silently does nothing if A exists.
+  [bug introduced with coreutils-7.1]
+
+** Changes in behavior
+
+  'cp --force file symlink' now removes the symlink even if
+  it is self referential.
+
+  ls --color now matches file extensions case insensitively.
+
+** New features
+
+  cp --reflink now supports --reflink=never to enforce a standard copy.
+
+  env supports a new -v/--debug option to show verbose information about
+  each processing step.
+
+  env supports a new -S/--split-string=S option to split a single argument
+  string into multiple arguments. Used to pass multiple arguments in scripts
+  (shebang lines).
+
+  md5sum accepts a new option: --zero (-z) to delimit the output lines with a
+  NUL instead of a newline character.  This also disables file name escaping.
+  This also applies to sha*sum and b2sum.
+
+  rm --preserve-root now supports the --preserve-root=all option to
+  reject any command line argument that is mounted to a separate file system.
+
+** Improvements
+
+  cut supports line lengths up to the max file size on 32 bit systems.
+  Previously only offsets up to SIZE_MAX-1 were supported.
+
+  stat and tail now know about the "exfs" file system, which is a
+  version of XFS.  stat -f --format=%T now reports the file system type,
+  and tail -f uses inotify.
+
+  wc avoids redundant processing of ASCII text in multibyte locales,
+  which is especially significant on macOS.
+
+
+* Noteworthy changes in release 8.29 (2017-12-27) [stable]
+
+** Bug fixes
+
+  b2sum no longer crashes when processing certain truncated check files.
+  [bug introduced with b2sum coreutils-8.26]
+
+  dd now ensures the correct cache ranges are specified for the "nocache"
+  and "direct" flags.  Previously some pages in the page cache were not
+  invalidated.  [bug introduced for "direct" in coreutils-7.5,
+  and with the "nocache" implementation in coreutils-8.11]
+
+  df no longer hangs when given a fifo argument.
+  [bug introduced in coreutils-7.3]
+
+  ptx -S no longer infloops for a pattern which returns zero-length matches.
+  [the bug dates back to the initial implementation]
+
+  shred --remove will again repeatedly rename files with shortening names
+  to attempt to hide the original length of the file name.
+  [bug introduced in coreutils-8.28]
+
+  stty no longer crashes when processing settings with -F also specified.
+  [bug introduced in fileutils-4.0]
+
+  tail --bytes again supports non seekable inputs on all systems.
+  On systems like android it always tried to process as seekable inputs.
+  [bug introduced in coreutils-8.24]
+
+  timeout will again notice its managed command exiting, even when
+  invoked with blocked CHLD signal, or in a narrow window where
+  this CHLD signal from the exiting child was missed.  In each case
+  timeout would have then waited for the time limit to expire.
+  [bug introduced in coreutils-8.27]
+
+** New features
+
+  timeout now supports the --verbose option to diagnose forced termination.
+
+** Improvements
+
+  dd now supports iflag=direct with arbitrary sized files on all file systems.
+
+  tail --bytes=NUM will efficiently seek to the end of block devices,
+  rather than reading from the start.
+
+  Utilities which do not support long options (other than the default --help
+  and --version), e.g. cksum and sleep, now use more consistent error diagnostic
+  for unknown long options.
+
+** Build-related
+
+  Default man pages are now distributed which are used if perl is
+  not available on the build system, or when cross compiling.
+
+
+* Noteworthy changes in release 8.28 (2017-09-01) [stable]
+
+** Bug fixes
+
+  cp and mv now merely warn about any failure to preserve symlink ownership.
+  Before, cp (without -p) would exit with a failure status, and a cross-device
+  mv would leave such symlinks behind in the source file system.
+  [the bug dates back to the initial implementation]
+
+  When creating numbered backups, cp, install, ln, and mv now avoid
+  races that could lose backup data in unlikely circumstances.  Since
+  the fix relies on the renameat2 system call of Linux kernel 3.15 and
+  later, the races are still present on other platforms.
+  [the bug dates back to the initial implementation]
+
+  cp, install, ln, and mv no longer lose data when asked to copy a
+  backup file to its original via a differently-spelled file name.
+  E.g., 'rm -f a a~; : > a; echo data > a~; cp --backup=simple a~ ./a'
+  now fails instead of losing the data.
+  [the bug dates back to the initial implementation]
+
+  cp, install, ln, and mv now ignore nonsensical backup suffixes.
+  For example, --suffix='/' and --suffix='' are now no-ops.
+  [the bug dates back to the initial implementation]
+
+  date and touch no longer overwrite the heap with large
+  user specified TZ values (CVE-2017-7476).
+  [bug introduced in coreutils-8.27]
+
+  dd status=progress now just counts seconds; e.g., it outputs "6 s"
+  consistently rather than sometimes outputting "6.00001 s".
+  [bug introduced in coreutils-8.24]
+
+  df no longer interacts with excluded file system types, so for example
+  specifying -x nfs no longer hangs with problematic nfs mounts.
+  [bug introduced in coreutils-8.21]
+
+  df no longer interacts with dummy file system types, so for example
+  no longer hangs with problematic nfs mounted via system.automount(5).
+  [bug introduced in coreutils-8.21]
+
+  `groups inva:lid root` no longer exits immediately upon failure.
+  Now, it prints a diagnostic or a line to stdout for each argument.
+  [bug introduced in the bourne-shell-to-C rewrite for coreutils-6.11]
+
+  kill now converts from number to signal name correctly on AIX.
+  Previously it would have always returned the 'EXIT' name.
+  [bug introduced in fileutils-4.1.9]
+
+  ls now quotes symlink targets consistently.  Previously it may not
+  have quoted the target name if the link name itself didn't need quoting.
+  [bug introduced in coreutils-8.26]
+
+  split no longer exits when invocations of a --filter return EPIPE.
+  [bug introduced in coreutils-8.26]
+
+  md5sum --check no longer incorrectly enables BSD reversed format mode when
+  ignoring some non checksum lines.  This also affects sha*sum and b2sum.
+  [bug introduced in coreutils-8.14]
+
+  tail -F 'dir/file' is now monitored even when 'dir' is replaced.
+  [bug introduced with inotify support added in coreutils-7.5]
+
+  tail -f with --pid=PID now processes all inotify events.
+  Previously events may have been ignored completely upon PID death,
+  or ignored until future events on the monitored files.
+  [bug introduced with inotify support added in coreutils-7.5]
+
+  tail -f /dev/tty is now supported by not using inotify when any
+  non regular files are specified, as inotify is ineffective with these.
+  [bug introduced with inotify support added in coreutils-7.5]
+
+  uptime no longer outputs the AM/PM component of the current time,
+  as that's inconsistent with the 24 hour time format used.
+  [bug introduced in coreutils-7.0]
+
+  expr now returns number of characters matched (instead of incorrect
+  number of bytes matched) with 'match'/':' operators on multibyte strings.
+
+** New features
+
+  expand and unexpand now support specifying an offset for tab stops
+  by prefixing the last specified number like --tabs=1,+8 which is
+  useful for visualizing diff output for example.
+
+  ls supports a new --hyperlink[=when] option to output file://
+  format links to files, supported by some terminals.
+
+  split supports a new --hex-suffixes[=from] option to create files with
+  lower case hexadecimal suffixes, similar to the --numeric-suffixes option.
+
+  env now has a --chdir (-C) option to change the working directory before
+  executing the subsidiary program.
+
+  expr supports multibyte strings for all string operations.
+
+** Changes in behavior
+
+  tail -f now exits immediately if the output is piped and the reader of
+  the pipe terminates.  That allows `tail -f file | grep -q foo` to return
+  responsively, but does make `tail -f file | :` exit immediately without
+  waiting for data.  Instead one should now `tail -f file | grep -q .`
+
+** Improvements
+
+  mv --verbose now distinguishes rename and copy operations.
+
+  stat -f -c %l, used to output the max file name length on a file system,
+  is now supported on FreeBSD and OpenBSD.
+
+  tail -f no longer erroneously warns about being ineffective
+  when following a single tty, as the simple blocking loop used
+  is effective in this case.
+
+
+* Noteworthy changes in release 8.27 (2017-03-08) [stable]
+
+** Bug fixes
+
+  cp --parents will now set an SELinux context for created directories,
+  as appropriate for the -a, --preseve=context, or -Z options.
+  [bug present since SELinux support added in coreutils-6.10]
+
+  date again converts from a specified time zone.  Previously output was
+  not converted to the local time zone, and remained in the specified one.
+  [bug introduced in coreutils-8.26]
+
+  Commands like 'cp --no-dereference -l A B' are no longer quiet no-ops
+  when A is a regular file and B is a symbolic link that points to A.
+  [bug introduced in fileutils-4.0]
+
+  factor no longer goes into an infinite loop for certain numbers like
+  158909489063877810457 and 222087527029934481871.
+  [bug introduced in coreutils-8.20]
+
+  tail no longer prints redundant file headers with interleaved inotify events,
+  which could be triggered especially when tail was suspended and resumed.
+  [bug introduced with inotify support added in coreutils-7.5]
+
+  timeout no longer has a race that may terminate the wrong process.
+  The race is unlikely, as timeout(1) needs to receive a signal right
+  after the command being monitored finishes.  Also the system needs
+  to have reallocated that command's pid in that short time window.
+  [bug introduced when timeout was added in coreutils-7.0]
+
+  wc --bytes --files0-from now correctly reports byte counts.
+  Previously it may have returned values that were too large,
+  depending on the size of the first file processed.
+  [bug introduced in coreutils-8.24]
+
+** Improvements
+
+  The new 'date' option --rfc-email is now the long form for -R.
+  The new option spelling is intended to avoid the need to track the
+  Internet RFC number for email dates (currently RFC 5322).  The old
+  option spellings --rfc-2822 and --rfc-822 still work.
+
+  date now outputs "-00" for a numeric time zone if the time is UTC
+  and the time zone abbreviation begins with "-", indicating that the
+  time zone is indeterminate.
+
+  nproc now honors the OMP_THREAD_LIMIT environment variable to
+  set the maximum returned value.  OMP_NUM_THREADS continues to
+  set the minimum returned value, but is updated to support the
+  nested level syntax allowed in this variable.
+
+  stat and tail now know about the "rdt" file system, which is an interface
+  to Resource Director Technology.  stat -f --format=%T now reports the
+  file system type, and tail -f uses inotify.
+
+  stty now validates arguments before interacting with the device,
+  ensuring there are no side effects to specifying an invalid option.
+
+  If the file B already exists, commands like 'ln -f A B' and
+  'cp -fl A B' no longer remove B before creating the new link.
+  That is, there is no longer a brief moment when B does not exist.
+
+** New features
+
+  expand and unexpand now support specifying a tab size to use
+  after explicitly specified tab stops, by prefixing the last
+  specified number like --tabs=2,4,/8.
+
+
 * Noteworthy changes in release 8.26 (2016-11-30) [stable]
 
 ** Bug fixes
@@ -92,7 +766,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   seq no longer accepts 0 value as increment, and now also rejects NaN
   values for any argument.
 
-  stat now outputs nanosecond information for time stamps even if
+  stat now outputs nanosecond information for timestamps even if
   they are out of localtime range.
 
   sort, tail, and uniq now support traditional usage like 'sort +2'
@@ -101,6 +775,10 @@ GNU coreutils NEWS                                    -*- outline -*-
   like '+2' must be treated as file names.
 
 ** Improvements
+
+  dd now warns about counts specified with a 0x "prefix", since dd will
+  interpret those as a zero multiplier rather than a hex constant.
+  The warning suggests to use 00x if a zero multiplier is really intended.
 
   df now filters the system mount list more efficiently, with 20000
   mount entries now being processed in about 1.1s compared to 1.7s.
@@ -1473,7 +2151,7 @@ GNU coreutils NEWS                                    -*- outline -*-
 ** Bug fixes
 
   cp -u no longer does unnecessary copying merely because the source
-  has finer-grained time stamps than the destination.
+  has finer-grained timestamps than the destination.
 
   od now prints floating-point numbers without losing information, and
   it no longer omits spaces between floating-point columns in some cases.
@@ -1503,7 +2181,9 @@ GNU coreutils NEWS                                    -*- outline -*-
 
 ** New features
 
-  split accepts the --number option to generate a specific number of files.
+  split accepts the --number/-n option to generate a specific number of
+  files, as well as the --elide-empty-files/-e and --unbuffered/-u
+  options to fine-tune the resulting output.
 
 
 * Noteworthy changes in release 8.7 (2010-11-13) [stable]
@@ -1530,7 +2210,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   stat's %X, %Y, and %Z directives once again print only the integer
   part of seconds since the epoch.  This reverts a change from
   coreutils-8.6, that was deemed unnecessarily disruptive.
-  To obtain a nanosecond-precision time stamp for %X use %.X;
+  To obtain a nanosecond-precision timestamp for %X use %.X;
   if you want (say) just 3 fractional digits, use %.3X.
   Likewise for %Y and %Z.
 
@@ -1977,7 +2657,7 @@ GNU coreutils NEWS                                    -*- outline -*-
 
 ** Bug fixes
 
-  cp, mv now ignore failure to preserve a symlink time stamp, when it is
+  cp, mv now ignore failure to preserve a symlink timestamp, when it is
   due to their running on a kernel older than what was implied by headers
   and libraries tested at configure time.
   [bug introduced in coreutils-7.5]
@@ -2093,7 +2773,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   using copy-on-write (COW).  This is currently only supported within
   a btrfs file system.
 
-  cp now preserves time stamps on symbolic links, when possible
+  cp now preserves timestamps on symbolic links, when possible
 
   sort accepts a new option, --human-numeric-sort (-h): sort numbers
   while honoring human readable suffixes like KiB and MB etc.
@@ -3398,7 +4078,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   These changes are in response to decisions taken in the January 2005
   Austin Group standardization meeting.  For more details, please see
   "Utility Syntax Guidelines" in the Minutes of the January 2005
-  Meeting <http://www.opengroup.org/austin/docs/austin_239.html>.
+  Meeting <https://www.opengroup.org/austin/docs/austin_239.html>.
 
 ** Binary input and output are now implemented more consistently.
   These changes affect only platforms like MS-DOS that distinguish
@@ -3476,9 +4156,9 @@ GNU coreutils NEWS                                    -*- outline -*-
 
     The new -P option checks whether a file name component has leading "-",
     as suggested in interpretation "Austin-039:XCU:pathchk:pathchk -p"
-    <http://www.opengroup.org/austin/interps/doc.tpl?gdid=6232>.
+    <https://collaboration.opengroup.org/austin/interps/documents.php?action=show&gdid=6232>.
     It also rejects the empty name even if the current host accepts it; see
-    <http://www.opengroup.org/austin/interps/doc.tpl?gdid=6233>.
+    <https://collaboration.opengroup.org/austin/interps/documents.php?action=show&gdid=6233>.
 
     The --portability option is now equivalent to -p -P.
 
@@ -3500,7 +4180,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   expr now detects integer overflow when converting strings to integers,
   rather than silently wrapping around.
 
-  ls now refuses to generate time stamps containing more than 1000 bytes, to
+  ls now refuses to generate timestamps containing more than 1000 bytes, to
   foil potential denial-of-service attacks on hosts with very large stacks.
 
   "mkdir -m =+x dir" no longer ignores the umask when evaluating "+x",
@@ -3755,7 +4435,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   done reading it.  This problem cannot occur unless '-m' is used.
 
   When outside the default POSIX locale, the 'who' and 'pinky'
-  commands now output time stamps like "2004-06-21 13:09" instead of
+  commands now output timestamps like "2004-06-21 13:09" instead of
   the traditional "Jun 21 13:09".
 
   pwd now works even when run from a working directory whose name
@@ -3765,10 +4445,10 @@ GNU coreutils NEWS                                    -*- outline -*-
   and -t is now a short name for their --target-directory option.
 
   cp -pu and mv -u (when copying) now don't bother to update the
-  destination if the resulting time stamp would be no newer than the
-  preexisting time stamp.  This saves work in the common case when
+  destination if the resulting timestamp would be no newer than the
+  preexisting timestamp.  This saves work in the common case when
   copying or moving multiple times to the same destination in a file
-  system with a coarse time stamp resolution.
+  system with a coarse timestamp resolution.
 
   cut accepts a new option, --complement, to complement the set of
   selected bytes, characters, or fields.
@@ -3814,7 +4494,7 @@ GNU coreutils NEWS                                    -*- outline -*-
 
     Dates like 'January 32' with out-of-range components are now rejected.
 
-    Dates can have fractional time stamps like 2004-02-27 14:19:13.489392193.
+    Dates can have fractional timestamps like 2004-02-27 14:19:13.489392193.
 
     Dates can be entered via integer counts of seconds since 1970 when
     prefixed by '@'.  For example, '@321' represents 1970-01-01 00:05:21 UTC.
@@ -3830,7 +4510,7 @@ GNU coreutils NEWS                                    -*- outline -*-
       TZ="America/New_York" date --date='TZ="Europe/Paris" 2004-10-31 06:30'
 
   'date' has a new option --iso-8601=ns that outputs
-  nanosecond-resolution time stamps.
+  nanosecond-resolution timestamps.
 
   echo -e '\xHH' now outputs a byte whose hexadecimal value is HH,
   for compatibility with bash.
@@ -3937,7 +4617,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   'cp -d' now works as required even on systems like OSF V5.1 that
   declare stat and lstat as 'static inline' functions.
 
-  time stamps output by stat now include actual fractional seconds,
+  timestamps output by stat now include actual fractional seconds,
   when available -- or .0000000 for files without that information.
 
   seq no longer infloops when printing 2^31 or more numbers.
@@ -4495,14 +5175,14 @@ point at which the packages merged to form the coreutils:
 * ls -n now implies -l, as per POSIX.
 * ls can now display dates and times in one of four time styles:
 
-  - The 'full-iso' time style gives full ISO-style time stamps like
+  - The 'full-iso' time style gives full ISO-style timestamps like
     '2001-05-14 23:45:56.477817180 -0700'.
-  - The 'iso' time style gives ISO-style time stamps like '2001-05-14 '
+  - The 'iso' time style gives ISO-style timestamps like '2001-05-14 '
     and '05-14 23:45'.
-  - The 'locale' time style gives locale-dependent time stamps like
+  - The 'locale' time style gives locale-dependent timestamps like
     'touko  14  2001' and 'touko  14 23:45' (in a Finnish locale).
   - The 'posix-iso' time style gives traditional POSIX-locale
-    time stamps like 'May 14  2001' and 'May 14 23:45' unless the user
+    timestamps like 'May 14  2001' and 'May 14 23:45' unless the user
     specifies a non-POSIX locale, in which case it uses ISO-style dates.
     This is the default.
 
@@ -4609,7 +5289,7 @@ packages, see ./old/*/NEWS.
 
 ========================================================================
 
-Copyright (C) 2001-2016 Free Software Foundation, Inc.
+Copyright (C) 2001-2021 Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or

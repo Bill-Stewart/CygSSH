@@ -8,6 +8,7 @@ AllowNoIcons=yes
 AppName={#AppName}
 AppPublisher={#SetupAuthor}
 AppVersion={#AppFullVersion}
+ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 ChangesEnvironment=yes
 CloseApplications=yes
@@ -16,13 +17,12 @@ Compression=lzma2/ultra
 DefaultDirName={autopf}\{#InstallDirName}
 DefaultGroupName={#AppName}
 DisableWelcomePage=yes
-MinVersion=6.1sp1
+MinVersion=6.3
 OutputBaseFilename={#SetupName}-{#SetupVersion}
 OutputDir=.
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=commandline
 RestartApplications=yes
-SetupIconFile={#IconFilename}
 SetupMutex={#SetupName}
 SolidCompression=yes
 UninstallDisplayIcon={app}\{#IconFilename}
@@ -59,107 +59,59 @@ Type: files; Name: "{app}\version.ini"
 Source: "bin\PathMgr.dll"; DestDir: "{app}\bin"; Components: server; Flags: uninsneveruninstall
 ; UninsIS.dll - support uninstalling existing package when installing
 Source: "bin\UninsIS.dll"; Flags: dontcopy
-; cygwin x64 - /bin
-Source: "bin-x64\*.dll";                     DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\cygcheck.exe";              DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\cygpath.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\cygrunsrv.exe";             DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\cygstart.exe";              DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\editrights.exe";            DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\false.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\getent.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\id.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\less.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\mintty.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\mkgroup.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\mkpasswd.exe";              DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\mount.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\nano.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\passwd.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\rebase.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\rsync.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\scp.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\sftp.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh-add.exe";               DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh-agent.exe";             DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh-keygen.exe";            DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh-keyscan.exe";           DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh-pageant.exe";           DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\ssh.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\touch.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\true.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\umount.exe";                DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\uname.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\unzip.exe";                 DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\vi.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\xz.exe";                    DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\zip.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x64\cygwin-console-helper.exe"; DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-Source: "bin-x64\dash.exe";                  DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-Source: "bin-x64\tty.exe";                   DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-; supplemental x64 - /bin
-Source: "binsupp-x64\startps.exe"; DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "binsupp-x64\posh.exe";    DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-Source: "binsupp-x64\winpty*";     DestDir: "{app}\bin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-; x64 - /usr/sbin
-Source: "usr\sbin-x64\cygserver.exe";         DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x64\ssh-keysign.exe";       DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x64\ssh-pkcs11-helper.exe"; DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x64\sftp-server.exe";       DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-Source: "usr\sbin-x64\sshd.exe";              DestDir: "{app}\usr\sbin"; Check: Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-; cygwin x86 - /bin
-Source: "bin-x86\*.dll";                     DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion solidbreak
-Source: "bin-x86\cygcheck.exe";              DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\cygpath.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\cygrunsrv.exe";             DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\cygstart.exe";              DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\editrights.exe";            DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\false.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\getent.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\id.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\less.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\mintty.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\mkgroup.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\mkpasswd.exe";              DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\mount.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\nano.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\passwd.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\rebase.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\rsync.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\scp.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\sftp.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh-add.exe";               DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh-agent.exe";             DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh-keygen.exe";            DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh-keyscan.exe";           DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh-pageant.exe";           DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\ssh.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\touch.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\true.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\umount.exe";                DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\uname.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\unzip.exe";                 DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\vi.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\xz.exe";                    DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\zip.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "bin-x86\cygwin-console-helper.exe"; DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-Source: "bin-x86\dash.exe";                  DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-Source: "bin-x86\tty.exe";                   DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-; supplemental x86 - /bin
-Source: "binsupp-x86\startps.exe"; DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "binsupp-x86\posh.exe";    DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-Source: "binsupp-x86\winpty*";     DestDir: "{app}\bin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-; x86 - /usr/sbin
-Source: "usr\sbin-x86\cygserver.exe";         DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x86\ssh-keysign.exe";       DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x86\ssh-pkcs11-helper.exe"; DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode(); Components: client server; Flags: ignoreversion
-Source: "usr\sbin-x86\sftp-server.exe";       DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-Source: "usr\sbin-x86\sshd.exe";              DestDir: "{app}\usr\sbin"; Check: not Is64BitInstallMode(); Components: server;        Flags: ignoreversion
-; shared - /
-Source: "{#IconFilename}";      DestDir: "{app}"; Components: client server; Flags: solidbreak
+; cygwin /bin
+Source: "bin-x64\*.dll";                     DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\cygcheck.exe";              DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\cygpath.exe";               DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\cygrunsrv.exe";             DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\cygstart.exe";              DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\editrights.exe";            DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\false.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\getent.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\id.exe";                    DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\less.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\mintty.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\mkgroup.exe";               DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\mkpasswd.exe";              DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\mount.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\nano.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\passwd.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\rebase.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\rsync.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\scp.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\sftp.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-add.exe";               DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-agent.exe";             DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-keygen.exe";            DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-keyscan.exe";           DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh-pageant.exe";           DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\ssh.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\touch.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\true.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\umount.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\uname.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\unzip.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\vi.exe";                    DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\xz.exe";                    DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\zip.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-x64\cygwin-console-helper.exe"; DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion
+Source: "bin-x64\dash.exe";                  DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion
+Source: "bin-x64\tty.exe";                   DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion
+; supplemental /bin
+Source: "binsupp-x64\startps.exe"; DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "binsupp-x64\posh.exe";    DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion
+Source: "binsupp-x64\winpty*";     DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion
+; cygwin /usr/sbin
+Source: "usr\sbin-x64\cygserver.exe";         DestDir: "{app}\usr\sbin"; Components: client server; Flags: ignoreversion
+Source: "usr\sbin-x64\ssh-keysign.exe";       DestDir: "{app}\usr\sbin"; Components: client server; Flags: ignoreversion
+Source: "usr\sbin-x64\ssh-pkcs11-helper.exe"; DestDir: "{app}\usr\sbin"; Components: client server; Flags: ignoreversion
+Source: "usr\sbin-x64\sftp-server.exe";       DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
+Source: "usr\sbin-x64\sshd.exe";              DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
+; /
+Source: "{#IconFilename}";      DestDir: "{app}"; Components: client server
 Source: "CygSSH-UserGuide.chm"; DestDir: "{app}"; Components: client server
 Source: "CygSSH-UserGuide.pdf"; DestDir: "{app}"; Components: client server
-; shared - /bin
+; /bin
 Source: "bin-scripts\Edit-SSHKey.ps1";     DestDir: "{app}\bin"; Components: client server
 Source: "bin-scripts\Get-AccountName.ps1"; DestDir: "{app}\bin"; Components: client server
 Source: "bin-scripts\New-SSHKey.ps1";      DestDir: "{app}\bin"; Components: client server
@@ -168,8 +120,7 @@ Source: "bin-scripts\Win32API.def";        DestDir: "{app}\bin"; Components: cli
 Source: "bin-scripts\Set-SSHGroup.ps1";    DestDir: "{app}\bin"; Components: server
 Source: "bin-scripts\Set-SSHHostKey.ps1";  DestDir: "{app}\bin"; Components: server
 Source: "bin-scripts\Set-SSHService.ps1";  DestDir: "{app}\bin"; Components: server
-Source: "bin-scripts\Set-S4ULogonFix.ps1"; DestDir: "{app}\bin"; Components: server; OnlyBelowVersion: 6.3
-; shared - /etc
+; /etc
 Source: "etc\cygserver.conf"; DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "etc\nsswitch.conf";  DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "etc\nanorc";         DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
@@ -180,7 +131,7 @@ Source: "etc\passwd";         DestDir: "{app}\etc"; Components: server;        F
 Source: "etc\profile";        DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
 Source: "etc\sshd_config";    DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
 Source: "etc\moduli";         DestDir: "{app}\etc"; Components: server
-; shared - /etc/defaults/etc
+; /etc/defaults/etc
 Source: "etc\defaults\etc\cygserver.conf"; DestDir: "{app}\etc\defaults\etc"; Components: client server
 Source: "etc\defaults\etc\nanorc";         DestDir: "{app}\etc\defaults\etc"; Components: client server
 Source: "etc\defaults\etc\nsswitch.conf";  DestDir: "{app}\etc\defaults\etc"; Components: client server
@@ -190,17 +141,15 @@ Source: "etc\defaults\etc\banner.txt";     DestDir: "{app}\etc\defaults\etc"; Co
 Source: "etc\defaults\etc\passwd";         DestDir: "{app}\etc\defaults\etc"; Components: server
 Source: "etc\defaults\etc\profile";        DestDir: "{app}\etc\defaults\etc"; Components: server
 Source: "etc\defaults\etc\sshd_config";    DestDir: "{app}\etc\defaults\etc"; Components: server
-; shared - /usr/share
+; /usr/share
 Source: "usr\share\*"; DestDir: "{app}\usr\share"; Components: client server; Flags: recursesubdirs createallsubdirs
-; shared - /usr/src
+; /usr/src
 Source: "usr\src-was\*"; DestDir: "{app}\usr\src"; Components: client server; Flags: recursesubdirs
-; shared - /users
+; /users
 Source: "users\SYSTEM\.ssh\*"; DestDir: "{app}\users\SYSTEM\.ssh"; Components: server; Flags: uninsneveruninstall
-; shared - /var
+; /var
 Source: "var\log\lastlog"; DestDir: "{app}\var\log"; Components: server; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "var\run\utmp";    DestDir: "{app}\var\run"; Components: server; Flags: onlyifdoesntexist uninsneveruninstall
-; source code download
-Source: "{tmp}\{#SourceArchiveFileName}"; DestDir: "{app}\usr\src"; Flags: external skipifsourcedoesntexist; Tasks: downloadsource
 
 [Dirs]
 Name: "{app}\tmp";       Components: client server
@@ -213,11 +162,9 @@ Name: "{group}\{cm:IconsUserGuideName}"; Filename: "{app}\CygSSH-UserGuide.chm";
 Filename: "{app}\version.ini"; Section: "Version"; Key: "Version"; String: "{#AppFullVersion}"
 
 [Tasks]
-Name: startservice;   Description: "{cm:TasksStartServiceDescription}"; Components: server; Check: not ServiceExists('{#ServiceName}')
-Name: modifypath;     Description: "{cm:TasksModifyPathDescription,{code:GetSystemOrUserPath}}"; Check: not IsDirInPath(ExpandConstant('{app}\bin'))
-Name: s4ulogonfix;    Description: "{cm:TasksS4ULogonFixDescription}"; Components: server; Flags: unchecked; OnlyBelowVersion: 6.3
-Name: resetconfig;    Description: "{cm:TasksResetConfigDescription}"; Flags: checkedonce unchecked; Check: FileExists(ExpandConstant('{app}\etc\ssh_config')) or FileExists(ExpandConstant('{app}\etc\sshd_config'))
-Name: downloadsource; Description: "{cm:TasksDownloadSourceDescription}"; Flags: checkedonce unchecked
+Name: startservice; Description: "{cm:TasksStartServiceDescription}"; Components: server; Check: not ServiceExists('{#ServiceName}')
+Name: modifypath;   Description: "{cm:TasksModifyPathDescription,{code:GetSystemOrUserPath}}"; Check: not IsDirInPath(ExpandConstant('{app}\bin'))
+Name: resetconfig;  Description: "{cm:TasksResetConfigDescription}"; Flags: checkedonce unchecked; Check: FileExists(ExpandConstant('{app}\etc\ssh_config')) or FileExists(ExpandConstant('{app}\etc\sshd_config'))
 
 [Run]
 ; Add 2 ACEs to /tmp -
@@ -227,7 +174,7 @@ Name: downloadsource; Description: "{cm:TasksDownloadSourceDescription}"; Flags:
 ; Allow  Users      Read, write & execute  This folder, subfolders and files
 ; --------------------------------------------------------------------------
 Filename: "{sys}\icacls.exe"; \
-  Parameters: """{app}\tmp"" /grant ""*S-1-5-32-545:(OI)(CI)(IO)M"" ""*S-1-5-32-545:(OI)(CI)(RX,W)"" /T"; \
+  Parameters: """{app}\tmp"" /remove ""*S-1-5-32-545"" /grant ""*S-1-5-32-545:(OI)(CI)(IO)M"" ""*S-1-5-32-545:(OI)(CI)(RX,W)"" /T"; \
   StatusMsg: "{cm:RunSetPermissionsStatusMsg}"; \
   Components: client server; \
   Flags: runhidden
@@ -265,13 +212,6 @@ Filename: "{app}\bin\startps.exe"; \
   StatusMsg: "{cm:RunConfigureLocalAccessGroupStatusMsg}"; \
   Components: server
 
-; S4U local account logon fix - OS older than 6.3 (Windows 8.1/Server 2012 R2)
-Filename: "{app}\bin\startps.exe"; \
-  Parameters: "-D --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-S4ULogonFix.ps1"" -- -Enable -NoConfirm"; \
-  StatusMsg: "{cm:RunConfigureMsV1_0S4ULogonFixStatusMsg}"; \
-  Components: server; \
-  Tasks: s4ulogonfix
-
 ; Install service
 Filename: "{app}\bin\startps.exe"; \
   Parameters: "-D --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -Install -NoConfirm"; \
@@ -297,12 +237,9 @@ Filename: "{app}\bin\startps.exe"; \
 // Code support:
 // * Add to Path or remove from Path (PathMgr.dll)
 // * Support automatic uninstall with /FORCEUNINSTALL parameter (UninsIS.dll)
-// * Enable S4ULogonFix by default when OS < v6.3, not domain member, and
-//   interactive install
 // * Executable detection: Automatic service stop/process termination and
 //   service restart (Windows Restart Manager does not work correctly with
 //   Cygwin services and processes); uses WMI and progress page
-// * Download of source code
 
 const
   MODIFY_PATH_TASK_NAME = 'modifypath';
@@ -338,18 +275,11 @@ type
   TCygwinProcessList = array of TCygwinProcess;
 
 var
-  DownloadPage: TDownloadWizardPage;
   AppProgressPage: TOutputProgressWizardPage;
-  FileDownloaded, PathIsModified, S4UTaskDefaultChanged, ApplicationUninstalled: Boolean;
+  PathIsModified, ApplicationUninstalled: Boolean;
   SWbemLocator, WMIService: Variant;
   RunningServices: TCygwinServiceList;
 
-// Windows API functions
-// netapi32.dll functions for setup only
-function NetGetJoinInformation(lpServer: string; var lpNameBuffer: DWORD; var BufferType: DWORD): DWORD;
-  external 'NetGetJoinInformation@netapi32.dll stdcall setuponly';
-function NetApiBufferFree(Buffer: DWORD): DWORD;
-  external 'NetApiBufferFree@netapi32.dll stdcall setuponly';
 // advapi32.dll functions for service info
 function OpenSCManager(lpMachineName: string; lpDatabaseName: string; dwDesiredAccess: DWORD): TSCHandle;
   external 'OpenSCManagerW@advapi32.dll stdcall';
@@ -508,12 +438,8 @@ end;
 function InitializeSetup(): Boolean;
 begin
   result := true;
-  // File not downloaded
-  FileDownloaded := false;
   // Was modifypath task selected during a previous install?
   PathIsModified := GetPreviousData(MODIFY_PATH_TASK_NAME, '') = 'true';
-  // S4U task not visited yet
-  S4UTaskDefaultChanged := false;
   try
     SWbemLocator := CreateOleObject('WbemScripting.SWbemLocator');
     WMIService := SWbemLocator.ConnectServer('', 'root\CIMV2');
@@ -524,22 +450,11 @@ begin
   SetArrayLength(RunningServices, 0);
 end;
 
-function OnDownloadProgress(const Url, FileName: string; const Progress, ProgressMax: Int64): Boolean;
-begin
-  result := true;
-  if Progress = ProgressMax then
-  begin
-    FileDownloaded := true;
-    Log(FmtMessage(CustomMessage('DownloadPageDownloadCompleteLogMessage'), [FileName]));
-  end;
-end;
-
 procedure InitializeWizard();
 begin
-  DownloadPage := CreateDownloadPage(SetupMessage(msgWizardPreparing),
-    SetupMessage(msgPreparingDesc), @OnDownloadProgress);
   AppProgressPage := CreateOutputProgressPage(SetupMessage(msgWizardInstalling),
     FmtMessage(CustomMessage('AppProgressPageInstallingCaption'), [ExpandConstant('{#SetupSetting("AppName")}')]));
+  WizardForm.LicenseAcceptedRadio.Checked := true;
 end;
 
 function InitializeUninstall(): Boolean;
@@ -548,38 +463,6 @@ begin
   // Was modifypath task selected during a previous install?
   PathIsModified := GetPreviousData(MODIFY_PATH_TASK_NAME, '') = 'true';
   ApplicationUninstalled := false;
-end;
-
-function IsDomainMember(): Boolean;
-var
-  NameBuffer, BufferType: DWORD;
-begin
-  result := false;
-  if NetGetJoinInformation('', NameBuffer, BufferType) = 0 then
-  begin
-    result := BufferType = 3;  // NetSetupDomainName
-    NetApiBufferFree(NameBuffer);
-  end;
-end;
-
-procedure CurPageChanged(PageID: Integer);
-begin
-  if PageID = wpSelectTasks then
-  begin
-    if not WizardSilent() then
-    begin
-      // Only select if not already changed
-      if not S4UTaskDefaultChanged then
-      begin
-        // Interactive install: Set s4ulogonfix task default:
-        // If not domain member, select by default (but only interactively)
-        // If silent install, command line must specify the task
-        if not IsDomainMember() then
-          WizardSelectTasks('s4ulogonfix');
-        S4UTaskDefaultChanged := true;
-      end;
-    end;
-  end;
 end;
 
 function GetSystemOrUserPath(Param: string): string;
@@ -872,8 +755,6 @@ begin
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
-var
-  ErrorMessage: string;
 begin
   result := true;
   if CurPageID = wpSelectTasks then
@@ -884,34 +765,6 @@ begin
         mbConfirmation,                                                                  // Typ
         MB_YESNO,                                                                        // Buttons
         IDYES) = IDYES;                                                                  // Default
-    end;
-  end
-  else if CurPageID = wpReady then
-  begin
-    // Download source code if task selected and not already downloaded
-    if WizardIsTaskSelected('downloadsource') and (not FileDownloaded) then
-    begin
-      DownloadPage.Clear();
-      DownloadPage.Add('{#SourceArchiveURL}', '{#SourceArchiveFileName}', '');
-      DownloadPage.Show();
-      try
-        try
-          DownloadPage.Download();
-        except
-          if DownloadPage.AbortedByUser then
-            Log(CustomMessage('DownloadPageDownloadAbortedByUser'))
-          else
-          begin
-            ErrorMessage := AddPeriod(GetExceptionMessage);
-            Log(ErrorMessage);
-            SuppressibleMsgBox(ErrorMessage, mbCriticalError, MB_OK, IDOK);
-          end;
-          FileDownloaded := false;
-          result := WizardSilent();  // Prevent continuing setup if not silent
-        end;
-      finally
-        DownloadPage.Hide();
-      end;
     end;
   end;
 end;

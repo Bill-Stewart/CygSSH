@@ -44,46 +44,56 @@ Displays help information.
 The local privsep account (sshd) is not strictly required, but it enables use of the ChrootDirectory setting in sshd_config to restrict a remote user's access to a single directory (normally used with SFTP). If the privsep account is not enabled, the ChrootDirectory setting in sshd_config will not work.
 #>
 
-[CmdletBinding(DefaultParameterSetName = "Help",SupportsShouldProcess = $true,ConfirmImpact = "High")]
+[CmdletBinding(DefaultParameterSetName = "Help",SupportsShouldProcess,ConfirmImpact = "High")]
 param(
   [Parameter(ParameterSetName = "Help")]
-  [Switch] $Help,
+  [Switch]
+  $Help,
 
-  [Parameter(Mandatory = $true,ParameterSetName = "Install")]
-  [Switch] $Install,
+  [Parameter(Mandatory,ParameterSetName = "Install")]
+  [Switch]
+  $Install,
 
-  [Parameter(Mandatory = $true,ParameterSetName = "Uninstall")]
-  [Switch] $Uninstall,
+  [Parameter(Mandatory,ParameterSetName = "Uninstall")]
+  [Switch]
+  $Uninstall,
 
-  [Parameter(Mandatory = $true,ParameterSetName = "Start")]
-  [Switch] $Start,
+  [Parameter(Mandatory,ParameterSetName = "Start")]
+  [Switch]
+  $Start,
 
-  [Parameter(Mandatory = $true,ParameterSetName = "Stop")]
-  [Switch] $Stop,
+  [Parameter(Mandatory,ParameterSetName = "Stop")]
+  [Switch]
+  $Stop,
 
-  [Parameter(Mandatory = $true,ParameterSetName = "ResetPrivsepAccount")]
-  [Switch] $ResetPrivsepAccount,
+  [Parameter(Mandatory,ParameterSetName = "ResetPrivsepAccount")]
+  [Switch]
+  $ResetPrivsepAccount,
 
   [Parameter(ParameterSetName = "Install")]
   [Parameter(ParameterSetName = "Uninstall")]
   [Parameter(ParameterSetName = "Start")]
   [Parameter(ParameterSetName = "Stop")]
   [ValidateNotNullOrEmpty()]
-  [String] $ServiceName = "opensshd",
+  [String]
+  $ServiceName = "opensshd",
 
   [Parameter(ParameterSetName = "Install")]
   [ValidateNotNullOrEmpty()]
-  [String] $ServiceDisplayName = "OpenSSH Server",
+  [String]
+  $ServiceDisplayName = "OpenSSH Server",
 
   [Parameter(ParameterSetName = "Install")]
-  [String] $EnvVarOptions,
+  [String]
+  $EnvVarOptions,
 
   [Parameter(ParameterSetName = "Install")]
   [Parameter(ParameterSetName = "Uninstall")]
   [Parameter(ParameterSetName = "Start")]
   [Parameter(ParameterSetName = "Stop")]
   [Parameter(ParameterSetName = "ResetPrivsepAccount")]
-  [Switch] $NoConfirm
+  [Switch]
+  $NoConfirm
 )
 
 $ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent
@@ -116,7 +126,8 @@ $SSHD_PRIVSEP_ACCOUNT_NAME = "sshd"
 # Returns a random string of the specified length
 function Get-RandomString {
   param(
-    [UInt32] $length
+    [UInt32]
+    $length
   )
   $byteCount = [Math]::Ceiling((($length * 6) + 7) / 8)
   $bytes = New-Object Byte[] $byteCount
@@ -128,9 +139,11 @@ function Get-RandomString {
 # Creates a local user account; returns 0 for success, non-zero for failure
 function New-LocalUserAccount {
   param(
-    [String] $userName,
+    [String]
+    $userName,
 
-    [String] $comment
+    [String]
+    $comment
   )
   $userInfo2 = New-Object "BCA37B9C41264685AD47EEBBD02F40EF.Win32API+USER_INFO_2"
   $userInfo2.usri2_name = $userName
@@ -171,9 +184,11 @@ function New-LocalUserAccount {
 # failure
 function Invoke-NetUserGetInfo {
   param(
-    [String] $userName,
+    [String]
+    $userName,
 
-    [Ref] $userInfo2
+    [Ref]
+    $userInfo2
   )
   $result = 0
   $pUserInfo2 = [IntPtr]::Zero
@@ -202,7 +217,8 @@ function Invoke-NetUserGetInfo {
 # non-zero for failure
 function Reset-LocalUserAccount {
   param(
-    [String] $userName
+    [String]
+    $userName
   )
   $userInfo2 = $null
   $result = Invoke-NetUserGetInfo $userName ([Ref] $userInfo2)
@@ -243,7 +259,8 @@ function Reset-LocalUserAccount {
 # Disables a local user account; returns 0 for success, or non-zero for failure
 function Disable-LocalUserAccount {
   param(
-    [String] $userName
+    [String]
+    $userName
   )
   $userInfo2 = $null
   $result = Invoke-NetUserGetInfo $userName ([Ref] $userInfo2)
@@ -280,7 +297,8 @@ function Disable-LocalUserAccount {
 # Returns $true if local user exists, or $false otherwise
 function Test-LocalUserAccount {
   param(
-    [String] $userName
+    [String]
+    $userName
   )
   $userInfo2 = $null
   (Invoke-NetUserGetInfo $userName ([Ref] $userInfo2)) -eq 0
@@ -297,7 +315,8 @@ function Get-MessageDescription {
   param(
     $messageId,
 
-    [Switch] $asError
+    [Switch]
+    $asError
   )
   # message id must be Int32
   $intId = [BitConverter]::ToInt32([BitConverter]::GetBytes($messageId),0)
@@ -313,7 +332,8 @@ function Get-MessageDescription {
 # Converts a string to a string array, ignoring trailing newlines
 function ConvertTo-Array {
   param(
-    [String] $stringToConvert
+    [String]
+    $stringToConvert
   )
   $stringWithoutTrailingNewLine = $stringToConvert -replace '(\r\n)*$',''
   if ( $stringWithoutTrailingNewLine.Length -gt 0 ) {
@@ -325,11 +345,14 @@ function ConvertTo-Array {
 # exit code
 function Start-Executable {
   param(
-    [String] $filePath,
+    [String]
+    $filePath,
 
-    [String] $arguments,
+    [String]
+    $arguments,
 
-    [Ref] $output
+    [Ref]
+    $output
   )
   $result = 0
   $process = New-Object Diagnostics.Process
@@ -370,7 +393,8 @@ function Start-Executable {
 function Invoke-Cygrunsrv {
   [CmdletBinding()]
   param(
-    [String[]] $argList
+    [String[]]
+    $argList
   )
   $OFS = " "
   $output = $null
@@ -392,9 +416,11 @@ function Invoke-Cygrunsrv {
 # Adds firewall rule
 function New-FirewallRule {
   param(
-    [String] $ruleName,
+    [String]
+    $ruleName,
 
-    [String] $fileName
+    [String]
+    $fileName
   )
   & $NETSH advfirewall firewall add rule name=$ruleName dir=in action=allow program=$fileName > $null 2>&1
 }
@@ -402,9 +428,11 @@ function New-FirewallRule {
 # Removes firewall rule
 function Remove-FirewallRule {
   param(
-    [String] $ruleName,
+    [String]
+    $ruleName,
 
-    [String] $fileName
+    [String]
+    $fileName
   )
   & $NETSH advfirewall firewall delete rule name=$ruleName dir=in program=$fileName > $null 2>&1
 }
@@ -412,7 +440,8 @@ function Remove-FirewallRule {
 # Fix silly "unquoted service path" vulnerability
 function Set-QuotedServicePath {
   param(
-    [String] $serviceName
+    [String]
+    $serviceName
   )
   $regPath = "HKLM:\SYSTEM\CurrentControlSet\Services\{0}" -f $serviceName
   $imagePath = (Get-ItemProperty $regPath -ErrorAction SilentlyContinue).ImagePath

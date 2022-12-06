@@ -15,5 +15,3 @@
 #define SetupVersion AppFullVersion
 #define IconFilename "OpenSSH.ico"
 #define ServiceName "opensshd"
-#define SourceArchiveFileName "source.zip"
-#define SourceArchiveURL "https://github.com/Bill-Stewart/CygSSH/raw/master/usr/src/" + SourceArchiveFileName

@@ -23,8 +23,9 @@ If the current computer is a domain member, names are matched against the domain
 #>
 
 param(
-  [Parameter(ValueFromPipeline = $true)]
-  [String[]] $AccountName
+  [Parameter(ValueFromPipeline)]
+  [String[]]
+  $AccountName
 )
 
 begin {
@@ -80,7 +81,8 @@ begin {
   # Resolves an account name to its full 'authority\name' representation
   function Resolve-AccountName {
     param(
-        [Security.Principal.NTAccount] $name
+        [Security.Principal.NTAccount]
+        $name
     )
     try {
       $sid = $name.Translate([Security.Principal.SecurityIdentifier])
@@ -92,7 +94,8 @@ begin {
 
   function Get-IdentityInfo {
     param(
-      [Security.Principal.NTAccount] $name
+      [Security.Principal.NTAccount]
+      $name
     )
     $resolvedName = $null
     if ( $name.Value.IndexOf("\") -eq -1 ) {

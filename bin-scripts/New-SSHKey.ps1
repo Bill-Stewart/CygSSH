@@ -39,22 +39,29 @@ Prevents output.
 If the current user's home directory is on a network server, it may not be possible to restrict the permissions on the private key file. If changing the permissions fails, a warning message will be generated. It may be desirable to specify a different path for the private key file in this case.
 #>
 
-[CmdletBinding(SupportsShouldProcess = $true,ConfirmImpact = "High")]
+[CmdletBinding(SupportsShouldProcess,ConfirmImpact = "High")]
 param(
-  [String] $FileName,
+  [String]
+  $FileName,
 
-  [Security.SecureString] $Passphrase,
+  [Security.SecureString]
+  $Passphrase,
 
-  [String] $Comment,
+  [String]
+  $Comment,
 
   [ValidateSet("dsa","ecdsa","ecdsa-sk","ed25519","ed25519-sk","rsa")]
-  [String] $KeyType = "ed25519",
+  [String]
+  $KeyType = "ed25519",
 
-  [UInt32] $Bits,
+  [UInt32]
+  $Bits,
 
-  [UInt32] $Rounds,
+  [UInt32]
+  $Rounds,
 
-  [Switch] $Quiet
+  [Switch]
+  $Quiet
 )
 
 $ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent
@@ -145,13 +152,17 @@ function Get-DefaultKeyFileName {
 # Reads a SecureString interactively using a confirmation prompt
 function Read-SecureString {
   param(
-    [String] $secureStringDescription = "SecureString"
+    [String]
+    $secureStringDescription = "SecureString"
   )
   # Securely compares two SecureString objects without decrypting
   function Compare-SecureString {
     param(
-      [Security.SecureString] $secureString1,
-      [Security.SecureString] $secureString2
+      [Security.SecureString]
+      $secureString1,
+
+      [Security.SecureString]
+      $secureString2
     )
     try {
       $bstr1 = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureString1)
@@ -193,7 +204,8 @@ function Read-SecureString {
 # Converts SecureString to String
 function ConvertTo-String {
   param(
-    [Security.SecureString] $secureString
+    [Security.SecureString]
+    $secureString
   )
   try {
     $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureString)

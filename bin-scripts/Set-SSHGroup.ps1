@@ -17,12 +17,14 @@ Specifies the name of the local access group (i.e., the local group that grants 
 Automatically answers "yes" to all confirmation prompts.
 #>
 
-[CmdletBinding(SupportsShouldProcess = $true,ConfirmImpact = "High")]
+[CmdletBinding(SupportsShouldProcess,ConfirmImpact = "High")]
 param(
   [ValidateNotNullOrEmpty()]
-  [String] $GroupName = "SSH Users",
+  [String]
+  $GroupName = "SSH Users",
 
-  [Switch] $NoConfirm
+  [Switch]
+  $NoConfirm
 )
 
 $ERROR_ELEVATION_REQUIRED = 740
@@ -41,9 +43,11 @@ $LOCAL_GROUP_COMMENT = "Members are permitted to log on to this computer using s
 # Creates a local group; returns 0 for success, non-zero for failure
 function Invoke-NetLocalGroupAdd {
   param(
-    [String] $groupName,
+    [String]
+    $groupName,
 
-    [String] $comment
+    [String]
+    $comment
   )
   $lgrpi1 = New-Object "BCA37B9C41264685AD47EEBBD02F40EF.Win32API+LOCALGROUP_INFO_1"
   $lgrpi1.lgrpi1_name = $groupName
@@ -70,9 +74,11 @@ function Invoke-NetLocalGroupAdd {
 # success, or non-zero for failure
 function Invoke-NetLocalGroupGetInfo {
   param(
-    [String] $groupName,
+    [String]
+    $groupName,
 
-    [Ref] $lgrpi1
+    [Ref]
+    $lgrpi1
   )
   $result = 0
   $pLgrpi1 = [IntPtr]::Zero
@@ -99,7 +105,8 @@ function Invoke-NetLocalGroupGetInfo {
 # Gets a local group's comment (description)
 function Get-LocalGroupComment {
   param(
-    [String] $groupName
+    [String]
+    $groupName
   )
   $result = ""
   $groupInfo = $null
@@ -113,9 +120,11 @@ function Get-LocalGroupComment {
 # Sets a local group's comment (description)
 function Set-LocalGroupComment {
   param(
-    [String] $groupName,
+    [String]
+    $groupName,
 
-    [String] $comment
+    [String]
+    $comment
   )
   $lgrpi1 = $null
   $result = Invoke-NetLocalGroupGetInfo $groupName ([Ref] $lgrpi1)
@@ -142,7 +151,8 @@ function Set-LocalGroupComment {
 # Returns $true if the local group exists, or $false otherwise
 function Test-LocalGroup {
   param(
-    [String] $groupName
+    [String]
+    $groupName
   )
   $groupInfo = $null
   (Invoke-NetLocalGroupGetInfo $groupName ([Ref] $groupInfo)) -eq 0
@@ -154,7 +164,8 @@ function Get-MessageDescription {
   param(
     $messageId,
 
-    [Switch] $asError
+    [Switch]
+    $asError
   )
   # message id must be Int32
   $intId = [BitConverter]::ToInt32([BitConverter]::GetBytes($messageId),0)
@@ -224,7 +235,7 @@ $accountInfo = & $GET_ACCOUNTNAME ("{0}\{1}" -f ([Net.Dns]::GetHostName()),$Grou
 if ( $accountInfo ) {
   $pattern = '^AllowGroups "SSH Users"$'
   if ( ($sshdConfig -match $pattern) -and ($accountInfo.CygwinName -ne "SSH Users") ) {
-    if ( $PSCmdlet.ShouldProcess($sshdConfigPath, "Update AllowGroups setting") ) {
+    if ( $PSCmdlet.ShouldProcess($sshdConfigPath,"Update AllowGroups setting") ) {
       $sshdConfig = $sshdConfig -replace $pattern,('AllowGroups "{0}"' -f $accountInfo.CygwinName)
       Set-Content -LiteralPath $sshdConfigPath $sshdConfig -Encoding ASCII -Force
     }

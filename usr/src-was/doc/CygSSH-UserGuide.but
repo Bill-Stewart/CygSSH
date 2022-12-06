@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 2.2
+\define{version} 3.0
 
 \define{rightarrow} \u2192
 
@@ -63,9 +63,7 @@ This software is covered by the license agreements listed in \k{licenses}.
 
 The \i{system requirements} are the following:
 
-\b Windows 7 SP1 or or Windows Server 2008 R2 SP1 or later
-
-The \i{installer} installs the appropriate version of the package based on the OS architecture; that is, it installs the \i{64-bit} version on x64 versions of Windows, or the \i{32-bit} version otherwise. (See \k{wow64downlevelauth} for an important caveat about running the 32-bit version of the OpenSSH server service on 64-bit non-x64 downlevel OS versions.)
+\b Windows 8.1 64-bit or Windows Server 2012 R2 or later
 
 The installer performs the following tasks:
 
@@ -94,7 +92,7 @@ Example installation command:
 \c CygSSH-Setup-version /SILENT /CLOSEAPPLICATIONS /SUPPRESSMSGBOXES
 \e              iiiiiii
 
-Replace \e{version} with the version (e.g., \s{9.0.2.2}).
+Replace \e{version} with the version (e.g., \s{9.1.3.0}).
 
 \I{/CLOSEAPPLICATIONS parameter}\I{/SILENT parameter}\I{/SUPPRESSMSGBOXES parameter}\I{install, silent}\I{silent install}The above command installs the package silently (i.e., without user interaction). The \c{/CLOSEAPPLICATIONS} parameter automatically stops running services and closes programs so that the installer can reinstall or upgrade the files. Stopped services will be automatically restarted after the installation completes. The \c{/SUPPRESSMSGBOXES} parameter suppresses message dialog boxes that would normally appear in an interactive installation.
 
@@ -108,9 +106,7 @@ The following sections describe the pages of the installer wizard.
 
 \H{} License Agreement
 
-The \s{License Agreement} page of the installer wizard lists the license agreements used by the various software components. You must accept the license agreements to continue with the installation.
-
-If you run a silent install using the \c{/SILENT} or \c{/VERYSILENT} command line parameters, you are providing an implicit acceptance of all license agreements (see \k{licenses}).
+The \s{License Agreement} page of the installer wizard lists the license agreements used by the various software components. Installing the software implies an acceptance of all license agreements (see \k{licenses}).
 
 \H{} Information
 
@@ -158,21 +154,7 @@ Note that this page doesn't appear if you are reinstalling or upgrading.
 
 \b \I{modifypath installer task}\I{system Path}\I{user Path}\I{/CURRENTUSER parameter}\s{modifypath} - Corresponds to the \s{Add to system Path} (or \s{Add to user Path}) check box. Adds the \e{installpath}\c{\\bin} directory to the system or user Path environment variable if it does not already exist. This task is selected by default. (This task does not appear if \e{installpath}\c{\\bin} is already in the system or user Path.)
 
-\b \I{s4ulogonfix installer task}\s{s4ulogonfix} - Corresponds to the \s{Implement MsV1_0S4ULogon fix} check box (see \k{s4ulogonfix}). This task only appears in downlevel OS versions and is not applicable if the setup type is \s{client} (see \k{setuptype}). This task is selected by default \e{only} under the following conditions:
-
-\lcont{
-
-\b The current operating system is a downlevel version (in fact, this task doesn't appear at all if you are not running a downlevel OS version)
-
-\b You are installing interactively (i.e., you have not specified the \c{/SILENT} or \c{/VERYSILENT} command line parameters)
-
-\b The current computer is \e{not} a domain member
-
-}
-
 \b \s{resetconfig} - Restores the OpenSSH configuration files (\i\c{ssh_config} and/or \i\c{sshd_config}) to default values. Use this task with caution if you have made any customizations to the \c{etc\\ssh_config} and/or \c{etc\\sshd_config} files. When you select this task, the installer renames the existing \i\c{ssh_config} and/or \i\c{sshd_config} files with \s{-}\e{timestamp} appended (where \e{timestamp} is the current year, month, day, hour, minute, and second) before installing default copies of the configuration file(s).
-
-\b \I{downloadsource installer task}\s{downloadsource} - Downloads the source code as part of the installation process. If you select this task, the installer will download the source code archive to the \s{usr\\src} directory. This task is not selected by default. (See \k{opensource} for more information.)
 
 You can specify one or more of the additional tasks on the command line using the \c{/TASKS="}\e{task}[\c{,}\e{task}[...]]\c{"} command line parameter (where \e{task} is one or more of the above task names, separated by \c{,} characters).
 
@@ -247,12 +229,6 @@ The uninstall program does not remove the following items:
 \b Any other user created files
 
 \b \I{sshd account}The local \c{sshd} user account
-
-\I{MsV1_0S4ULogon}In addition, if you are running a downlevel OS (see \k{downlevelosversionlimitations}), the unistall program does not reverse the changes made by the \c{s4ulogonfix} installer task (see \k{setuptasks}). If you want to reverse this change, run the following command from an elevated Windows PowerShell window before uninstalling:
-
-\c Set-S4ULogonFix -Disable
-
-(See \k{s4ulogonfix} for details about what this command does.)
 
 \# ----------------------------------------------------------------------------
 \# CHAPTER
@@ -511,7 +487,7 @@ A \e{host key} is a cryptographic signature that uniquely identifies an OpenSSH 
 
 The installer (see \k{installer}) automatically creates the necessary host key files at installation time.
 
-The files containing the \i{host keys} are stored in \e{installpath}\c{\\etc} and are named using the format \c{ssh_host_}\e{keytype}\c{_key}[\c{.pub}], where \e{keytype} is \s{dsa}, \s{ecdsa}, \s{ed25519}, or \s{rsa}. The \c{.pub} suffix indicates the public key. Each key type represents an encryption algorithm supported by OpenSSH.
+The files containing the \i{host keys} are stored in \e{installpath}\c{\\etc} and are named using the format \c{ssh_host_}\e{keytype}\c{_key}[\c{.pub}], where \e{keytype} is \s{ecdsa}, \s{ed25519}, or \s{rsa}. The \c{.pub} suffix indicates the public key. Each key type represents an encryption algorithm supported by OpenSSH.
 
 For example, the file \c{ssh_host_ed25519_key} contains the private host key for the ED25519 encryption algorithm, and the file \c{ssh_host_ed25519_key.pub} contains its associated public key.
 
@@ -714,68 +690,6 @@ The \c{%H} placeholder means \q{Windows home directory in POSIX format.}
 See \W{https://cygwin.com/cygwin-ug-net/ntsec.html#ntsec-mapping-nsswitch}{the Cygwin documentation} for more details about the \c{nsswitch.conf} file.
 
 \# ----------------------------------------------------------------------------
-\# CHAPTER
-\# ----------------------------------------------------------------------------
-
-\C{downlevelosversionlimitations} Downlevel OS Version Limitations
-
-\I{downlevel OS version limitations}\I{limitations, downlevel OS versions}In this documentation, operating system versions older than Windows 8.1/Server 2012 R2 are referred to as \e{downlevel versions}.
-
-\H{wow64downlevelauth} 32-bit SSH Server on 64-bit OS Cannot Authenticate Local Account Logons
-
-\I{MsV1_0S4ULogon}The \i{32-bit} version of the OpenSSH server service on \i{64-bit} downlevel OS versions cannot authenticate local account logons. This is because the \s{MsV1_0S4ULogon} logon type used by the OpenSSH service to impersonate local accounts is not implemented in the 32-bit emulator on 64-bit Windows OS versions until Windows 8.1/Server 2012 R2.
-
-There are two scenarios where the above limitation does \e{not} apply:
-
-\b It does not apply if the computer is running a downlevel 32-bit version of Windows
-
-\b It does not apply to domain accounts if the computer is a domain member
-
-An unfortunate implication of this limitation is that you cannot use the OpenSSH server in the following specific scenario:
-
-\b The operating system is 64-bit but not \i{x64} (e.g., \i{IA64}), so therefore the installer installed the 32-bit version of OpenSSH
-
-\b The operating system is a downlevel OS version
-
-\b The computer is not a domain member
-
-In this specific scenario, the OpenSSH server service will not be able to authenticate any account logons due to the limitation stated in this section.
-
-\H{s4ulogonfix} Local Account Logons After Restart Fail Until Another Logon Occurs
-
-\I{s4ulogonfix installer task}The OpenSSH server service on downlevel OS versions will fail to authenticate local account logons after a restart until another logon occurs first. The installer provides the \s{s4ulogonfix} task (see \k{setuptasks}) that works around this problem by doing the following:
-
-\n \I{MsV1_0S4ULogon}Creates a local user account named \c{MsV1_0S4ULogon} with a long, complex password
-
-\n \I{Log on as a batch job}Grants the \s{Log on as a batch job} user right to the local user account
-
-\n Creates a \i{scheduled task} named \c{MsV1_0S4ULogon} that causes a logon at system startup (it simply runs the Windows \s{hostname} command)
-
-This workaround is only needed on downlevel OS versions if you need to authenticate using local accounts. If your computer is a domain member and you only authenticate using domain accounts, this workaround is not needed.
-
-The workaround has two limitations:
-
-\b If the account loses the \s{Log on as a batch job} user right, the workaround will fail - this can occur if a \i{Group Policy} Object (GPO) in a domain configures this user right and removes the account
-
-\b If the \s{Network access: Do not allow storage of passwords and credentials for network authentication} security policy is set to \s{Enabled}, the workaround will fail - this can occur if a Group Policy Object (GPO) in a domain changes this setting to \s{Enabled} (it is not set to \s{Enabled} by default)
-
-You can also implement the fix manually after installation if needed.
-
-\I{Set-S4ULogonFix.ps1}First, open an elevated Windows PowerShell console (i.e., right-click the PowerShell icon and choose \c{Run as administrator}). Then, run the following command:
-
-\c Set-S4ULogonFix -Enable
-
-The script will ask for confirmation before proceeding with each required configuration item.
-
-If you specify \c{\-Disable} rather than \c{\-Enable} on the script's command line, the script will do the following instead:
-
-\b Revoke the \s{Log on as a batch job} user right from the \c{MsV1_0S4ULogon} local user account
-
-\b Disable the \c{MsV1_0S4ULogon} local user account
-
-\b Disable the \c{MsV1_0S4ULogon} scheduled task
-
-\# ----------------------------------------------------------------------------
 \# APPENDIX
 \# ----------------------------------------------------------------------------
 
@@ -878,11 +792,7 @@ See \k{documentationlinks} for a link to \s{rsync}'s documentation.
 
 \I{Set-SSHService.ps1}\s{Set\-SSHService.ps1} - Used by the installer to install, start, stop, and uninstall the OpenSSH server service*
 
-\I{Set-S4ULogonFix.ps1}\s{Set\-S4ULogonFix.ps1} - Used by the \s{s4ulogonfix} installer task (see \k{setuptasks})**
-
 * Only installed when setup type is \s{full} (see \k{setuptype})
-
-** Only installed on downlevel OS versions (see \k{s4ulogonfix}) when setup type is \s{full} (see \k{setuptype})
 
 \s{Note:} Use the \s{Get\-Help} cmdlet to get online help information for any of the PowerShell scripts.
 
@@ -958,7 +868,15 @@ To meet this requirement for the CygSSH package, a zip file archive of the sourc
 
 \W{https://github.com/Bill-Stewart/CygSSH/tree/master/usr/src}{https://github.com/Bill-Stewart/CygSSH/tree/master/usr/src}
 
-The source code is generally of interest only to developers. You can download the source code archive during the installation process if you select the \s{Download source code} task during installation (see \k{setuptasks}).
+From that page, do the following:
+
+\n Click the \s{History} button to view the history of the \s{src} directory.
+
+\n Click the \s{View at this point in the history} button for the desired version to view the \s{src} directory for that version.
+
+\n Click the \s{source.zip} file to download that version of the source code files.
+
+The source code is generally of interest only to developers.
 
 \# ----------------------------------------------------------------------------
 \# APPENDIX
@@ -967,6 +885,16 @@ The source code is generally of interest only to developers. You can download th
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{3.0} (2022-12-06)
+
+\b Updated to OpenSSH 9.1, Cygwin 3.4, and rsync 3.2.7.
+
+\b Removed 32-bit and downlevel OS support.
+
+\b Removed \s{downloadsource} task.
+
+\b Minor tweaks.
 
 \s{2.2} (2022-08-11)
 
@@ -1092,7 +1020,6 @@ The source code is generally of interest only to developers. You can download th
 \IM{/FORCEUNINSTALL parameter} \c{/FORCEUNINSTALL} parameter
 \IM{/SILENT parameter} \c{/SILENT} parameter
 \IM{/SUPPRESSMSGBOXES parameter} \c{/SUPPRESSMSGBOXES} parameter
-\IM{64-bit}{x64} 64-bit (x64)
 \IM{Access Control List} Access Control List (ACL)
 \IM{AllowGroups setting} \c{AllowGroups} setting
 \IM{AllowTcpForwarding setting} \c{AllowTcpForwarding} setting
@@ -1105,7 +1032,6 @@ The source code is generally of interest only to developers. You can download th
 \IM{CYGWIN environment variable} \c{CYGWIN} environment variable
 \IM{dev directory} \c{dev} directory (SFTP-only)
 \IM{disable_pcon} \c{disable_pcon}
-\IM{downloadsource installer task} \c{downloadsource} installer task
 \IM{ForceCommand setting} \c{ForceCommand} setting
 \IM{fstab file} \c{fstab} file
 \IM{Group Policy} Group Policy (GPO)
@@ -1113,16 +1039,13 @@ The source code is generally of interest only to developers. You can download th
 \IM{interactive shell} interactive shell
 \IM{interactive shell} shell (interactive)
 \IM{known_hosts} \c{known_hosts} file
-\IM{Log on as a batch job} Log on as batch job (user right)
 \IM{Match User setting} \c{Match User} setting
 \IM{modifypath installer task} \c{modifypath} installer task
 \IM{modifypath installer task} path (environment variable)
-\IM{MsV1_0S4ULogon} MsV1_0S4ULogon logon type
 \IM{noacl} \c{noacl} option (\c{fstab} file)
 \IM{nsswitch.conf} \c{nsswitch.conf} file
 \IM{passwd file} \c{passwd} file
 \IM{root user account} \c{root} user account
-\IM{s4ulogonfix installer task} \c{s4ulogonfix} installer task
 \IM{SSH Users group} \c{SSH Users} (local access group)
 \IM{ssh_config} \c{ssh_config} file
 \IM{sshd account} \c{sshd} account

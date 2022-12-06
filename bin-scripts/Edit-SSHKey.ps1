@@ -22,19 +22,23 @@ Edits the private key file's passphrase. If the private key file has a non-empty
 
 [CmdletBinding(DefaultParameterSetName = "Help")]
 param(
-  [Parameter(Position = 0,Mandatory = $true,ParameterSetName = "Comment")]
-  [Parameter(Position = 0,Mandatory = $true,ParameterSetName = "Passphrase")]
+  [Parameter(Position = 0,Mandatory,ParameterSetName = "Comment")]
+  [Parameter(Position = 0,Mandatory,ParameterSetName = "Passphrase")]
   [ValidateNotNullOrEmpty()]
-  [String] $FileName,
+  [String]
+  $FileName,
 
-  [Parameter(Mandatory = $true,ParameterSetName = "Comment")]
-  [Switch] $Comment,
+  [Parameter(Mandatory,ParameterSetName = "Comment")]
+  [Switch]
+  $Comment,
 
-  [Parameter(Mandatory = $true,ParameterSetName = "Passphrase")]
-  [Switch] $Passphrase,
+  [Parameter(Mandatory,ParameterSetName = "Passphrase")]
+  [Switch]
+  $Passphrase,
 
   [Parameter(ParameterSetName = "Help")]
-  [Switch] $Help
+  [Switch]
+  $Help
 )
 
 $ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent

@@ -40,7 +40,8 @@ function Get-MessageDescription {
   param(
     $messageId,
 
-    [Switch] $asError
+    [Switch]
+    $asError
   )
   # message id must be Int32
   $intId = [BitConverter]::ToInt32([BitConverter]::GetBytes($messageId),0)

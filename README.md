@@ -4,11 +4,15 @@ CygSSH is a convenient packaging of the Cygwin port of OpenSSH that includes rsy
 
 ## System Requirements
 
-Windows 7 SP1 or Server 2008 R2 SP1 or later
+Windows 8.1 64-bit or Windows Server 2012 R2 or later
 
 ## Download
 
 https://github.com/Bill-Stewart/CygSSH/releases/
+
+## Documentation
+
+https://github.com/Bill-Stewart/CygSSH/blob/master/CygSSH-UserGuide.pdf
 
 ## Acknowledgments
 

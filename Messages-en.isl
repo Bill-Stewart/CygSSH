@@ -29,16 +29,13 @@ IconsUserGuideComment=Cygwin OpenSSH User Guide
 ; Tasks
 TasksStartServiceDescription=&Start OpenSSH server service
 TasksModifyPathDescription=&Add to %1
-TasksS4ULogonFixDescription=Implement &MsV1_0S4ULogon fix
 TasksResetConfigDescription=&Reset OpenSSH configuration files to default (use with caution!)
-TasksDownloadSourceDescription=&Download source code
 
 ; Run
 RunSetPermissionsStatusMsg=Setting file system permissions...
 RunConfigureFstabStatusMsg=Configuring fstab file...
 RunConfigureSSHHostKeysStatusMsg=Configuring SSH host keys...
 RunConfigureLocalAccessGroupStatusMsg=Configuring local access group...
-RunConfigureMsV1_0S4ULogonFixStatusMsg=Configuring MsV1_0S4ULogon fix...
 RunInstallServiceStatusMsg=Installing OpenSSH server service...
 RunStartServiceStatusMsg=Starting OpenSSH server service...
 
@@ -73,10 +70,6 @@ ApplicationsStillRunningMessage=Applications are still using files that need to 
 RunCommandMessage=Run command: "%1" %2
 ClosedApplicationsMessage=Stopped running service(s) and closed running application(s).
 StartedServicesMessage=Service restart command(s) executed successfully.
-
-; Download page
-DownloadPageDownloadCompleteLogMessage=Successfully downloaded file: %1
-DownloadPageDownloadAbortedByUser=Download aborted by user.
 
 ; Application progress page
 AppProgressPageInstallingCaption=Please wait while Setup installs %1 on your computer.

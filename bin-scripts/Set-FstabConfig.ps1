@@ -17,7 +17,7 @@ Automatically answers "yes" to all confirmation prompts.
 Forces overwriting the fstab file if it already exists.
 #>
 
-[CmdletBinding(SupportsShouldProcess = $true,ConfirmImpact = "High")]
+[CmdletBinding(SupportsShouldProcess,ConfirmImpact = "High")]
 param(
   [Switch] $NoConfirm,
 
@@ -49,7 +49,8 @@ function Get-MessageDescription {
   param(
     $messageId,
 
-    [Switch] $asError
+    [Switch]
+    $asError
   )
   # message id must be Int32
   $intId = [BitConverter]::ToInt32([BitConverter]::GetBytes($messageId),0)
@@ -90,7 +91,8 @@ if ( Test-Path $fstabPath ) {
 # replacing spaces with '\040' (as needed for the /etc/fstab file)
 function Get-Path {
   param(
-    [String] $inputPath
+    [String]
+    $inputPath
   )
   (& $CYGPATH -am $inputPath) -replace ' ','\040'
 }

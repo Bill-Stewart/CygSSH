@@ -72,8 +72,8 @@ Build instructions:
   unpack rsync-*-src.tar.*
     if you use setup to install this source package, it will be
     unpacked under /usr/src automatically
-  cd /usr/src
-  ./rsync*.sh all
+  cd /usr/src/rsync-*.src
+  cygport rsync.cygport all
 
 ------------------------------------------
 
@@ -84,8 +84,12 @@ Files included in the binary distribution:
 
 Port Notes:
 
+----- version 3.2.7 -----
+- New upstream release 2022-10-25 Chad Dougherty
+- Converted to cygport build method instead of g-b-s
+
 ----- version 3.2.3+20200903+git9f9240b-4 -----
-- Compile with xxhah support (Cygwin now includes the library)
+- Compile with xxhash support (Cygwin now includes the library)
 
 ----- version 3.2.3+20200903+git9f9240b-3 -----
 - New upstream release 2020-09-07 Jari Aalto
@@ -211,6 +215,6 @@ No patch used.
   very end of transfer.
 
 Licensed under GPL v2 or later
-Cygwin port maintained by Jari Aalto
+Cygwin port maintained by Jari Aalto and Chad Dougherty
 Copyright (C) 2014-2020 Jari Aalto <jari.aalto@cante.net>
 Copyright (C) 2002-2020 Lapo Luchini <lapo@lapo.it>

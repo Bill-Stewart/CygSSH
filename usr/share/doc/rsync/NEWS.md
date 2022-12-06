@@ -1,18 +1,480 @@
-<a name="3.2.4"></a>
-
-# NEWS for rsync 3.2.4 (UNRELEASED)
+# NEWS for rsync 3.2.7 (20 Oct 2022)
 
 ## Changes in this version:
 
 ### BUG FIXES:
 
- - Use openssl's `-verify_hostname` option in the rsync-ssl script.
+- Fixed the client-side validating of the remote sender's filtering behavior.
 
- - Avoid a weird failure if you run a local copy with an `--rsh` option that
-   contained a `V`.
+- More fixes for the "unrequested file-list name" name, including a copy of
+  "/" with `--relative` enabled and a copy with a lot of related paths with
+  `--relative` enabled (often derived from a `--files-from` list).
+
+- When rsync gets an unpack error on an ACL, mention the filename.
+
+- Avoid over-setting sanitize_paths when a daemon is serving "/" (even if
+  "use chroot" is false).
+
+### ENHANCEMENTS:
+
+- Added negotiated daemon-auth support that allows a stronger checksum digest
+  to be used to validate a user's login to the daemon.  Added SHA512, SHA256,
+  and SHA1 digests to MD5 & MD4.  These new digests are at the highest priority
+  in the new daemon-auth negotiation list.
+
+- Added support for the SHA1 digest in file checksums.  While this tends to be
+  overkill, it is available if someone really needs it.  This overly-long
+  checksum is at the lowest priority in the normal checksum negotiation list.
+  See [`--checksum-choice`](rsync.1#opt) (`--cc`) and the `RSYNC_CHECKSUM_LIST`
+  environment var for how to customize this.
+
+- Improved the xattr hash table to use a 64-bit key without slowing down the
+  key's computation.  This should make extra sure that a hash collision doesn't
+  happen.
+
+- If the `--version` option is repeated (e.g. `-VV`) then the information is
+  output in a (still readable) JSON format.  Client side only.
+
+- The script `support/json-rsync-version` is available to get the JSON style
+  version output from any rsync.  The script accepts either text on stdin
+  **or** an arg that specifies an rsync executable to run with a doubled
+  `--version` option.  If the text we get isn't already in JSON format, it is
+  converted. Newer rsync versions will provide more complete json info than
+  older rsync versions. Various tweaks are made to keep the flag names
+  consistent across versions.
+
+- The [`use chroot`](rsyncd.conf.5#) daemon parameter now defaults to "unset"
+  so that rsync can use chroot when it works and a sanitized copy when chroot
+  is not supported (e.g., for a non-root daemon).  Explicitly setting the
+  parameter to true or false (on or off) behaves the same way as before.
+
+- The `--fuzzy` option was optimized a bit to try to cut down on the amount of
+  computations when considering a big pool of files. The simple heuristic from
+  Kenneth Finnegan resuled in about a 2x speedup.
+
+- If rsync is forced to use protocol 29 or before (perhaps due to talking to an
+  rsync before 3.0.0), the modify time of a file is limited to 4-bytes.  Rsync
+  now interprets this value as an unsigned integer so that a current year past
+  2038 can continue to be represented. This does mean that years prior to 1970
+  cannot be represented in an older protocol, but this trade-off seems like the
+  right choice given that (1) 2038 is very rapidly approaching, and (2) newer
+  protocols support a much wider range of old and new dates.
+
+- The rsync client now treats an empty destination arg as an error, just like
+  it does for an empty source arg. This doesn't affect a `host:` arg (which is
+  treated the same as `host:.`) since the arg is not completely empty.  The use
+  of [`--old-args`](rsync.1#opt) (including via `RSYNC_OLD_ARGS`) allows the
+  prior behavior of treating an empty destination arg as a ".".
+
+### PACKAGING RELATED:
+
+- The checksum code now uses openssl's EVP methods, which gets rid of various
+  deprecation warnings and makes it easy to support more digest methods.  On
+  newer systems, the MD4 digest is marked as legacy in the openssl code, which
+  makes openssl refuse to support it via EVP.  You can choose to ignore this
+  and allow rsync's MD4 code to be used for older rsync connections (when
+  talking to an rsync prior to 3.0.0) or you can choose to configure rsync to
+  tell openssl to enable legacy algorithms (see below).
+
+- A simple openssl config file is supplied that can be installed for rsync to
+  use.  If you install packaging/openssl-rsync.cnf to a public spot (such as
+  `/etc/ssl/openssl-rsync.cnf`) and then run configure with the option
+  `--with-openssl-conf=/path/name.cnf`, this will cause rsync to export the
+  configured path in the OPENSSL_CONF environment variable (when the variable
+  is not already set).  This will enable openssl's MD4 code for rsync to use.
+
+- The packager may wish to include an explicit "use chroot = true" in the top
+  section of their supplied /etc/rsyncd.conf file if the daemon is being
+  installed to run as the root user (though rsync should behave the same even
+  with the value unset, a little extra paranoia doesn't hurt).
+
+- I've noticed that some packagers haven't installed support/nameconvert for
+  users to use in their chrooted rsync configs.  Even if it is not installed
+  as an executable script (to avoid a python3 dependency) it would be good to
+  install it with the other rsync-related support scripts.
+
+- It would be good to add support/json-rsync-version to the list of installed
+  support scripts.
 
 ------------------------------------------------------------------------------
-<a name="3.2.3"></a>
+
+# NEWS for rsync 3.2.6 (9 Sep 2022)
+
+## Changes in this version:
+
+### BUG FIXES:
+
+- More path-cleaning improvements in the file-list validation code to avoid
+  rejecting of valid args.
+
+- A file-list validation fix for a [`--files-from`](rsync.1#opt) file that ends
+  without a line-terminating character.
+
+- Added a safety check that prevents the sender from removing destination files
+  when a local copy using [`--remove-source-files`](rsync.1#opt) has some files
+  that are shared between the sending & receiving hierarchies, including the
+  case where the source dir & destination dir are identical.
+
+- Fixed a bug in the internal MD4 checksum code that could cause the digest
+  to be sporadically incorrect (the openssl version was/is fine).
+
+- A minor tweak to rrsync added "copy-devices" to the list of known args, but
+  left it disabled by default.
+
+### ENHANCEMENTS:
+
+- Rename `--protect-args` to [`--secluded-args`](rsync.1#opt) to make it
+  clearer how it differs from the default backslash-escaped arg-protecting
+  behavior of rsync.  The old option names are still accepted.  The
+  environment-variable override did not change its name.
+
+### PACKAGING RELATED:
+
+- The configure option `--with-protected-args` was renamed to
+  `--with-secluded-args`.  This option makes `--secluded-args` the default
+  rsync behavior instead of using backslash escaping for protecting args.
+
+- The mkgitver script now makes sure that a `.git` dir/file is in the top-level
+  source dir before calling `git describe`. It also runs a basic check on the
+  version value. This should avoid using an unrelated git description for
+  rsync's version.
+
+### DEVELOPER RELATED:
+
+- The configure script no longer sets the -pedantic-errors CFLAG (which it
+  used to try to do only for gcc).
+
+- The name_num_obj struct was modified to allow its dynamic name_num_item list
+  to be initialized in a better way.
+
+------------------------------------------------------------------------------
+
+# NEWS for rsync 3.2.5 (14 Aug 2022)
+
+## Changes in this version:
+
+### SECURITY FIXES:
+
+- Added some file-list safety checking that helps to ensure that a rogue
+  sending rsync can't add unrequested top-level names and/or include recursive
+  names that should have been excluded by the sender.  These extra safety
+  checks only require the receiver rsync to be updated.  When dealing with an
+  untrusted sending host, it is safest to copy into a dedicated destination
+  directory for the remote content (i.e. don't copy into a destination
+  directory that contains files that aren't from the remote host unless you
+  trust the remote host). Fixes CVE-2022-29154.
+
+ - A fix for CVE-2022-37434 in the bundled zlib (buffer overflow issue).
+
+### BUG FIXES:
+
+- Fixed the handling of filenames specified with backslash-quoted wildcards
+  when the default remote-arg-escaping is enabled.
+
+- Fixed the configure check for signed char that was causing a host that
+  defaults to unsigned characters to generate bogus rolling checksums. This
+  made rsync send mostly literal data for a copy instead of finding matching
+  data in the receiver's basis file (for a file that contains high-bit
+  characters).
+
+- Lots of manpage improvements, including an attempt to better describe how
+  include/exclude filters work.
+
+- If rsync is compiled with an xxhash 0.8 library and then moved to a system
+  with a dynamically linked xxhash 0.7 library, we now detect this and disable
+  the XX3 hashes (since these routines didn't stabilize until 0.8).
+
+### ENHANCEMENTS:
+
+- The [`--trust-sender`](rsync.1#opt) option was added as a way to bypass the
+  extra file-list safety checking (should that be required).
+
+### PACKAGING RELATED:
+
+- A note to those wanting to patch older rsync versions: the changes in this
+  release requires the quoted argument change from 3.2.4. Then, you'll want
+  every single code change from 3.2.5 since there is no fluff in this release.
+
+- The build date that goes into the manpages is now based on the developer's
+  release date, not on the build's local-timezone interpretation of the date.
+
+### DEVELOPER RELATED:
+
+- Configure now defaults GETGROUPS_T to gid_t when cross compiling.
+
+- Configure now looks for the bsd/string.h include file in order to fix the
+  build on a host that has strlcpy() in the main libc but not defined in the
+  main string.h file.
+
+------------------------------------------------------------------------------
+
+# NEWS for rsync 3.2.4 (15 Apr 2022)
+
+## Changes in this version:
+
+### BEHAVIOR CHANGES:
+
+ - A new form of arg protection was added that works similarly to the older
+   `--protect-args` ([`-s`](rsync.1#opt)) option but in a way that avoids
+   breaking things like rrsync (the restricted rsync script): rsync now uses
+   backslash escaping for sending "shell-active" characters to the remote
+   shell. This includes spaces, so fetching a remote file via a simple quoted
+   filename value now works by default without any extra quoting:
+
+   ```shell
+       rsync -aiv host:'a simple file.pdf' .
+   ```
+
+   Wildcards are not escaped in filename args, but they are escaped in options
+   like the [`--suffix`](rsync.1#opt) and [`--usermap`](rsync.1#opt) values.
+   If your rsync script depends on the old arg-splitting behavior, either run
+   it with the [`--old-args`](rsync.1#opt) option or `export RSYNC_OLD_ARGS=1`
+   in the script's environment.  See also the [ADVANCED USAGE](rsync.1#)
+   section of rsync's manpage for how to use a more modern arg style.
+
+ - A long-standing bug was preventing rsync from figuring out the current
+   locale's decimal point character, which made rsync always output numbers
+   using the "C" locale.  Since this is now fixed in 3.2.4, a script that
+   parses rsync's decimal numbers (e.g. from the verbose footer) may want to
+   setup the environment in a way that the output continues to be in the C
+   locale.  For instance, one of the following should work fine:
+
+   ```shell
+       export LC_ALL=C.UTF-8
+   ```
+
+   or if iconv translations are needed:
+
+   ```shell
+       if [ "${LC_ALL:-}" ]; then
+           export LANG="$LC_ALL"
+           export LC_CTYPE="$LC_ALL"
+           unset LC_ALL
+       fi
+       export LC_NUMERIC=C.UTF-8
+   ```
+
+### SECURITY FIXES:
+
+ - A fix for CVE-2018-25032 in the bundled zlib (memory corruption issue).
+
+### BUG FIXES:
+
+ - Fixed a bug with [`--inplace`](rsync.1#opt) + [`--sparse`](rsync.1#opt) (and
+   a lack of [`--whole-file`](rsync.1#opt)) where the destination file could
+   get reconstructed with bogus data.  Since the bug can also be avoided by
+   using (the seemingly redundant) [`--no-W`](rsync.1#opt) on the receiving
+   side, the latest rsync will now send `--no-W` to a remote receiver when this
+   option combination occurs.  If your client rsync is not new enough to do
+   this for you (or if you're just paranoid), you can manually specify `--no-W
+   -M--no-W` (when not using [`--whole-file`](rsync.1#opt)) to make sure the
+   bug is avoided.
+
+ - Fixed a bug with [`--mkpath`](rsync.1#opt) if a single-file copy specifies
+   an existing destination dir with a non-existing destination filename.
+
+ - Fixed `--update -vv` to output "is uptodate" instead of "is newer" messages
+   for files that are being skipped due to an identical modify time.  (This was
+   a new output quirk in 3.2.3.)
+
+ - When doing an append transfer, the sending side's file must not get shorter
+   or it is skipped. Fixes a crash that could occur when the size changes to 0
+   in the middle of the send negotiations.
+
+ - When dealing with special files (see [`--specials`](rsync.1#opt)) in an
+   alt-dest hierarchy, rsync now checks the non-permission mode bits to ensure
+   that the 2 special files are really the same before hard-linking them
+   together.
+
+ - Fixed a bug where [`--delay-updates`](rsync.1#opt) with stale partial data
+   could cause a file to fail to update.
+
+ - Fixed a few places that would output an INFO message with
+   [`--info=NAME`](rsync.1#opt) that should only have been output given
+   [`--verbose`](rsync.1#opt) or [`--itemize-changes`](rsync.1#opt).
+
+ - Avoid a weird failure if you run a local copy with a (useless)
+   [`--rsh`](rsync.1#opt) option that contains a `V` in the command.
+
+ - Fixed a long-standing compression bug where the compression level of the
+   first file transferred affected the level for all future files.  Also, the
+   per-file compression skipping has apparently never worked, so it is now
+   documented as being ineffective.
+
+ - Fixed a truncate error when a `--write-devices` copy wrote a file onto a
+   device that was shorter than the device.
+
+ - Made `--write-devices` support both `--checksum` and `--no-whole-file` when
+   copying to a device.
+
+ - Improved how the [`--stop-at`](rsync.1#opt), [`--stop-after`](rsync.1#opt),
+   and (the deprecated) [`--time-limit`](rsync.1#opt) options check to see if
+   the allowed time is over, which should make rsync exit more consistently.
+
+ - Tweak --progress to display "`??:??:??`" when the time-remaining value is so
+   large as to be meaningless.
+
+ - Silence some chmod warnings about symlinks when it looks like we have a
+   function to set their permissions but they can't really be set.
+
+ - Fixed a potential issue in git-set-file-times when handling commits with
+   high-bit characters in the description & when handling a description that
+   might mimic the git raw-commit deliniators.  (See the support dir.)
+
+ - The bundled systemd/rsync.service file now includes `Restart=on-failure`.
+
+### ENHANCEMENTS:
+
+ - Use openssl's `-verify_hostname` option in the rsync-ssl script.
+
+ - Added extra info to the "FILENAME exists" output of
+   [`--ignore-existing`](rsync.1#opt) when [`--info=skip2`](rsync.1#opt) is
+   used.  The skip message becomes "FILENAME exists (INFO)" where the INFO is
+   one of "type change", "sum change" (requires [`--checksum`](rsync.1#opt)),
+   "file change" (based on the quick check), "attr change", or "uptodate".
+   Prior versions only supported `--info=skip1`.
+
+ - Added the [`--fsync`](rsync.1#opt) option (promoted from the patches repo).
+
+ - Added the [`--copy-devices`](rsync.1#opt) option.  Compared to the
+   historical version from the rsync-patches repo, this version: properly
+   handles `--checksum`; fixes a truncation bug when doing an `--inplace` copy
+   onto a longer file; fixes several bugs in the `--itemize` output; and only
+   the sending side needs the enhanced rsync for the copy to work.
+
+ - Reduced memory usage for an incremental transfer that has a bunch of small
+   directories.
+
+ - The rsync daemon can now handle a client address with an implied "%scope"
+   suffix.
+
+ - Added support for [`--atimes`](rsync.1#opt) on macOS and fixed a bug where
+   it wouldn't work without [`--times`](rsync.1#opt).
+
+ - Rsync can now update the xattrs on a read-only file when your user can
+   temporarily add user-write permission to the file. (It always worked for a
+   root transfer.)
+
+ - Rsync can now work around an [`--inplace`](rsync.1#opt) update of a file
+   that is being refused due to the Linux fs.protected_regular sysctl setting.
+
+ - When [`--chown`](rsync.1#opt), [`--usermap`](rsync.1#opt), or
+   [`--groupmap`](rsync.1#opt) is specified, rsync now makes sure that the
+   appropriate [`--owner`](rsync.1#opt) and/or [`--group`](rsync.1#opt) options
+   are enabled.
+
+ - Added the [`--info=NONREG`](rsync.1#opt) setting to control if rsync should
+   warn about non-regular files in the transfer.  This is enabled by default
+   (keeping the behavior the same as before), so specifying `--info=nonreg0`
+   can be used to turn the warnings off.
+
+ - An optional asm optimization for the rolling checksum from Shark64. Enable
+   it with `./configure --enable-roll-asm`.
+
+ - Using `--debug=FILTER` now outputs a caution message if a filter rule
+   has trailing whitespace.
+
+ - Transformed rrsync into a python script with improvements:
+   - Security has been beefed up.
+   - The known rsync options were updated to include recent additions.
+   - Make rrsync reject [`--copy-links`](rsync.1#opt) (`-L`),
+     [`--copy-dirlinks`](rsync.1#opt) (`-k`), &
+     [`--keep-dirlinks`](rsync.1#opt) (`-K`) by default to make it harder to
+     exploit any out-of-subdir symlinks.
+   - A new rrsync option of [`-munge`](rrsync.1#opt) tells rrsync to always
+     enable rsync's [`--munge-links`](rsync.1#opt) option on the server side.
+   - A new rrsync option of [`-no-lock`](rrsync.1#opt) disables a new
+     single-use locking idiom that is the default when [`-ro`](rrsync.1#opt) is
+     not used (useful with [`-munge`](rrsync.1#opt)).
+   - A new rrsync option of [`-no-del`](rrsync.1#opt) disables all `--remove*`
+     and `--delete*` rsync options on the server side.
+   - The log format has been tweaked slightly to add seconds to the timestamp
+     and to output the command executed as a tuple (making the args clearer).
+   - An rrsync.1 manpage was added (in the support dir with rrsync).
+
+ - Added options to the lsh script to facilitate rrsync testing. (See the
+   support dir.)
+
+ - Transformed the atomic-rsync script into a python script and added the
+   ability to ignore one or more non-zero exit codes.  By default, it now
+   ignores code 24, the file-vanished exit code. (See the support dir.)
+
+ - Transformed the munge-symlinks script into python. (See the support dir.)
+
+ - Improved the rsync-no-vanished script to not join stdout & stderr together.
+   (See the support dir.)
+
+ - Work around a glibc bug where lchmod() breaks in a chroot w/o /proc mounted.
+
+ - Try to support a client that sent a remote rsync a wacko stderr file handle
+   (such as an older File::RsyncP perl library used by BackupPC).
+
+ - Lots of manpage improvements, including better HTML versions.
+
+### PACKAGING RELATED:
+
+ - Give configure the `--with-rrsync` option if you want `make install` to
+   install the (now python3) rrsync script and its new manpage.
+
+ - If the rrsync script is installed, its package should be changed to depend
+   on python3 and the (suggested but not mandatory) python3 braceexpand lib.
+
+ - When creating a package from a non-release version (w/o a git checkout), the
+   packager can elect to create git-version.h and define RSYNC_GITVER to the
+   string they want `--version` to output.  (The file is still auto-generated
+   using the output of `git describe` when building inside a non-shallow git
+   checkout, though.)
+
+ - Renamed configure's `--enable-simd` option to `--enable-roll-simd` and added
+   the option `--enable-roll-asm` to use the new asm version of the code.  Both
+   are x86_64/amd64 only.
+
+ - Renamed configure's `--enable-asm` option to `--enable-md5-asm` to avoid
+   confusion with the asm option for the rolling checksum.  It is also honored
+   even when openssl crypto is in use.  This allows: normal MD4 & MD5, normal
+   MD4 + asm MD5, openssl MD4 & MD5, or openssl MD4 + asm MD5 depending on the
+   configure options selected.
+
+ - Made SIMD & asm configure checks default to "no" on non-Linux hosts due to
+   various reports of problems on NetBSD & macOS hosts.  These were also
+   tweaked to allow enabling the feature on a host_cpu of amd64 (was only
+   allowed on x86_64 before).
+
+ - Fixed configure to not fail at the SIMD check when cross-compiling.
+
+ - Improved the IPv6 determination in configure.
+
+ - Compile the C files with `-pedantic-errors` (when possible) so that we will
+   get warned if a static initialization overflows in the future (among other
+   things).
+
+ - When linking with an external zlib, rsync renames its `read_buf()` function
+   to `read_buf_()` to avoid a symbol clash on an unpatched zlib.
+
+ - Added a SECURITY.md file.
+
+### DEVELOPER RELATED:
+
+ - Made it easier to write rsync tests that diff the output while also checking
+   the status code, and used the idiom to improve the existing tests. (See the
+   `checkdiff` and `checkdiff2` idioms in the `testsuite/*.test` files.
+
+ - The packaging scripts & related python lib got some minor enhancements.
+
+### INTERNAL
+
+ - Use setenv() instead of putenv() when it is available.
+
+ - Improve the logic in compat.c so that we don't need to try to remember to
+   sprinkle `!local_server` exceptions throughout the protocol logic.
+
+ - One more C99 Flexible Array improvement (started in the last release) and
+   make use of the C99 `%zd` format string when printing size_t values (when
+   possible).
+
+ - Use mallinfo2() instead of mallinfo(), when available.
+
+------------------------------------------------------------------------------
 
 # NEWS for rsync 3.2.3 (6 Aug 2020)
 
@@ -26,67 +488,72 @@
  - Fixed a bug in the xattr code that was not leaving room for the "rsync."
    prefix in some instances where it needed to be added.
 
- - Restored the ability to use `--bwlimit=0` to specify no bandwidth limit.  (It
-   was accidentally broken in 3.2.2.)
+ - Restored the ability to use [`--bwlimit=0`](rsync.1#opt) to specify no
+   bandwidth limit.  (It was accidentally broken in 3.2.2.)
 
- - Fix a bug when combining `--delete-missing-args` with `--no-implied-dirs` &
-   `-R` where rsync might create the destination path of a missing arg.  The
-   code also avoids some superfluous warnings for nested paths of removed args.
+ - Fixed a bug when combining [`--delete-missing-args`](rsync.1#opt) with
+   [`--no-implied-dirs`](rsync.1#opt) & [`-R`](rsync.1#opt) where rsync might
+   create the destination path of a missing arg.  The code also avoids some
+   superfluous warnings for nested paths of removed args.
 
  - Fixed an issue where hard-linked devices could cause the rdev_major value to
    get out of sync between the sender and the receiver, which could cause a
    device to get created with the wrong major value in its major,minor pair.
 
- - Rsync now complains about a missing `--temp-dir` before starting any file
-   transfers.
+ - Rsync now complains about a missing [`--temp-dir`](rsync.1#opt) before
+   starting any file transfers.
 
  - A completely empty source arg is now a fatal error.  This doesn't change
    the handling of implied dot-dir args such as "localhost:" and such.
 
 ### ENHANCEMENTS:
 
- - Allow `--max-alloc=0` to specify no limit to the alloc sanity check.
+ - Allow [`--max-alloc=0`](rsync.1#opt) to specify no limit to the alloc sanity
+   check.
 
- - Allow `--block-size=SIZE` to specify the size using units (e.g. "100K").
+ - Allow [`--block-size=SIZE`](rsync.1#opt) to specify the size using units
+   (e.g. "100K").
 
  - The name of the id-0 user & group are now sent to the receiver along with
    the other user/group names in the transfer (instead of assuming that both
    sides have the same id-0 names).
 
- - Added the `--stop-after=MINS` and `--stop-at=DATE_TIME` options (with the
-   `--time-limit=MINS` option accepted as an alias for `--stop-after`).  This
-   is an enhanced version of the time-limit patch from the patches repo.
+ - Added the [`--stop-after`](rsync.1#opt) and [`--stop-at`](rsync.1#opt)
+   options (with a [`--time-limit`](rsync.1#opt) alias for `--stop-after`).
+   This is an enhanced version of the time-limit patch from the patches repo.
 
- - Added the `name converter` daemon parameter to make it easier to convert
-   user & group names inside a chrooted daemon module.  This is based on the
-   nameconverter patch with some improvements, including a tweak to the request
-   protocol (so if you used this patch in the past, be sure to update your
-   converter script to use newlines instead of null chars).
+ - Added the [`name converter`](rsyncd.conf.5#opt) daemon parameter to make it
+   easier to convert user & group names inside a chrooted daemon module.  This
+   is based on the nameconverter patch with some improvements, including a
+   tweak to the request protocol (so if you used this patch in the past, be
+   sure to update your converter script to use newlines instead of null chars).
 
- - Added `--crtimes` (`-N`) option for preserving the file's create time (I
-   believe that this is macOS only at the moment).
+ - Added [`--crtimes`](rsync.1#opt) (`-N`) option for preserving the file's
+   create time (I believe that this is macOS only at the moment).
 
- - Added `--mkpath` option to tell rsync that it should create a non-existing
-   path component of the destination arg.
+ - Added [`--mkpath`](rsync.1#opt) option to tell rsync that it should create a
+   non-existing path component of the destination arg.
 
- - Added `--stderr=errors|all|client` to replace the `--msgs2stderr` and
-   `--no-msgs2stderr` options (which are still accepted).  The default use of
-   stderr was changed to be `--stderr=errors` where all the processes that have
-   stderr available output directly to stderr, which should help error messages
-   get to the user more quickly, especially when doing a push (which includes
-   local copying).  This also allows rsync to exit quickly when a receiver
-   failure occurs, since rsync doesn't need to try to keep the connection alive
-   long enough for the fatal error to go from the receiver to the generator to
-   the sender.  The old default can be requested via `--stderr=client`.  Also
-   changed is that a non-default stderr mode is conveyed to the remote rsync
-   (using the older option names) instead of requiring the user to use
-   `--remote-option` (`-M`) to tell the remote rsync what to do.
+ - Added [`--stderr=errors|all|client`](rsync.1#opt) to replace the
+   `--msgs2stderr` and `--no-msgs2stderr` options (which are still accepted).
+   The default use of stderr was changed to be `--stderr=errors` where all the
+   processes that have stderr available output directly to stderr, which should
+   help error messages get to the user more quickly, especially when doing a
+   push (which includes local copying).  This also allows rsync to exit quickly
+   when a receiver failure occurs, since rsync doesn't need to try to keep the
+   connection alive long enough for the fatal error to go from the receiver to
+   the generator to the sender.  The old default can be requested via
+   `--stderr=client`.  Also changed is that a non-default stderr mode is
+   conveyed to the remote rsync (using the older option names) instead of
+   requiring the user to use [`--remote-option`](rsync.1#opt) (`-M`) to tell
+   the remote rsync what to do.
 
- - Added the ability to specify "@netgroup" names to the `hosts allow` and
-   `hosts deny` daemon parameters.  This is a finalized version of the
-   netgroup-auth patch from the patches repo.
+ - Added the ability to specify "@netgroup" names to the [`hosts
+   allow`](rsyncd.conf.5#opt) and [`hosts deny`](rsyncd.conf.5#opt) daemon
+   parameters.  This is a finalized version of the netgroup-auth patch from the
+   patches repo.
 
- - Rsync can now hard-link symlinks on FreeBSD due to it making ues of the
+ - Rsync can now hard-link symlinks on FreeBSD due to it making use of the
    linkat() function when it is available.
 
  - Output file+line info on out-of-memory & overflow errors while also avoiding
@@ -113,7 +580,6 @@
    (with a fallback to the old 1-char string kluge for older compilers).
 
 ------------------------------------------------------------------------------
-<a name="3.2.2"></a>
 
 # NEWS for rsync 3.2.2 (4 Jul 2020)
 
@@ -167,7 +633,7 @@
 
  - Put optimizations into their own list in the `--version` output.
 
- - Improved the man page a bit more.
+ - Improved the manpage a bit more.
 
 ### PACKAGING RELATED:
 
@@ -189,7 +655,6 @@
    can create the interrelated structs and accessors that loadparm.c needs.
 
 ------------------------------------------------------------------------------
-<a name="3.2.1"></a>
 
 # NEWS for rsync 3.2.1 (22 Jun 2020)
 
@@ -252,7 +717,6 @@
  - Merged the OLDNEWS.md file into NEWS.md.
 
 ------------------------------------------------------------------------------
-<a name="3.2.0"></a>
 
 # NEWS for rsync 3.2.0 (19 Jun 2020)
 
@@ -396,7 +860,7 @@
  - The daemon now locks its pid file (when configured to use one) so that it
    will not fail to start when the file exists but no daemon is running.
 
- - Various man page improvements, including some html representations (that
+ - Various manpage improvements, including some html representations (that
    aren't installed by default).
 
  - Made `-V` the short option for `--version` and improved its information.
@@ -413,7 +877,7 @@
 
  - Add installed bash script: /usr/bin/rsync-ssl
 
- - Add installed man page: /usr/man/man1/rsync-ssl.1
+ - Add installed manpage: /usr/man/man1/rsync-ssl.1
 
  - Tweak auxiliary doc file names, such as: README.md, INSTALL.md, & NEWS.md.
 
@@ -435,8 +899,8 @@
    SIMD checksum optimizations.
 
  - Add _build_ dependency for _either_ python3-cmarkcfm or python3-commonmark
-   to allow for patching of man pages or building a git release.  This is not
-   required for a release-tar build, since it comes with pre-built man pages.
+   to allow for patching of manpages or building a git release.  This is not
+   required for a release-tar build, since it comes with pre-built manpages.
    Note that cmarkcfm is faster than commonmark, but they generate the same
    data.  The commonmark dependency is easiest to install since it's native
    python, and can even be installed via `pip3 install --user commonmark` if
@@ -449,7 +913,7 @@
  - Silenced some annoying warnings about major() & minor() by improving an
    autoconf include-file check.
 
- - Converted the man pages from yodl to markdown. They are now processed via a
+ - Converted the manpages from yodl to markdown. They are now processed via a
    simple python3 script using the cmarkgfm **or** commonmark library.  This
    should make it easier to package rsync, since yodl is rather obscure.
 
@@ -464,7 +928,6 @@
  - Some code typos were fixed (as pointed out by a Fossies run).
 
 ------------------------------------------------------------------------------
-<a name="3.1.3"></a>
 
 # NEWS for rsync 3.1.3 (28 Jan 2018)
 
@@ -482,7 +945,8 @@
 
  - Don't output about a new backup dir without appropriate info verbosity.
 
- - Fixed some issues with the sort functions in support/rsyncstats script.
+ - Fixed some issues with the sort functions in the rsyncstats script (in the
+   support dir).
 
  - Added a way to specify daemon config lists (e.g. users, groups, etc) that
    contain spaces (see `auth users` in the latest rsyncd.conf manpage).
@@ -527,14 +991,13 @@
 
 ### DEVELOPER RELATED:
 
- - Tweak the `make` output when yodl isn't around to create the man pages.
+ - Tweak the `make` output when yodl isn't around to create the manpages.
 
  - Changed an obsolete autoconf compile macro.
 
- - Support newer yodl versions when converting man pages.
+ - Support newer yodl versions when converting manpages.
 
 ------------------------------------------------------------------------------
-<a name="3.1.2"></a>
 
 # NEWS for rsync 3.1.2 (21 Dec 2015)
 
@@ -600,7 +1063,6 @@
  - Improved the m4 generation rules and some autoconf idioms.
 
 ------------------------------------------------------------------------------
-<a name="3.1.1"></a>
 
 # NEWS for rsync 3.1.1 (22 Jun 2014)
 
@@ -693,7 +1155,7 @@
    non-bundled zlib. See the `--new-compress` and `--old-compress` options in
    the manpage.
 
- - Added the support/rsync-no-vanished wrapper script.
+ - Added the rsync-no-vanished shell script. (See the support dir.)
 
  - Made configure more prominently mention when we failed to find yodl (in case
    the user wants to be able to generate manpages from `*.yo` files).
@@ -720,7 +1182,6 @@
    and/or zlib code is put early in the CFLAGS.
 
 ------------------------------------------------------------------------------
-<a name="3.1.0"></a>
 
 # NEWS for rsync 3.1.0 (28 Sep 2013)
 
@@ -766,7 +1227,7 @@
  - Fixed a bug in the iconv code when EINVAL or EILSEQ is returned with a full
    output buffer.
 
- - Fixed some rare bugs in `--iconv` processing that might cause a multibyte
+ - Fixed some rare bugs in `--iconv` processing that might cause a multi-byte
    character to get translated incorrectly.
 
  - Fixed a bogus `vanished file` error if some files were specified with `./`
@@ -872,7 +1333,7 @@
    hard-link it into place so that the upcoming replacement of the destination
    file will be atomic (for the normal, non-inplace logic).
 
- - Added the ability to synchronize nano-second modified times.
+ - Added the ability to synchronize nanosecond modified times.
 
  - Added a few more default suffixes for the `dont compress` settings.
 
@@ -971,7 +1432,6 @@
  - Fixed some build issues for Android and Minix.
 
 ------------------------------------------------------------------------------
-<a name="3.0.9"></a>
 
 # NEWS for rsync 3.0.9 (23 Sep 2011)
 
@@ -1024,14 +1484,13 @@
 
  - Avoid trying to reference `SO_BROADCAST` if the OS doesn't support it.
 
- - Fix some issues with the post-processing of the man pages.
+ - Fix some issues with the post-processing of the manpages.
 
- - Fixed the user home-dir handling in the support/lsh script.
+ - Fixed the user home-dir handling in the lsh script. (See the support dir.)
 
  - Some minor manpage improvements.
 
 ------------------------------------------------------------------------------
-<a name="3.0.8"></a>
 
 # NEWS for rsync 3.0.8 (26 Mar 2011)
 
@@ -1144,10 +1603,10 @@
    reject an attempt to supply one (can configure `--with-included-popt` if
    your system's popt library doesn't yet have this fix).
 
- - A couple minor option tweaks to the support/rrsync script, and also some
-   regex changes that make vim highlighting happier.
+ - A couple minor option tweaks to the rrsync script, and also some regex
+   changes that make vim highlighting happier. (See the support dir.)
 
- - Fixed some issues in the support/mnt-excl script.
+ - Fixed some issues in the mnt-excl script. (See the support dir.)
 
  - Various manpage improvements.
 
@@ -1170,7 +1629,6 @@
  - Fixed the testsuite/xattrs.test script on OS X.
 
 ------------------------------------------------------------------------------
-<a name="3.0.7"></a>
 
 # NEWS for rsync 3.0.7 (31 Dec 2009)
 
@@ -1184,7 +1642,7 @@
    that hasn't really been created.
 
  - Fixed a problem with `--compress` (`-z`) where the receiving side could
-   return the error "inflate (token) returned -5".
+   return the error "`inflate (token) returned -5`".
 
  - Fixed a bug where `--delete-during` could delete in a directory before it
    noticed that the sending side sent an I/O error for that directory (both
@@ -1203,7 +1661,7 @@
  - An absolute-path filter rule (i.e. with a '/' modifier) no longer loses its
    modifier when sending the filter rules to the remote rsync.
 
- - Improved the "--delete does not work without -r or -d" message.
+ - Improved the "`--delete does not work without -r or -d`" message.
 
  - Improved rsync's handling of `--timeout` to avoid a weird timeout case where
    the sender could timeout even though it has recently written data to the
@@ -1238,7 +1696,6 @@
  - The testsuite no longer uses `id -u`, so it works better on Solaris.
 
 ------------------------------------------------------------------------------
-<a name="3.0.6"></a>
 
 # NEWS for rsync 3.0.6 (8 May 2009)
 
@@ -1297,7 +1754,6 @@
  - Fixed an failure transferring special files from Solaris to Linux.
 
 ------------------------------------------------------------------------------
-<a name="3.0.5"></a>
 
 # NEWS for rsync 3.0.5 (28 Dec 2008)
 
@@ -1357,12 +1813,11 @@
 
 ### ENHANCEMENTS:
 
- - Made the support/atomic-rsync script able to perform a fully atomic update
-   of the copied hierarchy when the destination is setup using a particular
-   symlink idiom.
+ - Made the atomic-rsync script able to perform a fully atomic update of the
+   copied hierarchy when the destination is setup using a particular symlink
+   idiom. (See the support dir.)
 
 ------------------------------------------------------------------------------
-<a name="3.0.4"></a>
 
 # NEWS for rsync 3.0.4 (6 Sep 2008)
 
@@ -1430,7 +1885,6 @@
    even more consistency checks on the files.
 
 ------------------------------------------------------------------------------
-<a name="3.0.3"></a>
 
 # NEWS for rsync 3.0.3 (29 Jun 2008)
 
@@ -1510,18 +1964,17 @@
    of files, and the ensuring that daemon excludes can't affect a dot-dir arg.
 
  - Improved some build rules for those that build in a separate directory from
-   the source, including better install rules for the man pages, and the fixing
+   the source, including better install rules for the manpages, and the fixing
    of a proto.h-tstamp rule that could make the binaries get rebuild without
    cause.
 
- - Improved the testsuite to work around a problem with some utilities (e.g. cp
-   -p & touch -r) rounding sub-second timestamps.
+ - Improved the testsuite to work around a problem with some utilities (e.g.
+   `cp -p` & `touch -r`) rounding sub-second timestamps.
 
  - Ensure that the early patches don't cause any generated-file hunks to
    bleed-over into patches that follow.
 
 ------------------------------------------------------------------------------
-<a name="3.0.2"></a>
 
 # NEWS for rsync 3.0.2 (8 Apr 2008)
 
@@ -1543,7 +1996,6 @@
    packaging dir.
 
 ------------------------------------------------------------------------------
-<a name="3.0.1"></a>
 
 # NEWS for rsync 3.0.1 (3 Apr 2008)
 
@@ -1627,8 +2079,9 @@
 
  - Fixed the inclusion of per-dir merge files from implied dirs.
 
- - Fixed the support/rrsync script to work with the latest options that rsync
-   sends (including its flag-specifying use of `-e` to the server).
+ - Fixed the rrsync script to work with the latest options that rsync sends,
+   including its flag-specifying use of `-e` to the server. (See the support
+   dir.)
 
 ### ENHANCEMENTS:
 
@@ -1681,7 +2134,6 @@
  - Updated the build scripts to work with a revised FTP directory structure.
 
 ------------------------------------------------------------------------------
-<a name="3.0.0"></a>
 
 # NEWS for rsync 3.0.0 (1 Mar 2008)
 
@@ -2032,7 +2484,6 @@
    the 3.0.0 release.
 
 ------------------------------------------------------------------------------
-<a name="2.6.9"></a>
 
 # NEWS for rsync 2.6.9 (6 Nov 2006)
 
@@ -2121,7 +2572,7 @@
 
  - Added the `--log-file=FILE` and `--log-file-format=FORMAT` options. These
    can be used to tell any rsync to output what it is doing to a log file.
-   They work with a client rsync, a non-daemon server rsync (see the man page
+   They work with a client rsync, a non-daemon server rsync (see the manpage
    for instructions), and also allows the overriding of rsyncd.conf settings
    when starting a daemon.
 
@@ -2192,7 +2643,6 @@
    consistent opening comments.
 
 ------------------------------------------------------------------------------
-<a name="2.6.8"></a>
 
 # NEWS for rsync 2.6.8 (22 Apr 2006)
 
@@ -2262,7 +2712,6 @@
    actions to a file (something that only a daemon supports at present).
 
 ------------------------------------------------------------------------------
-<a name="2.6.7"></a>
 
 # NEWS for rsync 2.6.7 (11 Mar 2006)
 
@@ -2277,7 +2726,7 @@
    option, below.
 
  - The way rsync escapes unreadable characters has changed. First, rsync now
-   has support for recognizing valid multibyte character sequences in your
+   has support for recognizing valid multi-byte character sequences in your
    current locale, allowing it to escape fewer characters than before for a
    locale such as UTF-8. Second, it now uses an escape idiom of `\#123`, which
    is the literal string `\#` followed by exactly 3 octal digits. Rsync no
@@ -2417,7 +2866,7 @@
  - Added two config items to the rsyncd.conf parsing: `pre-xfer exec` and
    `post-xfer exec`. These allow a command to be specified on a per-module
    basis that will be run before and/or after a daemon-mode transfer. (See the
-   man page for a list of the environment variables that are set with
+   manpage for a list of the environment variables that are set with
    information about the transfer.)
 
  - When using the `--relative` option, you can now insert a dot dir in the
@@ -2586,7 +3035,6 @@
    ~/.popt.
 
 ------------------------------------------------------------------------------
-<a name="2.6.6"></a>
 
 # NEWS for rsync 2.6.6 (28 Jul 2005)
 
@@ -2632,10 +3080,10 @@
  - Made the `max verbosity` setting in the rsyncd.conf file settable on a
    per-module basis (which now matches the documentation).
 
- - The support/rrsync script has been upgraded to verify the args of options
-   that take args (instead of rejecting any such options). The script was also
-   changed to try to be more secure and to fix a problem in the parsing of a
-   pull operation that has multiple sources.
+ - The rrsync script has been upgraded to verify the args of options that take
+   args (instead of rejecting any such options). It was also changed to try to
+   be more secure and to fix a problem in the parsing of a pull operation that
+   has multiple source args. (See the support dir.)
 
  - Improved the documentation that explains the difference between a normal
    daemon transfer and a daemon-over remote-shell transfer.
@@ -2652,7 +3100,6 @@
    (log-format w/%i) and some double-verbose messages.
 
 ------------------------------------------------------------------------------
-<a name="2.6.5"></a>
 
 # NEWS for rsync 2.6.5 (1 Jun 2005)
 
@@ -2787,7 +3234,7 @@
    usually run with the `--no-detach` option that was necessary to see the
    error on stderr).
 
- - The man pages now consistently refer to an rsync daemon as a `daemon`
+ - The manpages now consistently refer to an rsync daemon as a `daemon`
    instead of a `server` (to distinguish it from the server process in a
    non-daemon transfer).
 
@@ -2833,7 +3280,6 @@
    enables the optional copying of extended attributes.
 
 ------------------------------------------------------------------------------
-<a name="2.6.4"></a>
 
 # NEWS for rsync 2.6.4 (30 March 2005)
 
@@ -3215,7 +3661,6 @@
  - Improved configure to better handle cross-compiling.
 
 ------------------------------------------------------------------------------
-<a name="2.6.3"></a>
 
 # NEWS for rsync 2.6.3 (30 Sep 2004)
 
@@ -3356,12 +3801,12 @@
    without using a temporary file. The matching of existing data in the
    destination file can be severely limited by this, but there are also cases
    where this is more efficient (such as appending data).  Use only when needed
-   (see the man page for more details).
+   (see the manpage for more details).
 
  - Added the `write only` option for the daemon's config file.
 
  - Added long-option names for `-4` and `-6` (namely `--ipv4` and `--ipv6`) and
-   documented all these options in the man page.
+   documented all these options in the manpage.
 
  - Improved the handling of the `--bwlimit` option so that it's less bursty,
    more accurate, and works properly over a larger range of values.
@@ -3436,7 +3881,7 @@
 ### BUILD CHANGES:
 
  - Added a `gen` target to rebuild most of the generated files, including
-   configure, config.h.in, the man pages, and proto.h.
+   configure, config.h.in, the manpages, and proto.h.
 
  - If `make proto` doesn't find some changes in the prototypes, the proto.h
    file is left untouched (its time-stamp used to always be updated).
@@ -3459,7 +3904,6 @@
    removed.
 
 ------------------------------------------------------------------------------
-<a name="2.6.2"></a>
 
 # NEWS for rsync 2.6.2 (30 Apr 2004)
 
@@ -3501,7 +3945,6 @@
  - Two new diffs were added to the patches dir.
 
 ------------------------------------------------------------------------------
-<a name="2.6.1"></a>
 
 # NEWS for rsync 2.6.1 (26 Apr 2004)
 
@@ -3693,7 +4136,6 @@
    applied, and rebuilt the rest.
 
 ------------------------------------------------------------------------------
-<a name="2.6.0"></a>
 
 # NEWS for rsync 2.6.0 (1 Jan 2004)
 
@@ -3833,7 +4275,6 @@
    other side (primarily for testing purposes).  (Wayne Davison)
 
 ------------------------------------------------------------------------------
-<a name="2.5.7"></a>
 
 # NEWS for rsync 2.5.7 (4 Dec 2003)
 
@@ -3845,7 +4286,6 @@
    Andrea Barisani)
 
 ------------------------------------------------------------------------------
-<a name="2.5.6"></a>
 
 # NEWS for rsync 2.5.6, aka "the dwd-between-jobs release" (26 Jan 2003)
 
@@ -3940,7 +4380,6 @@
    should build on more platforms. (Paul Green)
 
 ------------------------------------------------------------------------------
-<a name="2.5.5"></a>
 
 # NEWS for rsync 2.5.5, aka Snowy River (2 Apr 2002)
 
@@ -3979,7 +4418,6 @@
  - Improved network error handling. (Greg A. Woods)
 
 ------------------------------------------------------------------------------
-<a name="2.5.4"></a>
 
 # NEWS for rsync 2.5.4, aka "Imitation lizard skin" (13 Mar 2002)
 
@@ -3999,7 +4437,6 @@
  - Additional test cases for `--compress`. (Martin Pool)
 
 ------------------------------------------------------------------------------
-<a name="2.5.3"></a>
 
 # NEWS for rsync 2.5.3, aka "Happy 26" (11 Mar 2002)
 
@@ -4042,13 +4479,12 @@
  - Added `--no-whole-file` and `--no-blocking-io` options (Dave Dykstra)
 
  - Made the `--write-batch` and `--read-batch` options actually work and added
-   documentation in the man page (Jos Backus)
+   documentation in the manpage (Jos Backus)
 
  - If the daemon is unable to fork a child to accept a connection, print an
    error message. (Colin Walters)
 
 ------------------------------------------------------------------------------
-<a name="2.5.2"></a>
 
 # NEWS for rsync 2.5.2 (26 Jan 2002)
 
@@ -4097,7 +4533,6 @@
    Razor. (Debian #124286)
 
 ------------------------------------------------------------------------------
-<a name="2.5.1"></a>
 
 # NEWS for rsync 2.5.1 (3 Jan 2002)
 
@@ -4132,7 +4567,6 @@
  - Clearer error messages for some conditions.
 
 ------------------------------------------------------------------------------
-<a name="2.5.0"></a>
 
 # NEWS for rsync 2.5.0 (30 Nov 2001)
 
@@ -4224,7 +4658,7 @@
    - HP PA-RISC HP-UX 11.11 cc
    - IRIX 6.5 MIPS cc
    - IRIX 6.5 MIPS gcc
-   - Mac OS X PPC (--disable-ipv6) cc
+   - Mac OS X PPC (`--disable-ipv6`) cc
    - NetBSD 1.5 i386 gcc
    - NetBSD Current i386 cc
    - OpenBSD 2.5 Sparc gcc
@@ -4258,7 +4692,10 @@
 
 | RELEASE DATE | VER.   | DATE OF COMMIT\* | PROTOCOL    |
 |--------------|--------|------------------|-------------|
-| ?? Sep 2020  | 3.2.4  |                  | 31          |
+| 20 Oct 2022  | 3.2.7  |                  | 31          |
+| 09 Sep 2022  | 3.2.6  |                  | 31          |
+| 14 Aug 2022  | 3.2.5  |                  | 31          |
+| 15 Apr 2022  | 3.2.4  |                  | 31          |
 | 06 Aug 2020  | 3.2.3  |                  | 31          |
 | 04 Jul 2020  | 3.2.2  |                  | 31          |
 | 22 Jun 2020  | 3.2.1  |                  | 31          |
@@ -4329,3 +4766,5 @@
 
 \* DATE OF COMMIT is the date the protocol change was committed to version
 control.
+
+@USE_GFM_PARSER@

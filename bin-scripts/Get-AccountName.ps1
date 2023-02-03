@@ -146,7 +146,7 @@ begin {
 
 process {
   if ( $AccountName ) {
-    foreach ( $AccountNameItem In $AccountName ) {
+    foreach ( $AccountNameItem in $AccountName ) {
       Get-IdentityInfo $AccountNameItem
     }
   }

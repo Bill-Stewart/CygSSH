@@ -47,7 +47,7 @@
 
 \title CygSSH User Guide
 
-\copyright Copyright 2020-2022 by Bill Stewart
+\copyright Copyright 2020-2023 by Bill Stewart
 
 \versionid \version
 
@@ -846,7 +846,7 @@ See \k{opensource} for source code availability for software components that req
 
 In addition to the above, the package contains a set of Windows PowerShell scripts written by Bill Stewart that are used for installing and managing the software. The Windows PowerShell scripts are covered by the MIT license:
 
-Copyright \copyright 2019-2022 by Bill Stewart.
+Copyright \copyright 2019-2023 by Bill Stewart.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -885,6 +885,10 @@ The source code is generally of interest only to developers.
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{9.2.3.0} (2023-02-04)
+
+\b Updated to OpenSSH 9.2 and latest packages (Cygwin, etc.).
 
 \s{3.0} (2022-12-06)
 

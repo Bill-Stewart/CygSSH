@@ -77,7 +77,7 @@ problem:
     memory where the DLL is being mapped. When the same DLL
     is loaded in another process, its section object is reused
     and it is mapped at the same virtual addresses.
-    http://taossa.com.nyud.net:8080/archive/bh08sotirovdowd.pdf
+    https://web.archive.org/web/20080913064223/http%3A%2F%2Ftaossa.com%2Farchive%2Fbh08sotirovdowd.pdf
 
 Thus, IF all cygwin dlls (except cygwin1.dll) -- or, at least the
 ones for which you often get the *** unable to remap *** error --

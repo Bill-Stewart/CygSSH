@@ -19,9 +19,11 @@ Forces overwriting the fstab file if it already exists.
 
 [CmdletBinding(SupportsShouldProcess,ConfirmImpact = "High")]
 param(
-  [Switch] $NoConfirm,
+  [Switch]
+  $NoConfirm,
 
-  [Switch] $Force
+  [Switch]
+  $Force
 )
 
 $ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent

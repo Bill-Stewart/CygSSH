@@ -7,7 +7,7 @@ AppId={{#AppGUID}
 AllowNoIcons=yes
 AppName={#AppName}
 AppPublisher={#SetupAuthor}
-AppVersion={#AppFullVersion}
+AppVersion={#AppVersion}
 ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 ChangesEnvironment=yes
@@ -18,7 +18,7 @@ DefaultDirName={autopf}\{#InstallDirName}
 DefaultGroupName={#AppName}
 DisableWelcomePage=yes
 MinVersion=6.3
-OutputBaseFilename={#SetupName}-{#SetupVersion}
+OutputBaseFilename={#SetupName}-{#AppVersion}
 OutputDir=.
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=commandline
@@ -28,8 +28,8 @@ SolidCompression=yes
 UninstallDisplayIcon={app}\{#IconFilename}
 UsePreviousTasks=yes
 VersionInfoCompany={#SetupCompany}
+VersionInfoVersion={#AppFullVersion}
 VersionInfoProductVersion={#AppFullVersion}
-VersionInfoVersion={#SetupVersion}
 WizardImageFile=OpenSSH-164x314.bmp
 WizardSmallImageFile=OpenSSH-55x55.bmp
 WizardStyle=modern
@@ -159,7 +159,7 @@ Name: "{app}\var\empty"; Components: server
 Name: "{group}\{cm:IconsUserGuideName}"; Filename: "{app}\CygSSH-UserGuide.chm"; Comment: "{cm:IconsUserGuideComment}"
 
 [INI]
-Filename: "{app}\version.ini"; Section: "Version"; Key: "Version"; String: "{#AppFullVersion}"
+Filename: "{app}\version.ini"; Section: "Version"; Key: "Version"; String: "{#AppVersion}"
 
 [Tasks]
 Name: startservice; Description: "{cm:TasksStartServiceDescription}"; Components: server; Check: not ServiceExists('{#ServiceName}')

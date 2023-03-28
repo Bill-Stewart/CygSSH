@@ -1,3 +1,9 @@
+2019-11-12  Anton Lavrentiev <lavr@ncbi.nlm.nih.gov>
+
+        * Added the -T (for timeout) and the -X (for stop timeout) options
+        * cygrunsrv.cc:  issue no "premature exit" error when stopped by SCM
+        (and daemon catches the internal signal then exits)
+
 2015-01-28  Corinna Vinschen <corinna@vinschen.de>
 
 	* cygrunsrv.README: Fix typo.

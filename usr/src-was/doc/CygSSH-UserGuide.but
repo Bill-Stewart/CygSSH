@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 9.3
+\define{version} 9.3.2
 
 \define{rightarrow} \u2192
 
@@ -73,17 +73,19 @@ The installer performs the following tasks:
 
 \b Configures the \c{fstab} file to disable Cygwin file system permission changes (see \k{cygwinfstabfile})
 
-\b If the setup type is \s{full} (see \k{setuptype}), creates the OpenSSH server host keys (see \k{hostkeys})
+The installer also performs the following tasks if the setup type is \s{full} (see \k{setuptype}):
 
-\b \I{sshd account}If the setup type is \s{full} (see \k{setuptype}), creates the local \c{sshd} account (see \k{chrootdirectory})
+\b Creates the OpenSSH server host keys (see \k{hostkeys})
 
-\b If the setup type is \s{full} (see \k{setuptype}), creates the local access group and updates the \i\c{sshd_config} file (see \k{localaccessgroup})
+\b \I{sshd account}Creates the local \c{sshd} account (see \k{chrootdirectory})
 
-\b If the setup type is \s{full} (see \k{setuptype}), adds a rule to the Windows \i{firewall} to allow communication to the OpenSSH server service
+\b Creates the local access group and updates the \i\c{sshd_config} file (see \k{localaccessgroup})
 
-\b If the setup type is \s{full} (see \k{setuptype}) and the \s{startservice} task is selected (see \k{setuptasks}), starts the OpenSSH server service
+\b Adds a rule to the Windows \i{firewall} to allow communication to the OpenSSH server service
 
-\b Performs any other tasks selected on the \s{Select Additional Tasks} page (see \k{setuptasks})
+\b If the \s{startservice} task is selected (see \k{setuptasks}), starts the OpenSSH server service
+
+Regardless of the setup type, the installer then performs any other tasks selected on the \s{Select Additional Tasks} page (see \k{setuptasks}).
 
 \I{Inno Setup}The installer package is built using the \W{http://www.jrsoftware.org/isinfo.php}{Inno Setup} installer, so it supports all of Inno Setup's \W{http://www.jrsoftware.org/ishelp/index.php?topic=setupcmdline}{command line parameters}.
 
@@ -92,7 +94,7 @@ Example installation command:
 \c CygSSH-Setup-version /SILENT /CLOSEAPPLICATIONS /SUPPRESSMSGBOXES
 \e              iiiiiii
 
-Replace \e{version} with the version (e.g., \s{9.3}).
+Replace \e{version} with the version (e.g., \s{9.3.2}).
 
 \I{/CLOSEAPPLICATIONS parameter}\I{/SILENT parameter}\I{/SUPPRESSMSGBOXES parameter}\I{install, silent}\I{silent install}The above command installs the package silently (i.e., without user interaction). The \c{/CLOSEAPPLICATIONS} parameter automatically stops running services and closes programs so that the installer can reinstall or upgrade the files. Stopped services will be automatically restarted after the installation completes. The \c{/SUPPRESSMSGBOXES} parameter suppresses message dialog boxes that would normally appear in an interactive installation.
 
@@ -154,7 +156,7 @@ Note that this page doesn't appear if you are reinstalling or upgrading.
 
 \b \I{modifypath installer task}\I{system Path}\I{user Path}\I{/CURRENTUSER parameter}\s{modifypath} - Corresponds to the \s{Add to system Path} (or \s{Add to user Path}) check box. Adds the \e{installpath}\c{\\bin} directory to the system or user Path environment variable if it does not already exist. This task is selected by default. (This task does not appear if \e{installpath}\c{\\bin} is already in the system or user Path.)
 
-\b \s{resetconfig} - Restores the OpenSSH configuration files (\i\c{ssh_config} and/or \i\c{sshd_config}) to default values. Use this task with caution if you have made any customizations to the \c{etc\\ssh_config} and/or \c{etc\\sshd_config} files. When you select this task, the installer renames the existing \i\c{ssh_config} and/or \i\c{sshd_config} files with \s{-}\e{timestamp} appended (where \e{timestamp} is the current year, month, day, hour, minute, and second) before installing default copies of the configuration file(s).
+\b \s{resetconfig} - Restores the OpenSSH configuration files (\i\c{ssh_config} and/or \i\c{sshd_config}) to default values. Use this task with caution if you have made any customizations to the \c{etc\\ssh_config} and/or \c{etc\\sshd_config} files. When you select this task, the installer renames the existing \i\c{ssh_config} and/or \i\c{sshd_config} files with \s{-}\e{timestamp} appended (where \e{timestamp} is the current year, month, day, hour, minute, and second) before installing default copies of the configuration file(s). This task is not selected by default.
 
 You can specify one or more of the additional tasks on the command line using the \c{/TASKS="}\e{task}[\c{,}\e{task}[...]]\c{"} command line parameter (where \e{task} is one or more of the above task names, separated by \c{,} characters).
 
@@ -225,6 +227,8 @@ The uninstall program does not remove the following items:
 \b Configuration files in the \c{etc} directory
 
 \b The \c{lastlog} file in the \c{var\\log} directory
+
+\b The \s{users\\SYSTEM\\.ssh} directory or its contents
 
 \b Any other user created files
 
@@ -885,6 +889,14 @@ The source code is generally of interest only to developers.
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{9.3.2} (2023-07-27)
+
+\b Updated to OpenSSH 9.2-p2 and latest Cygwin packages.
+
+\b Corrected installer bug: PathMgr.dll file not installed in per-user installation.
+
+\b Corrected installer bug: cygserver files installed in per-user installation.
 
 \s{9.3} (2023-03-28)
 

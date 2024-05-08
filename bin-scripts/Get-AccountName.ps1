@@ -1,7 +1,7 @@
 # Get-AccountName.ps1
 # Written by Bill Stewart (bstewart at iname.com)
 
-#requires -version 2
+#requires -version 3
 
 <#
 .SYNOPSIS
@@ -15,8 +15,8 @@ Specifies one or more account names. Wildcards are not permitted. If you omit th
 
 .OUTPUTS
 Outputs objects with the following properties:
-* WindowsName - the full Windows account name (DOMAIN\name or COMPUTER\Name)
-* CygwinName  - the associated Cygwin account name
+* WindowsName - full Windows account name (DOMAIN\name or COMPUTER\Name)
+* CygwinName  - associated Cygwin account name
 
 .NOTES
 If the current computer is a domain member, names are matched against the domain before the current computer's local account database.
@@ -29,11 +29,9 @@ param(
 )
 
 begin {
-  $ScriptPath = Split-Path $MyInvocation.MyCommand.Path -Parent
-
   # Adds Win32API type definitions
   Add-Type -Name Win32API `
-    -MemberDefinition (Get-Content -LiteralPath (Join-Path $ScriptPath "Win32API.def") -ErrorAction Stop | Out-String -Width ([Int]::MaxValue)) `
+    -MemberDefinition (Get-Content -LiteralPath (Join-Path $PSScriptRoot "Win32API.def") -ErrorAction Stop | Out-String -Width ([Int]::MaxValue)) `
     -Namespace "BCA37B9C41264685AD47EEBBD02F40EF" `
     -ErrorAction Stop
   $Win32API = [BCA37B9C41264685AD47EEBBD02F40EF.Win32API]
@@ -53,7 +51,7 @@ begin {
         [Ref] $nameBuffer,  # lpNameBuffer
         [Ref] $joinStatus)  # BufferType
       if ( $result -eq 0 ) {
-        New-Object PSObject -Property @{
+        [PSCustomObject] @{
           "IsDomainMember"        = $joinStatus -eq 3  # NetSetupDomainName
           "WorkgroupOrDomainName" = [Runtime.InteropServices.Marshal]::PtrToStringAuto($nameBuffer)
         }
@@ -112,7 +110,7 @@ begin {
       }
     }
     # Create output object
-    $identityObject = New-Object PSObject -Property @{
+    $identityObject = [PSCustomObject] @{
       "WindowsName" = $resolvedName
       "CygwinName"  = $null
     } | Select-Object WindowsName,CygwinName

@@ -47,6 +47,8 @@ Name: client; Description: "{cm:ComponentsClientDescription}"; Types: client; Fl
 
 [InstallDelete]
 Type: files; Name: "{app}\version.ini"
+Type: files; Name: "{app}\bin\*"
+Type: files; Name: "{app}\usr\sbin\*"
 Type: filesandordirs; Name: "{app}\etc\defaults\*"
 Type: filesandordirs; Name: "{app}\usr\share\*"
 Type: filesandordirs; Name: "{app}\usr\src\*"
@@ -112,14 +114,15 @@ Source: "{#IconFilename}";      DestDir: "{app}"; Components: client server
 Source: "CygSSH-UserGuide.chm"; DestDir: "{app}"; Components: client server
 Source: "CygSSH-UserGuide.pdf"; DestDir: "{app}"; Components: client server
 ; /bin
-Source: "bin-scripts\Edit-SSHKey.ps1";     DestDir: "{app}\bin"; Components: client server
-Source: "bin-scripts\Get-AccountName.ps1"; DestDir: "{app}\bin"; Components: client server
-Source: "bin-scripts\New-SSHKey.ps1";      DestDir: "{app}\bin"; Components: client server
-Source: "bin-scripts\Set-FstabConfig.ps1"; DestDir: "{app}\bin"; Components: client server
-Source: "bin-scripts\Win32API.def";        DestDir: "{app}\bin"; Components: client server
-Source: "bin-scripts\Set-SSHGroup.ps1";    DestDir: "{app}\bin"; Components: server
-Source: "bin-scripts\Set-SSHHostKey.ps1";  DestDir: "{app}\bin"; Components: server
-Source: "bin-scripts\Set-SSHService.ps1";  DestDir: "{app}\bin"; Components: server
+Source: "bin-scripts\Edit-SSHKey.ps1";               DestDir: "{app}\bin"; Components: client server
+Source: "bin-scripts\Get-AccountName.ps1";           DestDir: "{app}\bin"; Components: client server
+Source: "bin-scripts\Get-SSHHostKeyFingerprint.ps1"; DestDir: "{app}\bin"; Components: client server
+Source: "bin-scripts\New-SSHKey.ps1";                DestDir: "{app}\bin"; Components: client server
+Source: "bin-scripts\Set-FstabConfig.ps1";           DestDir: "{app}\bin"; Components: client server
+Source: "bin-scripts\Win32API.def";                  DestDir: "{app}\bin"; Components: client server
+Source: "bin-scripts\Set-SSHGroup.ps1";              DestDir: "{app}\bin"; Components: server
+Source: "bin-scripts\Set-SSHHostKey.ps1";            DestDir: "{app}\bin"; Components: server
+Source: "bin-scripts\Set-SSHService.ps1";            DestDir: "{app}\bin"; Components: server
 ; /etc
 Source: "etc\nsswitch.conf";  DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "etc\nanorc";         DestDir: "{app}\etc"; Components: client server; Flags: onlyifdoesntexist uninsneveruninstall

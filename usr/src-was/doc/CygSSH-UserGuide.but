@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 9.4.1
+\define{version} 9.7.0
 
 \define{rightarrow} \u2192
 
@@ -47,7 +47,7 @@
 
 \title CygSSH User Guide
 
-\copyright Copyright 2020-2023 by Bill Stewart
+\copyright Copyright 2020-2024 by Bill Stewart
 
 \versionid \version
 
@@ -94,7 +94,7 @@ Example installation command:
 \c CygSSH-Setup-version /SILENT /CLOSEAPPLICATIONS /SUPPRESSMSGBOXES
 \e              iiiiiii
 
-Replace \e{version} with the version (e.g., \s{9.3.2}).
+Replace \e{version} with the version (e.g., \s{9.7.0}).
 
 \I{/CLOSEAPPLICATIONS parameter}\I{/SILENT parameter}\I{/SUPPRESSMSGBOXES parameter}\I{install, silent}\I{silent install}The above command installs the package silently (i.e., without user interaction). The \c{/CLOSEAPPLICATIONS} parameter automatically stops running services and closes programs so that the installer can reinstall or upgrade the files. Stopped services will be automatically restarted after the installation completes. The \c{/SUPPRESSMSGBOXES} parameter suppresses message dialog boxes that would normally appear in an interactive installation.
 
@@ -275,7 +275,7 @@ Example 3:
 
 When using the Cygwin SSH client commands, note that path names must be in POSIX format, using the \c{\\} character to \q{escape} spaces where necessary (see \k{posixpathnames}).
 
- \I{.ssh directory}If you haven't connected to an SSH server before, the command will prompt you to store the server's host key (see \k{hostkeys}) in the \i\c{known_hosts} file. The default path of the \c{known_hosts} file is in the \c{.ssh} directory in the user's home directory (see \k{cygwinhome}).
+\I{.ssh directory}If you haven't connected to an SSH server before, the command will prompt you to store the server's \i{host key fingerprint} (see \k{hostkeys}) in the \i\c{known_hosts} file. The default path of the \c{known_hosts} file is in the \c{.ssh} directory in the user's home directory (see \k{cygwinhome}).
 
 You can also use the \s{rsync} command over an SSH connection to transfer files more efficiently (see \k{usingrsync}).
 
@@ -497,7 +497,11 @@ For example, the file \c{ssh_host_ed25519_key} contains the private host key for
 
 The private key files are configured with restricted access control lists (ACLs) to prevent unauthorized access (\s{SYSTEM:F} and \s{Administrators:F} only).
 
-SSH clients can store an SSH server's host key for later comparison. If the host key is different the next time the client connects, it may indicate the server has been compromised. Host keys are a mechanism to validate the identity of the server to which you're connecting.
+SSH clients can identify an SSH server by its unique \I{host key fingerprint}\e{host key fingerprint}. An SSH server's host key fingerprints are unique for each encryption algorithm it supports. When an SSH client connects to an SSH server for the first time using a particular encryption algorithm, the default behavior is for the SSH client to display the server's host key fingerprint for validation. 
+
+SSH clients can store an SSH server's host key fingerprint for later comparison. If the host key fingerprint for a particular algorithm is different the next time the client connects, it may indicate the server has been compromised. Host keys fingerprints are a mechanism to validate the identity of the server to which you're connecting.
+
+The \I{Get-SSHHostKeyFingerprint.ps1}\s{Get\-SSHHostKeyFingerprint.ps1} script displays host key fingerprints for SSH servers. You can use this script on an SSH server to display the server's host key fingerprint(s) in either md5 or sha256 format.
 
 The Cygwin SSH client commands (see \k{cygwinsshcommands}) store known host keys in the \i\c{known_hosts} file in the current user's home directory (see \k{cygwinhome}).
 
@@ -786,6 +790,8 @@ See \k{documentationlinks} for a link to \s{rsync}'s documentation.
 
 \I{Get-AccountName.ps1}\s{Get\-AccountName.ps1} - Outputs an account's name in both Cygwin and Windows format (see \k{cygwinaccountnames})
 
+\I{Get-SSHHostKeyFingerprint.ps1}\s{Get\-SSHHostKeyFingerprint.ps1} - Outputs SSH host key fingerprint(s) from one or more computer(s) (see \k{hostkeys})
+
 \I{New-SSHKey.ps1}\s{New\-SSHKey.ps1} - Creates a key pair (see \k{createkeypair})
 
 \I{Set-FstabConfig.ps1}\s{Set\-FstabConfig.ps1} - Used by the installer to create a default \c{fstab} file (see \k{cygwinfstabfile})
@@ -850,7 +856,7 @@ See \k{opensource} for source code availability for software components that req
 
 In addition to the above, the package contains a set of Windows PowerShell scripts written by Bill Stewart that are used for installing and managing the software. The Windows PowerShell scripts are covered by the MIT license:
 
-Copyright \copyright 2019-2023 by Bill Stewart.
+Copyright \copyright 2019-2024 by Bill Stewart.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -889,6 +895,12 @@ The source code is generally of interest only to developers.
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{9.7.0} (2024-05-08)
+
+\b Updated to OpenSSH 9.7p1 and latest Cygwin packages.
+
+\b Added \s{Get\-SSHHostKeyFingerprint.ps1} script.
 
 \s{9.4.1} (2023-08-10)
 

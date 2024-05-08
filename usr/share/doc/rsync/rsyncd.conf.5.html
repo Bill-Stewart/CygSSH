@@ -77,33 +77,17 @@ command &quot;<code>rsync --daemon</code>&quot; from a suitable startup script.<
 </blockquote>
 <p>and a single line something like this to /etc/inetd.conf:</p>
 <blockquote>
-<pre><code>rsync   stream  tcp     nowait  root   /usr/bin/rsync rsyncd --daemon
+<pre><code>rsync   stream  tcp     nowait  root   /usr/local/bin/rsync rsyncd --daemon
 </code></pre>
 </blockquote>
-<p>Replace &quot;/usr/bin/rsync&quot; with the path to where you have rsync installed on
+<p>Replace &quot;/usr/local/bin/rsync&quot; with the path to where you have rsync installed on
 your system.  You will then need to send inetd a HUP signal to tell it to
 reread its config file.</p>
 <p>Note that you should <strong>not</strong> send the rsync daemon a HUP signal to force it to
 reread the <code>rsyncd.conf</code> file. The file is re-read on each client connection.</p>
 <h2 id="GLOBAL_PARAMETERS">GLOBAL PARAMETERS<a href="#GLOBAL_PARAMETERS" class="tgt"></a></h2>
 <p>The first parameters in the file (before a [module] header) are the global
-parameters.  Rsync also allows for the use of a &quot;[global]&quot; module name to
-indicate the start of one or more global-parameter sections (the name must be
-lower case).</p>
-<p>You may also include any module parameters in the global part of the config
-file in which case the supplied value will override the default for that
-parameter.</p>
-<p>You may use references to environment variables in the values of parameters.
-String parameters will have %VAR% references expanded as late as possible (when
-the string is first used in the program), allowing for the use of variables
-that rsync sets at connection time, such as RSYNC_USER_NAME.  Non-string
-parameters (such as true/false settings) are expanded when read from the config
-file.  If a variable does not exist in the environment, or if a sequence of
-characters is not a valid reference (such as an un-paired percent sign), the
-raw characters are passed through unchanged.  This helps with backward
-compatibility and safety (e.g. expanding a non-existent %VAR% to an empty
-string in a path could result in a very unsafe path).  The safest way to insert
-a literal % into a value is to use %%.</p>
+parameters:</p>
 <dl>
 
 <dt id="motd_file"><code>motd file</code><a href="#motd_file" class="tgt"></a></dt><dd>
@@ -147,6 +131,20 @@ can also be specified via the <code>--sockopts</code> command-line option.</p>
 connections.  It defaults to 5.</p>
 </dd>
 </dl>
+<p>You may also include any <a href="#MODULE_PARAMETERS">MODULE PARAMETERS</a> in the global part of the
+config file, in which case the supplied value will override the default for
+that parameter.</p>
+<p>You may use references to environment variables in the values of parameters.
+String parameters will have %VAR% references expanded as late as possible (when
+the string is first used in the program), allowing for the use of variables
+that rsync sets at connection time, such as RSYNC_USER_NAME.  Non-string
+parameters (such as true/false settings) are expanded when read from the config
+file.  If a variable does not exist in the environment, or if a sequence of
+characters is not a valid reference (such as an un-paired percent sign), the
+raw characters are passed through unchanged.  This helps with backward
+compatibility and safety (e.g. expanding a non-existent %VAR% to an empty
+string in a path could result in a very unsafe path).  The safest way to insert
+a literal % into a value is to use %%.</p>
 <h2 id="MODULE_PARAMETERS">MODULE PARAMETERS<a href="#MODULE_PARAMETERS" class="tgt"></a></h2>
 <p>After the global parameters you should define a number of modules, each module
 exports a directory tree as a symbolic name. Modules are exported by specifying
@@ -154,10 +152,15 @@ a module name in square brackets [module] followed by the parameters for that
 module.  The module name cannot contain a slash or a closing square bracket.
 If the name contains whitespace, each internal sequence of whitespace will be
 changed into a single space, while leading or trailing whitespace will be
-discarded.  Also, the name cannot be &quot;global&quot; as that exact name indicates that
-global parameters follow (see above).</p>
-<p>As with GLOBAL PARAMETERS, you may use references to environment variables in
-the values of parameters.  See the GLOBAL PARAMETERS section for more details.</p>
+discarded.</p>
+<p>There is also a special module name of &quot;[global]&quot; that does not define a module
+but instead switches back to the global settings context where default
+parameters can be specified.  Because each defined module gets its full set of
+parameters as a combination of the default values that are set at that position
+in the config file plus its own parameter list, the use of a &quot;[global]&quot; section
+can help to maintain shared config values for multiple modules.</p>
+<p>As with <a href="#GLOBAL_PARAMETERS">GLOBAL PARAMETERS</a>, you may use references to environment variables
+in the values of parameters.  See that section for details.</p>
 <dl>
 
 <dt id="comment"><code>comment</code><a href="#comment" class="tgt"></a></dt><dd>
@@ -981,7 +984,7 @@ before it begins.  Any output from the <code>pre-xfer exec</code> command on std
 <u>not</u> displayed if the script returns success.  The other programs cannot
 send any text to the user.  All output except for the <code>pre-xfer exec</code>
 stdout goes to the corresponding daemon's stdout/stderr, which is typically
-discarded.  See the <code>--no-detatch</code> option for a way to see the daemon's
+discarded.  See the <code>--no-detach</code> option for a way to see the daemon's
 output, which can assist with debugging.</p>
 <p>Note that the <code>early exec</code> command runs before any part of the transfer
 request is known except for the module name.  This helper script can be
@@ -1186,7 +1189,7 @@ susan:herpass
 <p>Please report bugs! The rsync bug tracking system is online at
 <a href="https://rsync.samba.org/">https://rsync.samba.org/</a>.</p>
 <h2 id="VERSION">VERSION<a href="#VERSION" class="tgt"></a></h2>
-<p>This manpage is current for version 3.2.7 of rsync.</p>
+<p>This manpage is current for version 3.3.0 of rsync.</p>
 <h2 id="CREDITS">CREDITS<a href="#CREDITS" class="tgt"></a></h2>
 <p>Rsync is distributed under the GNU General Public License.  See the file
 <a href="COPYING">COPYING</a> for details.</p>
@@ -1201,5 +1204,5 @@ people have later contributed to it. It is currently maintained by Wayne
 Davison.</p>
 <p>Mailing lists for support and development are available at
 <a href="https://lists.samba.org/">https://lists.samba.org/</a>.</p>
-<div style="float: right"><p><i>20 Oct 2022</i></p></div>
+<div style="float: right"><p><i>6 Apr 2024</i></p></div>
 </body></html>

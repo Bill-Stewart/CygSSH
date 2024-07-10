@@ -28,7 +28,6 @@ Sets the timeout, in seconds, for connection attempts. If the timeout has elapse
 .OUTPUTS
 Outputs objects with the following properties:
 * ComputerName - computer name
-* HostType     - host server type and version
 * KeyType      - host key algorithm type
 * Size         - number of bits in the host key
 * HashType     - hash algorithm used to display the host key fingerprint
@@ -49,7 +48,7 @@ param(
   $KeyType,
 
   [Int]
-  $Port,
+  $Port = 22,
 
   [Int]
   $Timeout
@@ -61,59 +60,32 @@ begin {
   $SSH_KEYSCAN = Join-Path $PSScriptRoot "ssh-keyscan"
   Get-Command $SSH_KEYSCAN -ErrorAction Stop | Out-Null
 
-  $regexHost = '^[^ ]+ +([^:]+):([^ ]+) +(.*)'
-  $regexRow = '^([^ ]+) +([^:]+):([^ ]+) +([^ ]+) +\(([^)]+)\)'
+  $RegexRow = '^([^ ]+) +([^:]+):([^ ]+) +([^ ]+) +\(([^)]+)\)'
 
   function Get-HostKeyFingerprint {
     param(
-      $computerName
+      $ComputerName
     )
-    $stdErr = [IO.Path]::GetTempFileName()
-    $stdOut = [IO.Path]::GetTempFileName()
-    $params = @{
-      "FilePath"               = $SSH_KEYSCAN
-      "ArgumentList"           = @()
-      "PassThru"               = $true
-      "RedirectStandardError"  = $stdErr
-      "RedirectStandardOutput" = $StdOut
-      "Wait"                   = $true
-      "WindowStyle"            = [Diagnostics.ProcessWindowStyle]::Hidden
-    }
+    $scanParams = @("-p",($Port -as [String]),"-q")
     if ( $null -ne $KeyType ) {
-      $params.ArgumentList += ("-t {0}" -f ($KeyType -join ','))
-    }
-    if ( $Port -ne 0 ) {
-      $params.ArgumentList += ("-p {0}" -f $Port)
+      $scanParams += '-t',('"{0}"' -f ($KeyType -join ','))
     }
     if ( $Timeout -ne 0 ) {
-      $params.ArgumentList += ("-T {0}" -f $Timeout)
+      $scanParams += '-T',($Timeout -as [String])
     }
-    $params.ArgumentList += $computerName
-    $process = Start-Process @params
-    $exitCode = $process.ExitCode
-    $errorOutput = Get-Content $stdErr
-    if ( $exitCode -eq 0 ) {
-      $hostMatch = [Regex]::Match(($errorOutput | Select-Object -First 1),$regexHost)
-      & $SSH_KEYGEN -E $HashType -l -f $stdOut | ForEach-Object {
-      $rowMatch = [Regex]::Match($_,$regexRow) 
-        [PSCustomObject] @{
-          "ComputerName" = $hostMatch.Groups[1].Value
-          "Port"         = $hostMatch.Groups[2].Value -as [Int]
-          "HostType"     = $hostMatch.Groups[3].Value
-          "KeyType"      = $rowMatch.Groups[5].Value
-          "Size"         = $rowMatch.Groups[1].Value -as [Int]
-          "HashType"     = $rowMatch.Groups[2].Value
-          "Fingerprint"  = $rowMatch.Groups[3].Value
-        }
+    $scanParams += '"{0}"' -f $ComputerName
+    $genParams += '-E',('"{0}"' -f $HashType),'-lf','-'
+    & ([scriptblock]::Create(('& "{0}" {1} | & "{2}" {3}' -f $SSH_KEYSCAN,($scanParams -join ' '),$SSH_KEYGEN,($genParams -join ' ')))) | ForEach-Object {
+      $rowMatch = [Regex]::Match($_,$RegexRow)
+      [PSCustomObject] @{
+        "ComputerName" = $computerName
+        "Port"         = $Port
+        "KeyType"      = $rowMatch.Groups[5].Value
+        "Size"         = $rowMatch.Groups[1].Value -as [Int]
+        "HashType"     = $rowMatch.Groups[2].Value
+        "Fingerprint"  = $rowMatch.Groups[3].Value
       }
     }
-    else {
-      if ( ($errorOutput | Select-Object -First 1) -notmatch '^#') {
-        Write-Error ("Unable to get host key fingerprint from '{0}' due to the following error: '{1}'" -f
-          $computerName,($errorOutput -join [Environment]::NewLine))
-      }
-    }
-    Remove-Item $stdErr,$stdOut
   }
 }
 

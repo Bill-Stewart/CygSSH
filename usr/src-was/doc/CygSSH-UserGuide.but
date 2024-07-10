@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 9.7.0
+\define{version} 9.8.0
 
 \define{rightarrow} \u2192
 
@@ -91,10 +91,10 @@ Regardless of the setup type, the installer then performs any other tasks select
 
 Example installation command:
 
-\c CygSSH-Setup-version /SILENT /CLOSEAPPLICATIONS /SUPPRESSMSGBOXES
-\e              iiiiiii
+\c cygssh-version-setup.exe /SILENT /CLOSEAPPLICATIONS /SUPPRESSMSGBOXES
+\e        iiiiiii
 
-Replace \e{version} with the version (e.g., \s{9.7.0}).
+Replace \e{version} with the version (e.g., \s{9.8.0}).
 
 \I{/CLOSEAPPLICATIONS parameter}\I{/SILENT parameter}\I{/SUPPRESSMSGBOXES parameter}\I{install, silent}\I{silent install}The above command installs the package silently (i.e., without user interaction). The \c{/CLOSEAPPLICATIONS} parameter automatically stops running services and closes programs so that the installer can reinstall or upgrade the files. Stopped services will be automatically restarted after the installation completes. The \c{/SUPPRESSMSGBOXES} parameter suppresses message dialog boxes that would normally appear in an interactive installation.
 
@@ -103,6 +103,8 @@ If you want to prevent the installer from displaying its progress window during 
 \I{non-administrative install mode}\I{/CURRENTUSER parameter}The installer also supports non-administrative install mode, which installs only the client files for the current user (does not require administrator privileges). To run in non-administrative install mode, use the \c{/CURRENTUSER} parameter on the command line.
 
 \I{/FORCEUNINSTALL parameter}You can also force the installer to uninstall the installed version before proceeding with installation; to do this, specify the \c{/FORCEUNINSTALL} parameter on the command line. When you use this parameter, the installer detects if the package is already installed and automatically uninstalls it before proceeding with the installation.
+
+When upgrading from certain older versions, the installer may decide it needs to perform an uninstall before upgrading. In these cases, the installer will behave as if the \c{/FORCEUNINSTALL} parameter is in use even if you don't specify it explicitly.
 
 The following sections describe the pages of the installer wizard.
 
@@ -194,13 +196,15 @@ A reinstall or upgrade cannot proceed if the OpenSSH server service or any of th
 
 \H{downgrade} Downgrading
 
-In order to perform a downgrade, you can do one of the following:
+To perform a downgrade in versions older than 9.8.0, do one of the following:
 
 \b Uninstall the installed version (see \k{uninstall}) and install the older version, or
 
 \b Use the \c{/FORCEUNINSTALL} parameter (see \k{installer}).
 
 If you are installing an older version of the package that doesn't support the \c{/FORCEUNINSTALL} parameter, you will need to uninstall and reinstall.
+
+To downgrade in versions 9.8.0 and newer, simply install the desired version. The installer will detect the downgrade condition and uninstall the newer version automatically before installing the desired version.
 
 \# ----------------------------------------------------------------------------
 \# CHAPTER
@@ -895,6 +899,14 @@ The source code is generally of interest only to developers.
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{9.8.0} (2024-07-10)
+
+\b Updated to OpenSSH 9.8p1-1 and latest Cygwin packages.
+
+\b Updated \s{Get\-SSHHostKeyFingerprint.ps1} script not to use temporary files thanks to improvements in the \s{ssh-keyscan} tool.
+
+\b Updated to Inno Setup 6.3.2.
 
 \s{9.7.0} (2024-05-08)
 

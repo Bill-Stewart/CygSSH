@@ -23,8 +23,7 @@ ComponentsServerDescription=Server and client files
 ComponentsClientDescription=Client files only
 
 ; Icons
-IconsUserGuideName=User Guide
-IconsUserGuideComment=Cygwin OpenSSH User Guide
+IconsUserGuideName=CygSSH User Guide
 
 ; Tasks
 TasksStartServiceDescription=&Start OpenSSH server service
@@ -59,6 +58,7 @@ PackageVersionLessLogMessage=This version (%1) less than installed version
 PackageVersionEqualLogMessage=This version (%1) equal to installed version
 PackageVersionGreaterLogMessage=This version (%1) greater than installed version
 PackageUninstallStatusLogMessage=Uninstall existing package exit code = %1
+PackageUninstallErrorMessage=Setup was unable to uninstall the version currently installed on the system.
 
 ; Executable detection messages
 ApplicationsRunningLogMessage=Applications are using files that need to be updated by Setup.

@@ -1,6 +1,21 @@
 ﻿; CygSSH - Inno Setup installer script
 
-#include AddBackslash(SourcePath) + "includes.iss"
+#if Ver < EncodeVer(6,3,1,0)
+#error This script requires Inno Setup 6.3.1 or later
+#endif
+
+#define UninstallIfVersionOlderThan "9.8.0"
+#define AppGUID "{21A533E3-0284-46B5-A731-FBC66EDFB168}"
+#define AppName ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "OpenSSH", "Name", "")
+#define AppVersion ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "OpenSSH", "Version", "0.0.0")
+#define AppFullVersion AppVersion + ".0"
+#define InstallDirName "CygSSH"
+#define SetupName "cygssh-" + AppVersion + "-setup"
+#define SetupAuthor ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "Setup", "Author", "")
+#define SetupEmail ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "Setup", "Email", "")
+#define SetupCompany SetupAuthor + " (" + SetupEmail + ")"
+#define IconFilename "OpenSSH.ico"
+#define ServiceName "opensshd"
 
 [Setup]
 AppId={{#AppGUID}
@@ -8,8 +23,8 @@ AllowNoIcons=yes
 AppName={#AppName}
 AppPublisher={#SetupAuthor}
 AppVersion={#AppVersion}
-ArchitecturesAllowed=x64
-ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
 ChangesEnvironment=yes
 CloseApplications=yes
 CloseApplicationsFilter=*.chm,*.pdf,*.ps1
@@ -18,7 +33,7 @@ DefaultDirName={autopf}\{#InstallDirName}
 DefaultGroupName={#AppName}
 DisableWelcomePage=yes
 MinVersion=6.3
-OutputBaseFilename={#SetupName}-{#AppVersion}
+OutputBaseFilename={#SetupName}
 OutputDir=.
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=commandline
@@ -88,6 +103,7 @@ Source: "bin-cygwin\ssh-keygen.exe";            DestDir: "{app}\bin"; Components
 Source: "bin-cygwin\ssh-keyscan.exe";           DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\ssh-pageant.exe";           DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\ssh.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-cygwin\tail.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\touch.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\true.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\umount.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
@@ -109,6 +125,7 @@ Source: "usr\sbin-cygwin\ssh-pkcs11-helper.exe"; DestDir: "{app}\usr\sbin"; Comp
 Source: "usr\sbin-cygwin\cygserver.exe";         DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
 Source: "usr\sbin-cygwin\sftp-server.exe";       DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
 Source: "usr\sbin-cygwin\sshd.exe";              DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
+Source: "usr\sbin-cygwin\sshd-session.exe";      DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
 ; /
 Source: "{#IconFilename}";      DestDir: "{app}"; Components: client server
 Source: "CygSSH-UserGuide.chm"; DestDir: "{app}"; Components: client server
@@ -159,13 +176,13 @@ Name: "{app}\tmp";       Components: client server
 Name: "{app}\var\empty"; Components: server
 
 [Icons]
-Name: "{group}\{cm:IconsUserGuideName}"; Filename: "{app}\CygSSH-UserGuide.chm"; Comment: "{cm:IconsUserGuideComment}"
+Name: "{group}\{cm:IconsUserGuideName}"; Filename: "{app}\CygSSH-UserGuide.chm"
 
 [INI]
 Filename: "{app}\version.ini"; Section: "Version"; Key: "Version"; String: "{#AppVersion}"
 
 [Tasks]
-Name: startservice; Description: "{cm:TasksStartServiceDescription}"; Components: server; Check: not ServiceExists('{#ServiceName}')
+Name: startservice; Description: "{cm:TasksStartServiceDescription}"; Components: server
 Name: modifypath;   Description: "{cm:TasksModifyPathDescription,{code:GetSystemOrUserPath}}"; Check: not IsDirInPath(ExpandConstant('{app}\bin'))
 Name: resetconfig;  Description: "{cm:TasksResetConfigDescription}"; Flags: checkedonce unchecked; Check: FileExists(ExpandConstant('{app}\etc\ssh_config')) or FileExists(ExpandConstant('{app}\etc\sshd_config'))
 
@@ -280,7 +297,7 @@ type
 var
   AppProgressPage: TOutputProgressWizardPage;
   PathIsModified, ApplicationUninstalled: Boolean;
-  SWbemLocator, WMIService: Variant;
+  WMIService: Variant;
   RunningServices: TCygwinServiceList;
 
 // advapi32.dll functions for service info
@@ -304,6 +321,8 @@ function DLLRemoveDirFromPath(DirName: string; PathType: DWORD): DWORD;
   external 'RemoveDirFromPath@{app}\bin\PathMgr.dll stdcall uninstallonly';
 
 // UninsIS.dll functions - https://github.com/Bill-Stewart/UninsIS/
+function DLLCompareVersionStrings(Version1, Version2: string): Integer;
+  external 'CompareVersionStrings@files:UninsIS.dll stdcall setuponly';
 function DLLIsISPackageInstalled(AppId: string; Is64BitInstallMode, IsAdminInstallMode: DWORD): DWORD;
   external 'IsISPackageInstalled@files:UninsIS.dll stdcall setuponly';
 function DLLCompareISPackageVersion(AppId, InstallingVersion: string;
@@ -371,10 +390,20 @@ begin
     Log(FmtMessage(CustomMessage('PathRemoveFailMessage'), [DirName, PathTypeName, IntToStr(result)]));
 end;
 
+// UninsIS.dll - Returns:
+// < 0 if Version1 < Version2
+// 0   if Version1 = Version2
+// > 0 if Version1 > Version2
+function CompareVersionStrings(const Version1, Version2: string): Integer;
+begin
+  result := DLLCompareVersionStrings(Version1, Version2);
+end;
+
 // Wrapper for UninsIS.dll IsISPackageInstalled() function
 function IsISPackageInstalled(): Boolean;
 begin
-  result := DLLIsISPackageInstalled('{#AppGUID}', DWORD(Is64BitInstallMode()),
+  result := DLLIsISPackageInstalled('{#AppGUID}',
+    DWORD(Is64BitInstallMode()),
     DWORD(IsAdminInstallMode())) = 1;
   if result then
     Log(CustomMessage('PackageDetectedLogMessage'))
@@ -385,8 +414,10 @@ end;
 // Wrapper for UninsIS.dll CompareISPackageVersion() function
 function CompareISPackageVersion(): LongInt;
 begin
-  result := DLLCompareISPackageVersion('{#AppGUID}', '{#AppFullVersion}',
-    DWORD(Is64BitInstallMode()), DWORD(IsAdminInstallMode()));
+  result := DLLCompareISPackageVersion('{#AppGUID}',
+    '{#AppFullVersion}',
+    DWORD(Is64BitInstallMode()),
+    DWORD(IsAdminInstallMode()));
   if result < 0 then
     Log(FmtMessage(CustomMessage('PackageVersionLessLogMessage'), ['{#AppFullVersion}']))
   else if result = 0 then
@@ -398,7 +429,8 @@ end;
 // Wrapper for UninsIS.dll UninstallISPackage() function
 function UninstallISPackage(): DWORD;
 begin
-  result := DLLUninstallISPackage('{#AppGUID}', DWORD(Is64BitInstallMode()),
+  result := DLLUninstallISPackage('{#AppGUID}',
+    DWORD(Is64BitInstallMode()),
     DWORD(IsAdminInstallMode()));
   Log(FmtMessage(CustomMessage('PackageUninstallStatusLogMessage'), [IntToStr(result)]));
 end;
@@ -439,6 +471,8 @@ begin
 end;
 
 function InitializeSetup(): Boolean;
+var
+  SWbemLocator: Variant;
 begin
   result := true;
   // Was modifypath task selected during a previous install?
@@ -447,7 +481,6 @@ begin
     SWbemLocator := CreateOleObject('WbemScripting.SWbemLocator');
     WMIService := SWbemLocator.ConnectServer('', 'root\CIMV2');
   except
-    SWbemLocator := Null();
     WMIService := Null();
   end; //try
   SetArrayLength(RunningServices, 0);
@@ -774,25 +807,38 @@ end;
 
 function PrepareToInstall(var NeedsRestart: Boolean): string;
 var
-  Installed: Boolean;
-  ProcList: string;
+  InstalledVersion, ProcList: string;
   OK: Boolean;
   Count: Integer;
   Processes: TCygwinProcessList;
 begin
   result := '';
-  Installed := IsISPackageInstalled();
-  if Installed then
-    CompareISPackageVersion();
-  if ParamStrExists('/forceuninstall') and Installed then
-    UninstallISPackage();
+  if IsISPackageInstalled() then
+  begin
+    InstalledVersion := GetIniString('Version', 'Version', '', ExpandConstant('{app}\version.ini'));
+    if (ParamStrExists('/forceuninstall')) or (InstalledVersion = '') or (CompareVersionStrings(InstalledVersion, '{#UninstallIfVersionOlderThan}') < 0) then
+    begin
+      if UninstallISPackage() <> 0 then
+      begin
+        result := CustomMessage('PackageUninstallErrorMessage');
+        exit;
+       end;
+    end
+    else if CompareVersionStrings(InstalledVersion, '{#AppVersion}') > 0 then
+    begin
+      if UninstallISPackage() <> 0 then
+      begin
+        result := CustomMessage('PackageUninstallErrorMessage');
+        exit;
+       end;
+    end;
+  end;
   // Get running Cygwin processes
   ProcList := GetRunningCygwinProcesses(GetCygwinRootDir());
   if ProcList <> '' then
   begin
     Log(CustomMessage('ApplicationsRunningLogMessage'));
-    OK := ParamStrExists('/closeapplications') or
-      ParamStrExists('/forcecloseapplications');
+    OK := ParamStrExists('/closeapplications') or ParamStrExists('/forcecloseapplications');
     if not OK then
       OK := SuppressibleTaskDialogMsgBox(CustomMessage('ApplicationsRunningInstructionMessage'),               // Instruction
         FmtMessage(CustomMessage('ApplicationsRunningTextMessage'), [ProcList]),                               // Text

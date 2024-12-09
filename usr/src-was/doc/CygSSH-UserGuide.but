@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 9.8.0
+\define{version} 9.9.0
 
 \define{rightarrow} \u2192
 
@@ -899,6 +899,12 @@ The source code is generally of interest only to developers.
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{9.9.0} (2024-12-09)
+
+\b Updated to OpenSSH 9.9p1-1 and latest Cygwin packages.
+
+\b Corrected client-only \s{mintty} issue.
 
 \s{9.8.0} (2024-07-10)
 

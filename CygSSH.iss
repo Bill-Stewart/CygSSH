@@ -52,6 +52,9 @@ WizardStyle=modern
 [Languages]
 Name: en; MessagesFile: "compiler:Default.isl,Messages-en.isl"; LicenseFile: "License-en.rtf"; InfoBeforeFile: "Readme-en.rtf"
 
+[Messages]
+SetupWindowTitle=Setup - %1 [{#AppFullVersion}]
+
 [Types]
 Name: full;   Description: "{cm:TypesFullDescription}"; Check: IsAdminInstallMode()
 Name: client; Description: "{cm:TypesClientDescription}"
@@ -82,6 +85,8 @@ Source: "bin-cygwin\cygcheck.exe";              DestDir: "{app}\bin"; Components
 Source: "bin-cygwin\cygpath.exe";               DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\cygrunsrv.exe";             DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\cygstart.exe";              DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-cygwin\cygwin-console-helper.exe"; DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-cygwin\dash.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\editrights.exe";            DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\false.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\getent.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
@@ -106,15 +111,13 @@ Source: "bin-cygwin\ssh.exe";                   DestDir: "{app}\bin"; Components
 Source: "bin-cygwin\tail.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\touch.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\true.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-cygwin\tty.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\umount.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\uname.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\unzip.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\vi.exe";                    DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\xz.exe";                    DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\zip.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
-Source: "bin-cygwin\cygwin-console-helper.exe"; DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion
-Source: "bin-cygwin\dash.exe";                  DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion
-Source: "bin-cygwin\tty.exe";                   DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion
 ; supplemental /bin
 Source: "bin-supp\startps.exe"; DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-supp\posh.exe";    DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion

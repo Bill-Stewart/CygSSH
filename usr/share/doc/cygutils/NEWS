@@ -1,5 +1,6 @@
 1.4.17
   * More bug fixes to getclip and putclip.
+  * New tool lssparse contributed by Roland Mainz.
 
 1.4.16
   * Unicode support added to mkshortcut and readshortcut by Thomas Wolff.

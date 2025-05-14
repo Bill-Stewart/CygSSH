@@ -1,3 +1,22 @@
+2025-04-24  Mark Geisert  <mark@maxrnd.com>  (1.4.17-4)
+
+	* src/cygstart/cygstart.c: Fix len arg of mbstowcs. Thanks to user
+	  ggl329@gmail.com for the report and Christian Franke for the
+	  diagnosis and discussion.
+
+2025-04-05  Mark Geisert  <mark@maxrnd.com>  (1.4.17-3)
+
+	* src/lssparse/lssparse.c: Fix hole display glitch. Updated source
+	  provided by Roland Mainz.
+
+2025-04-01  Mark Geisert  <mark@maxrnd.com>  (1.4.17-2)
+
+	* src/lssparse/*: Add new tool contributed by Roland Mainz.
+	* src/configure.ac: Ditto.
+	* src/Makefile.am: Ditto.
+	* cygutils.cygport: Ditto. Also add CXXFLAGS+=" -std=gnu++03".
+
+
 2022-01-28  Mark Geisert  <mark@maxrnd.com>
 
 	Release 1.4.17

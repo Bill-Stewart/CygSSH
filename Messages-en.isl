@@ -1,6 +1,6 @@
 ﻿#preproc ispp
 
-; Cygwin-OpenSSH - Inno Setup messages file
+; CygSSH - Inno Setup messages file
 
 [Messages]
 WizardSelectComponents=Select Setup Type

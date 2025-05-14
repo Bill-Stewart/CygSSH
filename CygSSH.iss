@@ -23,6 +23,7 @@ AllowNoIcons=yes
 AppName={#AppName}
 AppPublisher={#SetupAuthor}
 AppVersion={#AppVersion}
+AppVerName={#AppName}
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 ChangesEnvironment=yes
@@ -128,6 +129,7 @@ Source: "usr\sbin-cygwin\ssh-pkcs11-helper.exe"; DestDir: "{app}\usr\sbin"; Comp
 Source: "usr\sbin-cygwin\cygserver.exe";         DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
 Source: "usr\sbin-cygwin\sftp-server.exe";       DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
 Source: "usr\sbin-cygwin\sshd.exe";              DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
+Source: "usr\sbin-cygwin\sshd-auth.exe";         DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
 Source: "usr\sbin-cygwin\sshd-session.exe";      DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
 ; /
 Source: "{#IconFilename}";      DestDir: "{app}"; Components: client server
@@ -891,10 +893,7 @@ var
   SubKeyName, ImagePath: string;
 begin
   result := true;
-  if Is64BitInstallMode() then
-    RootKey := HKEY_LOCAL_MACHINE_64
-  else
-    RootKey := HKEY_LOCAL_MACHINE;
+  RootKey := HKEY_LOCAL_MACHINE;
   SubKeyName := 'SYSTEM\CurrentControlSet\Services\{#ServiceName}';
   if RegQueryStringValue(RootKey, SubKeyName, 'ImagePath', ImagePath) then
   begin

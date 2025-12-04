@@ -157,6 +157,7 @@ Source: "etc\profile";        DestDir: "{app}\etc"; Components: server;        F
 Source: "etc\sshd_config";    DestDir: "{app}\etc"; Components: server;        Flags: onlyifdoesntexist uninsneveruninstall
 Source: "etc\moduli";         DestDir: "{app}\etc"; Components: server
 ; /etc/defaults/etc
+Source: "etc\defaults\etc\minttyrc";       DestDir: "{app}\etc\defaults\etc"; Components: client server
 Source: "etc\defaults\etc\nanorc";         DestDir: "{app}\etc\defaults\etc"; Components: client server
 Source: "etc\defaults\etc\nsswitch.conf";  DestDir: "{app}\etc\defaults\etc"; Components: client server
 Source: "etc\defaults\etc\ssh_config";     DestDir: "{app}\etc\defaults\etc"; Components: client server

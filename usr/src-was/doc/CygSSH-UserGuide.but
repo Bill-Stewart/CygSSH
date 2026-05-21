@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 10.2.1
+\define{version} 10.3.1
 
 \define{rightarrow} \u2192
 
@@ -899,6 +899,10 @@ The source code is generally of interest only to developers.
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{10.3.1} (2026-05-21)
+
+\b Updated to OpenSSH 10.3p1 and latest Cygwin packages.
 
 \s{10.2.1} (2025-12-04)
 

@@ -1,5 +1,733 @@
 GNU coreutils NEWS                                    -*- outline -*-
 
+* Noteworthy changes in release 9.6 (2025-01-17) [stable]
+
+** Bug fixes
+
+  cp fixes support for --update=none-fail, which would have been
+  rejected as an invalid option.
+  [bug introduced in coreutils-9.5]
+
+  cp,mv --update no longer overrides --interactive or --force.
+  [bug introduced in coreutils-9.3]
+
+  csplit no longer creates empty files given empty input.
+  [This bug was present in "the beginning".]
+
+  ls and printf fix shell quoted output in the edge case of escaped
+  first and last characters, and single quotes in the string.
+  [bug introduced in coreutils-8.26]
+
+  ls -l no longer outputs "Permission denied" errors on NFS
+  which may happen with files without read permission, and which resulted
+  in inaccurate indication of ACLs (missing '+' flag after mode).
+  [bug introduced in coreutils-9.4]
+
+  ls -l no longer outputs "Not supported" errors on virtiofs.
+  [bug introduced in coreutils-9.4]
+
+  mv works again with macFUSE file systems.  Previously it would
+  have exited with a "Function not implemented" error.
+  [bug introduced in coreutils-8.28]
+
+  nproc gives more consistent results on systems with more than 1024 CPUs.
+  Previously it would have ignored the affinity mask on such systems.
+  [bug introduced with nproc in coreutils-8.1]
+
+  numfmt --from=iec-i now works with numbers without a suffix.
+  Previously such numbers were rejected with an error.
+  [bug introduced with numfmt in coreutils-8.21]
+
+  printf now diagnoses attempts to treat empty strings as numbers,
+  as per POSIX. For example, "printf '%d' ''" now issues a diagnostic
+  and fails instead of silently succeeding.
+  [This bug was present in "the beginning".]
+
+  pwd no longer outputs an erroneous double slash on systems
+  where the system getcwd() was completely replaced.
+  [bug introduced in coreutils-9.2]
+
+  'shuf' generates more-random output when the output is small.
+  [bug introduced in coreutils-8.6]
+
+  `tail --follow=name` no longer waits indefinitely for watched
+  file names that are moved elsewhere within the same file system.
+  [bug introduced in coreutils-8.24]
+
+  `tail --follow` without --retry, will consistently exit with failure status
+  where inotify is not used, when all followed files become inaccessible.
+  [This bug was present in "the beginning".]
+
+  `tail --follow --pid=PID` will now exit when the PID dies,
+  even in the presence of blocking inputs like unopened fifos.
+  [This bug was present in "the beginning".]
+
+  'tail -c 4096 /dev/zero' no longer loops forever.
+  [This bug was present in "the beginning".]
+
+** Changes in behavior
+
+  'factor' now buffers output more efficiently in some cases.
+
+  install -C now dereferences symlink sources when comparing,
+  rather than always treating as different and performing the copy.
+
+  kill -l and -t now list signal 0, as it's a valid signal to send.
+
+  ls's -f option now simply acts like -aU, instead of also ignoring
+  some earlier options.  For example 'ls -fl' and 'ls -lf' are now
+  equivalent because -f no longer ignores an earlier -l.  The new
+  behavior is more orthogonal and is compatible with FreeBSD.
+
+  stat -f -c%T now reports the "fuseblk" file system type as "fuse",
+  given that there is no longer a distinct "ctl" fuse variant file system.
+
+** New Features
+
+  cksum -a now supports the "crc32b" option, which calculates the CRC
+  of the input as defined by ITU V.42, as used by gzip for example.
+  For performance pclmul instructions are used where supported.
+
+  ls now supports the --sort=name option,
+  to explicitly select the default operation of sorting by file name.
+
+  printf now supports indexed arguments, using the POSIX:2024 specified
+  %<i>$ format, where '<i>' is an integer referencing a particular argument,
+  thus allowing repetition or reordering of printf arguments.
+
+  test supports the POSIX:2024 specified '<' and '>' operators with strings,
+  to compare the string locale collating order.
+
+  timeout now supports the POSIX:2024 specified -f, and -p short options,
+  corresponding to --foreground, and --preserve-status respectively.
+
+** Improvements
+
+  cksum -a crc, makes use of AVX2, AVX512, and ARMv8 SIMD extensions
+  for time reductions of up to 40%, 60%, and 80% respectively.
+
+  'head -c NUM', 'head -n NUM', 'nl -l NUM', 'nproc --ignore NUM',
+  'tail -c NUM', 'tail -n NUM', and 'tail --max-unchanged-stats NUM’
+  no longer fail merely because NUM stands for 2**64 or more.
+
+  sort operates more efficiently when used on pseudo files with
+  an apparent size of 0, like those in /proc.
+
+  stat and tail now know about the "bcachefs", and "pidfs" file system types.
+  stat -f -c%T now reports the file system type,
+  and tail -f uses inotify for these file systems.
+
+  wc now reads a minimum of 256KiB at a time.
+  This was previously 16KiB and increasing to 256KiB was seen to increase
+  wc -l performance by about 10% when reading cached files on modern systems.
+
+
+* Noteworthy changes in release 9.5 (2024-03-28) [stable]
+
+** Bug fixes
+
+  chmod -R now avoids a race where an attacker may replace a traversed file
+  with a symlink, causing chmod to operate on an unintended file.
+  [This bug was present in "the beginning".]
+
+  cp, mv, and install no longer issue spurious diagnostics like "failed
+  to preserve ownership" when copying to GNU/Linux CIFS file systems.
+  They do this by working around some Linux CIFS bugs.
+
+  cp --no-preserve=mode will correctly maintain set-group-ID bits
+  for created directories.  Previously on systems that didn't support ACLs,
+  cp would have reset the set-group-ID bit on created directories.
+  [bug introduced in coreutils-8.20]
+
+  join and uniq now support multi-byte characters better.
+  For example, 'join -tX' now works even if X is a multi-byte character,
+  and both programs now treat multi-byte characters like U+3000
+  IDEOGRAPHIC SPACE as blanks if the current locale treats them so.
+
+  numfmt options like --suffix no longer have an arbitrary 127-byte limit.
+  [bug introduced with numfmt in coreutils-8.21]
+
+  mktemp with --suffix now better diagnoses templates with too few X's.
+  Previously it conflated the insignificant --suffix in the error.
+  [bug introduced in coreutils-8.1]
+
+  sort again handles thousands grouping characters in single-byte locales
+  where the grouping character is greater than CHAR_MAX.  For e.g. signed
+  character platforms with a 0xA0 (aka &nbsp) grouping character.
+  [bug introduced in coreutils-9.1]
+
+  split --line-bytes with a mixture of very long and short lines
+  no longer overwrites the heap (CVE-2024-0684).
+  [bug introduced in coreutils-9.2]
+
+  tail no longer mishandles input from files in /proc and /sys file systems,
+  on systems with a page size larger than the stdio BUFSIZ.
+  [This bug was present in "the beginning".]
+
+  timeout avoids a narrow race condition, where it might kill arbitrary
+  processes after a failed process fork.
+  [bug introduced with timeout in coreutils-7.0]
+
+  timeout avoids a narrow race condition, where it might fail to
+  kill monitored processes immediately after forking them.
+  [bug introduced with timeout in coreutils-7.0]
+
+  wc no longer fails to count unprintable characters as parts of words.
+  [bug introduced in textutils-2.1]
+
+** Changes in behavior
+
+  base32 and base64 no longer require padding when decoding.
+  Previously an error was given for non padded encoded data.
+
+  base32 and base64 have improved detection of corrupted encodings.
+  Previously encodings with non zero padding bits were accepted.
+
+  basenc --base16 -d now supports lower case hexadecimal characters.
+  Previously an error was given for lower case hex digits.
+
+  cp --no-clobber, and mv -n no longer exit with failure status if
+  existing files are encountered in the destination.  Instead they revert
+  to the behavior from before v9.2, silently skipping existing files.
+
+  ls --dired now implies long format output without hyperlinks enabled,
+  and will take precedence over previously specified formats or hyperlink mode.
+
+  numfmt will accept lowercase 'k' to indicate Kilo or Kibi units on input,
+  and uses lowercase 'k' when outputting such units in '--to=si' mode.
+
+  pinky no longer tries to canonicalize the user's login location by default,
+  rather requiring the new --lookup option to enable this often slow feature.
+
+  wc no longer ignores encoding errors when counting words.
+  Instead, it treats them as non white space.
+
+** New features
+
+  chgrp now accepts the --from=OWNER:GROUP option to restrict changes to files
+  with matching current OWNER and/or GROUP, as already supported by chown(1).
+
+  chmod adds support for -h, -H,-L,-P, and --dereference options, providing
+  more control over symlink handling.  This supports more secure handling of
+  CLI arguments, and is more consistent with chown, and chmod on other systems.
+
+  cp now accepts the --keep-directory-symlink option (like tar), to preserve
+  and follow existing symlinks to directories in the destination.
+
+  cp and mv now accept the --update=none-fail option, which is similar
+  to the --no-clobber option, except that existing files are diagnosed,
+  and the command exits with failure status if existing files.
+  The -n,--no-clobber option is best avoided due to platform differences.
+
+  env now accepts the -a,--argv0 option to override the zeroth argument
+  of the command being executed.
+
+  mv now accepts an --exchange option, which causes the source and
+  destination to be exchanged.  It should be combined with
+  --no-target-directory (-T) if the destination is a directory.
+  The exchange is atomic if source and destination are on a single
+  file system that supports atomic exchange; --exchange is not yet
+  supported in other situations.
+
+  od now supports printing IEEE half precision floating point with -t fH,
+  or brain 16 bit floating point with -t fB, where supported by the compiler.
+
+  tail now supports following multiple processes, with repeated --pid options.
+
+** Improvements
+
+  cp,mv,install,cat,split now read and write a minimum of 256KiB at a time.
+  This was previously 128KiB and increasing to 256KiB was seen to increase
+  throughput by 10-20% when reading cached files on modern systems.
+
+  env,kill,timeout now support unnamed signals. kill(1) for example now
+  supports sending such signals, and env(1) will list them appropriately.
+
+  SELinux operations in file copy operations are now more efficient,
+  avoiding unneeded MCS/MLS label translation.
+
+  sort no longer dynamically links to libcrypto unless -R is used.
+  This decreases startup overhead in the typical case.
+
+  wc is now much faster in single-byte locales and somewhat faster in
+  multi-byte locales.
+
+
+* Noteworthy changes in release 9.4 (2023-08-29) [stable]
+
+** Bug fixes
+
+  On GNU/Linux s390x and alpha, programs like 'cp' and 'ls' no longer
+  fail on files with inode numbers that do not fit into 32 bits.
+  [This bug was present in "the beginning".]
+
+  'b2sum --check' will no longer read unallocated memory when
+  presented with malformed checksum lines.
+  [bug introduced in coreutils-9.2]
+
+  'cp --parents' again succeeds when preserving mode for absolute directories.
+  Previously it would have failed with a "No such file or directory" error.
+  [bug introduced in coreutils-9.1]
+
+  'cp --sparse=never' will avoid copy-on-write (reflinking) and copy offloading,
+  to ensure no holes present in the destination copy.
+  [bug introduced in coreutils-9.0]
+
+  cksum again diagnoses read errors in its default CRC32 mode.
+  [bug introduced in coreutils-9.0]
+
+  'cksum --check' now ensures filenames with a leading backslash character
+  are escaped appropriately in the status output.
+  This also applies to the standalone checksumming utilities.
+  [bug introduced in coreutils-8.25]
+
+  dd again supports more than two multipliers for numbers.
+  Previously numbers of the form '1024x1024x32' gave "invalid number" errors.
+  [bug introduced in coreutils-9.1]
+
+  factor, numfmt, and tsort now diagnose read errors on the input.
+  [This bug was present in "the beginning".]
+
+  'install --strip' now supports installing to files with a leading hyphen.
+  Previously such file names would have caused the strip process to fail.
+  [This bug was present in "the beginning".]
+
+  ls now shows symlinks specified on the command line that can't be traversed.
+  Previously a "Too many levels of symbolic links" diagnostic was given.
+  [This bug was present in "the beginning".]
+
+  pinky, uptime, users, and who no longer misbehave on 32-bit GNU/Linux
+  platforms like x86 and ARM where time_t was historically 32 bits.
+  Also see the new --enable-systemd option mentioned below.
+  [bug introduced in coreutils-9.0]
+
+  'pr --length=1 --double-space' no longer enters an infinite loop.
+  [This bug was present in "the beginning".]
+
+  shred again operates on Solaris when built for 64 bits.
+  Previously it would have exited with a "getrandom: Invalid argument" error.
+  [bug introduced in coreutils-9.0]
+
+  tac now handles short reads on its input.  Previously it may have exited
+  erroneously, especially with large input files with no separators.
+  [This bug was present in "the beginning".]
+
+  'uptime' no longer incorrectly prints "0 users" on OpenBSD,
+  and is being built again on FreeBSD and Haiku.
+  [bugs introduced in coreutils-9.2]
+
+  'wc -l' and 'cksum' no longer crash with an "Illegal instruction" error
+  on x86 Linux kernels that disable XSAVE YMM.  This was seen on Xen VMs.
+  [bug introduced in coreutils-9.0]
+
+** Changes in behavior
+
+  'cp -v' and 'mv -v' will no longer output a message for each file skipped
+  due to -i, or -u.  Instead they only output this information with --debug.
+  I.e., 'cp -u -v' etc. will have the same verbosity as before coreutils-9.3.
+
+  'cksum -b' no longer prints base64-encoded checksums.  Rather that
+  short option is reserved to better support emulation of the standalone
+  checksum utilities with cksum.
+
+  'mv dir x' now complains differently if x/dir is a nonempty directory.
+  Previously it said "mv: cannot move 'dir' to 'x/dir': Directory not empty",
+  where it was unclear whether 'dir' or 'x/dir' was the problem.
+  Now it says "mv: cannot overwrite 'x/dir': Directory not empty".
+  Similarly for other renames where the destination must be the problem.
+  [problem introduced in coreutils-6.0]
+
+** Improvements
+
+  cp, mv, and install now avoid copy_file_range on linux kernels before 5.3
+  irrespective of which kernel version coreutils is built against,
+  reinstating that behavior from coreutils-9.0.
+
+  comm, cut, join, od, and uniq will now exit immediately upon receiving a
+  write error, which is significant when reading large / unbounded inputs.
+
+  split now uses more tuned access patterns for its potentially large input.
+  This was seen to improve throughput by 5% when reading from SSD.
+
+  split now supports a configurable $TMPDIR for handling any temporary files.
+
+  tac now falls back to '/tmp' if a configured $TMPDIR is unavailable.
+
+  'who -a' now displays the boot time on Alpine Linux, OpenBSD,
+  Cygwin, Haiku, and some Android distributions
+
+  'uptime' now succeeds on some Android distributions, and now counts
+  VM saved/sleep time on GNU (Linux, Hurd, kFreeBSD), NetBSD, OpenBSD,
+  Minix, and Cygwin.
+
+  On GNU/Linux platforms where utmp-format files have 32-bit timestamps,
+  pinky, uptime, and who can now work for times after the year 2038,
+  so long as systemd is installed, you configure with a new, experimental
+  option --enable-systemd, and you use the programs without file arguments.
+  (For example, with systemd 'who /var/log/wtmp' does not work because
+  systemd does not support the equivalent of /var/log/wtmp.)
+
+
+* Noteworthy changes in release 9.3 (2023-04-18) [stable]
+
+** Bug fixes
+
+  cp --reflink=auto (the default), mv, and install
+  will again fall back to a standard copy in more cases.
+  Previously copies could fail with permission errors on
+  more restricted systems like android or containers etc.
+  [bug introduced in coreutils-9.2]
+
+  cp --recursive --backup will again operate correctly.
+  Previously it may have issued "File exists" errors when
+  it failed to appropriately rename files being replaced.
+  [bug introduced in coreutils-9.2]
+
+  date --file and dircolors will now diagnose a failure to read a file.
+  Previously they would have silently ignored the failure.
+  [This bug was present in "the beginning".]
+
+  md5sum --check again correctly prints the status of each file checked.
+  Previously the status for files was printed as 'OK' once any file had passed.
+  This also applies to cksum, sha*sum, and b2sum.
+  [bug introduced in coreutils-9.2]
+
+  wc will now diagnose if any total counts have overflowed.
+  [This bug was present in "the beginning".]
+
+  `wc -c` will again correctly update the read offset of inputs.
+  Previously it deduced the size of inputs while leaving the offset unchanged.
+  [bug introduced in coreutils-8.27]
+
+  Coreutils programs no longer fail for timestamps past the year 2038
+  on obsolete configurations with 32-bit signed time_t, because the
+  build procedure now rejects these configurations.
+  [This bug was present in "the beginning".]
+
+** Changes in behavior
+
+  'cp -n' and 'mv -n' now issue an error diagnostic if skipping a file,
+  to correspond with -n inducing a nonzero exit status as of coreutils 9.2.
+  Similarly 'cp -v' and 'mv -v' will output a message for each file skipped
+  due to -n, -i, or -u.
+
+** New features
+
+  cp and mv now support --update=none to always skip existing files
+  in the destination, while not affecting the exit status.
+  This is equivalent to the --no-clobber behavior from before v9.2.
+
+
+* Noteworthy changes in release 9.2 (2023-03-20) [stable]
+
+** Bug fixes
+
+  'comm --output-delimiter="" --total' now delimits columns in the total
+  line with the NUL character, consistent with NUL column delimiters in
+  the rest of the output.  Previously no delimiters were used for the
+  total line in this case.
+  [bug introduced with the --total option in coreutils-8.26]
+
+  'cp -p' no longer has a security hole when cloning into a dangling
+  symbolic link on macOS 10.12 and later.
+  [bug introduced in coreutils-9.1]
+
+  'cp -rx / /mnt' no longer complains "cannot create directory /mnt/".
+  [bug introduced in coreutils-9.1]
+
+  cp, mv, and install avoid allocating too much memory, and possibly
+  triggering "memory exhausted" failures, on file systems like ZFS,
+  which can return varied file system I/O block size values for files.
+  [bug introduced in coreutils-6.0]
+
+  cp, mv, and install now immediately acknowledge transient errors
+  when creating copy-on-write or cloned reflink files, on supporting
+  file systems like XFS, BTRFS, APFS, etc.
+  Previously they would have tried again with other copy methods
+  which may have resulted in data corruption.
+  [bug introduced in coreutils-7.5 and enabled by default in coreutils-9.0]
+
+  cp, mv, and install now handle ENOENT failures across CIFS file systems,
+  falling back from copy_file_range to a better supported standard copy.
+  [issue introduced in coreutils-9.0]
+
+  'mv --backup=simple f d/' no longer mistakenly backs up d/f to f~.
+  [bug introduced in coreutils-9.1]
+
+  rm now fails gracefully when memory is exhausted.
+  Previously it may have aborted with a failed assertion in some cases.
+  [This bug was present in "the beginning".]
+
+  rm -d (--dir) now properly handles unreadable empty directories.
+  E.g., before, this would fail to remove d: mkdir -m0 d; src/rm -d d
+  [bug introduced in v8.19 with the addition of this option]
+
+  runcon --compute no longer looks up the specified command in the $PATH
+  so that there is no mismatch between the inspected and executed file.
+  [bug introduced when runcon was introduced in coreutils-6.9.90]
+
+  'sort -g' no longer infloops when given multiple NaNs on platforms
+  like x86_64 where 'long double' has padding bits in memory.
+  Although the fix alters sort -g's NaN ordering, that ordering has
+  long been documented to be platform-dependent.
+  [bug introduced 1999-05-02 and only partly fixed in coreutils-8.14]
+
+  stty ispeed and ospeed options no longer accept and silently ignore
+  invalid speed arguments, or give false warnings for valid speeds.
+  Now they're validated against both the general accepted set,
+  and the system supported set of valid speeds.
+  [This bug was present in "the beginning".]
+
+  stty now wraps output appropriately for the terminal width.
+  Previously it may have output 1 character too wide for certain widths.
+  [bug introduced in coreutils-5.3]
+
+  tail --follow=name works again with non seekable files.  Previously it
+  exited with an "Illegal seek" error when such a file was replaced.
+  [bug introduced in fileutils-4.1.6]
+
+  'wc -c' will again efficiently determine the size of large files
+  on all systems.  It no longer redundantly reads data from certain
+  sized files larger than SIZE_MAX.
+  [bug introduced in coreutils-8.24]
+
+** Changes in behavior
+
+  Programs now support the new Ronna (R), and Quetta (Q) SI prefixes,
+  corresponding to 10^27 and 10^30 respectively,
+  along with their binary counterparts Ri (2^90) and Qi (2^100).
+  In some cases (e.g., 'sort -h') these new prefixes simply work;
+  in others, where they exceed integer width limits, they now elicit
+  the same integer overflow diagnostics as other large prefixes.
+
+  'cp --reflink=always A B' no longer leaves behind a newly created
+  empty file B merely because copy-on-write clones are not supported.
+
+  'cp -n' and 'mv -n' now exit with nonzero status if they skip their
+  action because the destination exists, and likewise for 'cp -i',
+  'ln -i', and 'mv -i' when the user declines.  (POSIX specifies this
+  for 'cp -i' and 'mv -i'.)
+
+  cp, mv, and install again read in multiples of the reported block size,
+  to support unusual devices that may have this constraint.
+  [behavior inadvertently changed in coreutils-7.2]
+
+  du --apparent now counts apparent sizes only of regular files and
+  symbolic links.  POSIX does not specify the meaning of apparent
+  sizes (i.e., st_size) for other file types, and counting those sizes
+  could cause confusing and unwanted size mismatches.
+
+  'ls -v' and 'sort -V' go back to sorting ".0" before ".A",
+  reverting to the behavior in coreutils-9.0 and earlier.
+  This behavior is now documented.
+
+  ls --color now matches a file extension case sensitively
+  if there are different sequences defined for separate cases.
+
+  printf unicode \uNNNN, \UNNNNNNNN syntax, now supports all valid
+  unicode code points.  Previously is was restricted to the C
+  universal character subset, which restricted most points <= 0x9F.
+
+  runcon now exits with status 125 for internal errors.  Previously upon
+  internal errors it would exit with status 1, which was less distinguishable
+  from errors from the invoked command.
+
+  'split -n N' now splits more evenly when the input size is not a
+  multiple of N, by creating N output files whose sizes differ by at
+  most 1 byte.  Formerly, it did this only when the input size was
+  less than N.
+
+  'stat -c %s' now prints sizes as unsigned, consistent with 'ls'.
+
+** New Features
+
+  cksum now accepts the --base64 (-b) option to print base64-encoded
+  checksums.  It also accepts/checks such checksums.
+
+  cksum now accepts the --raw option to output a raw binary checksum.
+  No file name or other information is output in this mode.
+
+  cp, mv, and install now accept the --debug option to
+  print details on how a file is being copied.
+
+  factor now accepts the --exponents (-h) option to print factors
+  in the form p^e, rather than repeating the prime p, e times.
+
+  ls now supports the --time=modification option, to explicitly
+  select the default mtime timestamp for display and sorting.
+
+  mv now supports the --no-copy option, which causes it to fail when
+  asked to move a file to a different file system.
+
+  split now accepts options like '-n SIZE' that exceed machine integer
+  range, when they can be implemented as if they were infinity.
+
+  split -n now accepts piped input even when not in round-robin mode,
+  by first copying input to a temporary file to determine its size.
+
+  wc now accepts the --total={auto,never,always,only} option
+  to give explicit control over when the total is output.
+
+** Improvements
+
+  cp --sparse=auto (the default), mv, and install,
+  will use the copy_file_range syscall now also with sparse files.
+  This may be more efficient, by avoiding user space copies,
+  and possibly employing copy offloading or reflinking,
+  for the non sparse portion of such sparse files.
+
+  On macOS, cp creates a copy-on-write clone in more cases.
+  Previously cp would only do this when preserving mode and timestamps.
+
+  date --debug now diagnoses if multiple --date or --set options are
+  specified, as only the last specified is significant in that case.
+
+  rm outputs more accurate diagnostics in the presence of errors
+  when removing directories.  For example EIO will be faithfully
+  diagnosed, rather than being conflated with ENOTEMPTY.
+
+  tail --follow=name now works with single non regular files even
+  when their modification time doesn't change when new data is available.
+  Previously tail would not show any new data in this case.
+
+  tee -p detects when all remaining outputs have become broken pipes, and
+  exits, rather than waiting for more input to induce an exit when written.
+
+  tee now handles non blocking outputs, which can be seen for example with
+  telnet or mpirun piping through tee to a terminal.
+  Previously tee could truncate data written to such an output and fail,
+  and also potentially output a "Resource temporarily unavailable" error.
+
+
+* Noteworthy changes in release 9.1 (2022-04-15) [stable]
+
+** Bug fixes
+
+  chmod -R no longer exits with error status when encountering symlinks.
+  All files would be processed correctly, but the exit status was incorrect.
+  [bug introduced in coreutils-9.0]
+
+  If 'cp -Z A B' checks B's status and some other process then removes B,
+  cp no longer creates B with a too-generous SELinux security context
+  before adjusting it to the correct value.
+  [bug introduced in coreutils-8.17]
+
+  'cp --preserve=ownership A B' no longer ignores the umask when creating B.
+  Also, 'cp --preserve-xattr A B' is less likely to temporarily chmod u+w B.
+  [bug introduced in coreutils-6.7]
+
+  On macOS, 'cp A B' no longer miscopies when A is in an APFS file system
+  and B is in some other file system.
+  [bug introduced in coreutils-9.0]
+
+  On macOS, fmt no longer corrupts multi-byte characters
+  by misdetecting their component bytes as spaces.
+  [This bug was present in "the beginning".]
+
+  'id xyz' now uses the name 'xyz' to determine groups, instead of xyz's uid.
+  [bug introduced in coreutils-8.22]
+
+  'ls -v' and 'sort -V' no longer mishandle corner cases like "a..a" vs "a.+"
+  or lines containing NULs.  Their behavior now matches the documentation
+  for file names like ".m4" that consist entirely of an extension,
+  and the documentation has been clarified for unusual cases.
+  [bug introduced in coreutils-7.0]
+
+  On macOS, 'mv A B' no longer fails with "Operation not supported"
+  when A and B are in the same tmpfs file system.
+  [bug introduced in coreutils-9.0]
+
+  'mv -T --backup=numbered A B/' no longer miscalculates the backup number
+  for B when A is a directory, possibly inflooping.
+  [bug introduced in coreutils-6.3]
+
+** Changes in behavior
+
+  cat now uses the copy_file_range syscall if available, when doing
+  simple copies between regular files.  This may be more efficient, by avoiding
+  user space copies, and possibly employing copy offloading or reflinking.
+
+  chown and chroot now warn about usages like "chown root.root f",
+  which have the nonstandard and long-obsolete "." separator that
+  causes problems on platforms where user names contain ".".
+  Applications should use ":" instead of ".".
+
+  cksum no longer allows abbreviated algorithm names,
+  so that forward compatibility and robustness is improved.
+
+  date +'%-N' now suppresses excess trailing digits, instead of always
+  padding them with zeros to 9 digits.  It uses clock_getres and
+  clock_gettime to infer the clock resolution.
+
+  dd conv=fsync now synchronizes output even after a write error,
+  and similarly for dd conv=fdatasync.
+
+  dd now counts bytes instead of blocks if a block count ends in "B".
+  For example, 'dd count=100KiB' now copies 100 KiB of data, not
+  102,400 blocks of data.  The flags count_bytes, skip_bytes and
+  seek_bytes are therefore obsolescent and are no longer documented,
+  though they still work.
+
+  ls no longer colors files with capabilities by default, as file-based
+  capabilities are rarely used, and lookup increases processing per file by
+  about 30%.  It's best to use getcap [-r] to identify files with capabilities.
+
+  ls no longer tries to automount files, reverting to the behavior
+  before the statx() call was introduced in coreutils-8.32.
+
+  stat no longer tries to automount files by default, reverting to the
+  behavior before the statx() call was introduced in coreutils-8.32.
+  Only `stat --cached=never` will continue to automount files.
+
+  timeout --foreground --kill-after=... will now exit with status 137
+  if the kill signal was sent, which is consistent with the behavior
+  when the --foreground option is not specified.  This allows users to
+  distinguish if the command was more forcefully terminated.
+
+** New Features
+
+  dd now supports the aliases iseek=N for skip=N, and oseek=N for seek=N,
+  like FreeBSD and other operating systems.
+
+  dircolors takes a new --print-ls-colors option to display LS_COLORS
+  entries, on separate lines, colored according to the entry color code.
+
+  dircolors will now also match COLORTERM in addition to TERM environment
+  variables.  The default config will apply colors with any COLORTERM set.
+
+** Improvements
+
+  cp, mv, and install now use openat-like syscalls when copying to a directory.
+  This avoids some race conditions and should be more efficient.
+
+  On macOS, cp creates a copy-on-write clone if source and destination
+  are regular files on the same APFS file system, the destination does
+  not already exist, and cp is preserving mode and timestamps (e.g.,
+  'cp -p', 'cp -a').
+
+  The new 'date' option --resolution outputs the timestamp resolution.
+
+  With conv=fdatasync or conv=fsync, dd status=progress now reports
+  any extra final progress just before synchronizing output data,
+  since synchronizing can take a long time.
+
+  printf now supports printing the numeric value of multi-byte characters.
+
+  sort --debug now diagnoses issues with --field-separator characters
+  that conflict with characters possibly used in numbers.
+
+  'tail -f file | filter' now exits on Solaris when filter exits.
+
+  root invoked coreutils, that are built and run in single binary mode,
+  now adjust /proc/$pid/cmdline to be more specific to the utility
+  being run, rather than using the general "coreutils" binary name.
+
+** Build-related
+
+  AIX builds no longer fail because some library functions are not found.
+  [bug introduced in coreutils-8.32]
+
+
 * Noteworthy changes in release 9.0 (2021-09-24) [stable]
 
 ** Bug fixes
@@ -32,7 +760,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   expr no longer mishandles unmatched \(...\) in regular expressions.
   [bug introduced in coreutils-6.0]
 
-  ls no longer crashes when printing the SELinux context for unstatable files.
+  ls no longer crashes when printing the SELinux context for unstattable files.
   [bug introduced in coreutils-6.9.91]
 
   mkdir -m no longer mishandles modes more generous than the umask.
@@ -67,6 +795,7 @@ GNU coreutils NEWS                                    -*- outline -*-
 ** Changes in behavior
 
   cp and install now default to copy-on-write (COW) if available.
+  I.e., cp now uses --reflink=auto mode by default.
 
   cp, install and mv now use the copy_file_range syscall if available.
   Also, they use lseek+SEEK_HOLE rather than ioctl+FS_IOC_FIEMAP on sparse
@@ -337,7 +1066,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   env now supports '--list-signal-handling' to indicate non-default
   signal handling before executing a program.
 
-** New commands
+** New programs
 
   basenc is added to complement existing base64,base32 commands,
   and encodes and decodes printable text using various common encodings:
@@ -610,7 +1339,7 @@ GNU coreutils NEWS                                    -*- outline -*-
 ** Bug fixes
 
   cp --parents will now set an SELinux context for created directories,
-  as appropriate for the -a, --preseve=context, or -Z options.
+  as appropriate for the -a, --preserve=context, or -Z options.
   [bug present since SELinux support added in coreutils-6.10]
 
   date again converts from a specified time zone.  Previously output was
@@ -857,7 +1586,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   tail -F now works with initially non existent files on a remote file system.
   [bug introduced in coreutils-7.5]
 
-** New commands
+** New programs
 
   base32 is added to complement the existing base64 command,
   and encodes and decodes printable text as per RFC 4648.
@@ -1247,7 +1976,7 @@ GNU coreutils NEWS                                    -*- outline -*-
 
 ** Bug fixes
 
-  df now processes the mount list correctly in the presence of unstatable
+  df now processes the mount list correctly in the presence of unstattable
   mount points.  Previously it may have failed to output some mount points.
   [bug introduced in coreutils-8.21]
 
@@ -2417,7 +3146,7 @@ GNU coreutils NEWS                                    -*- outline -*-
 
   rm -r --one-file-system works once again.
   The rewrite to make rm use fts introduced a regression whereby
-  a commmand of the above form would fail for all subdirectories.
+  a command of the above form would fail for all subdirectories.
   [bug introduced in coreutils-8.0]
 
   stat -f recognizes more file system types: k-afs, fuseblk, gfs/gfs2, ocfs2,
@@ -2500,7 +3229,7 @@ GNU coreutils NEWS                                    -*- outline -*-
 
   ls --color now handles files with capabilities correctly.  Previously
   files with capabilities were often not colored, and also sometimes, files
-  without capabilites were colored in error. [bug introduced in coreutils-7.0]
+  without capabilities were colored in error. [bug introduced in coreutils-7.0]
 
   md5sum now prints checksums atomically so that concurrent
   processes will not intersperse their output.
@@ -2649,7 +3378,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   avoid the disproportionate quadratic performance penalty.  Leading to
   another improvement:
 
-  rm -r is now slightly more standards-conformant when operating on
+  rm -r is now slightly more standard-conforming when operating on
   write-protected files with relative names longer than 8KiB.
 
 
@@ -3016,7 +3745,7 @@ GNU coreutils NEWS                                    -*- outline -*-
   install accepts a new option --strip-program to specify the program used to
   strip binaries.
 
-  ls now colorizes files with capabilities if libcap is available
+  ls now colors names of files with capabilities if libcap is available.
 
   ls -v now uses filevercmp function as sort predicate (instead of strverscmp)
 
@@ -5289,7 +6018,7 @@ packages, see ./old/*/NEWS.
 
 ========================================================================
 
-Copyright (C) 2001-2021 Free Software Foundation, Inc.
+Copyright (C) 2001-2025 Free Software Foundation, Inc.
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or

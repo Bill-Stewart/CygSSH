@@ -1,7 +1,7 @@
-﻿; CygSSH - Inno Setup installer script
+; CygSSH - Inno Setup installer script
 
-#if Ver < EncodeVer(6,3,1,0)
-#error This script requires Inno Setup 6.3.1 or later
+#if Ver < EncodeVer(7,0,2,0)
+#error This script requires Inno Setup 7.0.2 or later
 #endif
 
 #define UninstallIfVersionOlderThan "9.8.0"
@@ -24,6 +24,7 @@ AppName={#AppName}
 AppPublisher={#SetupAuthor}
 AppVersion={#AppVersion}
 AppVerName={#AppName}
+SetupArchitecture=x64
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 ChangesEnvironment=yes
@@ -92,7 +93,6 @@ Source: "bin-cygwin\editrights.exe";            DestDir: "{app}\bin"; Components
 Source: "bin-cygwin\false.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\getent.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\id.exe";                    DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
-Source: "bin-cygwin\less.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\mintty.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\mkgroup.exe";               DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\mkpasswd.exe";              DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
@@ -115,15 +115,17 @@ Source: "bin-cygwin\true.exe";                  DestDir: "{app}\bin"; Components
 Source: "bin-cygwin\tty.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\umount.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\uname.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
-Source: "bin-cygwin\unzip.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\vi.exe";                    DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\xz.exe";                    DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
-Source: "bin-cygwin\zip.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+; Special handling for these: Don't install if already in Path
+Source: "bin-cygwin\less.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion; Check: not IsFileInPath('less.exe')
+Source: "bin-cygwin\unzip.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion; Check: not IsFileInPath('unzip.exe')
+Source: "bin-cygwin\zip.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion; Check: not IsFileInPath('zip.exe')
 ; supplemental /bin
-Source: "bin-supp\startps.exe"; DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
-Source: "bin-supp\posh.exe";    DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion
-Source: "bin-supp\winpty*";     DestDir: "{app}\bin"; Components: server;        Flags: ignoreversion
+Source: "bin-supp\posh.exe"; DestDir: "{app}\bin"; Components: server; Flags: ignoreversion
+Source: "bin-supp\winpty*";  DestDir: "{app}\bin"; Components: server; Flags: ignoreversion
 ; cygwin /usr/sbin
+Source: "bin-supp\startps.exe";                  DestDir: "{app}\usr\sbin"; Components: client server; Flags: ignoreversion
 Source: "usr\sbin-cygwin\ssh-keysign.exe";       DestDir: "{app}\usr\sbin"; Components: client server; Flags: ignoreversion
 Source: "usr\sbin-cygwin\ssh-pkcs11-helper.exe"; DestDir: "{app}\usr\sbin"; Components: client server; Flags: ignoreversion
 Source: "usr\sbin-cygwin\cygserver.exe";         DestDir: "{app}\usr\sbin"; Components: server;        Flags: ignoreversion
@@ -189,7 +191,7 @@ Filename: "{app}\version.ini"; Section: "Version"; Key: "Version"; String: "{#Ap
 
 [Tasks]
 Name: startservice; Description: "{cm:TasksStartServiceDescription}"; Components: server
-Name: modifypath;   Description: "{cm:TasksModifyPathDescription,{code:GetSystemOrUserPath}}"; Check: not IsDirInPath(ExpandConstant('{app}\bin'))
+Name: modifypath;   Description: "{cm:TasksModifyPathDescription,{code:GetSystemOrUserPath}}"
 Name: resetconfig;  Description: "{cm:TasksResetConfigDescription}"; Flags: checkedonce unchecked; Check: FileExists(ExpandConstant('{app}\etc\ssh_config')) or FileExists(ExpandConstant('{app}\etc\sshd_config'))
 
 [Run]
@@ -221,39 +223,39 @@ Filename: "{sys}\icacls.exe"; \
   Flags: runhidden
 
 ; Configure fstab
-Filename: "{app}\bin\startps.exe"; \
+Filename: "{app}\usr\sbin\startps.exe"; \
   Parameters: "-D --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-FstabConfig.ps1"""; \
   StatusMsg: "{cm:RunConfigureFstabStatusMsg}"; \
   Components: client server
 
 ; Create SSH host keys
-Filename: "{app}\bin\startps.exe"; \
+Filename: "{app}\usr\sbin\startps.exe"; \
   Parameters: "-D --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHHostKey.ps1"""; \
   StatusMsg: "{cm:RunConfigureSSHHostKeysStatusMsg}"; \
   Components: server
 
 ; Configure local access group and sshd_config file
-Filename: "{app}\bin\startps.exe"; \
+Filename: "{app}\usr\sbin\startps.exe"; \
   Parameters: "-D --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHGroup.ps1"" -- -NoConfirm"; \
   StatusMsg: "{cm:RunConfigureLocalAccessGroupStatusMsg}"; \
   Components: server
 
 ; Install service
-Filename: "{app}\bin\startps.exe"; \
+Filename: "{app}\usr\sbin\startps.exe"; \
   Parameters: "-D --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -Install -NoConfirm"; \
   StatusMsg: "{cm:RunInstallServiceStatusMsg}"; \
   Components: server; \
   Check: not ServiceExists('{#ServiceName}')
 
 ; Start service
-Filename: "{app}\bin\startps.exe"; \
+Filename: "{app}\usr\sbin\startps.exe"; \
   Parameters: "-D --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -Start -NoConfirm"; \
   StatusMsg: "{cm:RunStartServiceStatusMsg}"; \
   Components: server; \
   Tasks: startservice
 
 [UninstallRun]
-Filename: "{app}\bin\startps.exe"; \
+Filename: "{app}\usr\sbin\startps.exe"; \
   Parameters: "-D --noninteractive --quiet --wait --windowstyle=hidden ""{app}\bin\Set-SSHService.ps1"" -- -Uninstall -NoConfirm"; \
   RunOnceId: "uninstallservice"; \
   Components: server
@@ -271,6 +273,7 @@ const
   MODIFY_PATH_TASK_NAME = 'modifypath';
   SC_MANAGER_CONNECT    = 1;
   SERVICE_QUERY_STATUS  = 4;
+  ERROR_ALREADY_EXISTS  = 183;
 
 type
   TSCHandle = THandle;
@@ -302,9 +305,12 @@ type
 
 var
   AppProgressPage: TOutputProgressWizardPage;
-  PathIsModified, ApplicationUninstalled: Boolean;
+  ModifyPathTaskSelected, ApplicationUninstalled: Boolean;
   WMIService: Variant;
   RunningServices: TCygwinServiceList;
+
+function SearchPath(lpPath, lpFileName, lpExtension: string; nBufferLength: DWORD; lpBuffer: string; lpFilePart: DWORD): DWORD;
+  external 'SearchPathW@kernel32.dll stdcall setuponly';
 
 // advapi32.dll functions for service info
 function OpenSCManager(lpMachineName: string; lpDatabaseName: string; dwDesiredAccess: DWORD): TSCHandle;
@@ -317,12 +323,10 @@ function CloseServiceHandle(hSCObject: TSCHandle): BOOL;
   external 'CloseServiceHandle@advapi32.dll stdcall';
 
 // PathMgr.dll functions - https://github.com/Bill-Stewart/PathMgr/
-// Import AddDirToPath() and IsDirInPath() at setup time
+// Import functions at setup time
 function DLLAddDirToPath(DirName: string; PathType, AddType: DWORD): DWORD;
   external 'AddDirToPath@files:PathMgr.dll stdcall setuponly';
-function DLLIsDirInPath(DirName: string; PathType: DWORD; var FindType: DWORD): DWORD;
-  external 'IsDirInPath@files:PathMgr.dll stdcall setuponly';
-// Import RemoveDirFromPath() at uninstall time
+// Import functions at uninstall time
 function DLLRemoveDirFromPath(DirName: string; PathType: DWORD): DWORD;
   external 'RemoveDirFromPath@{app}\bin\PathMgr.dll stdcall uninstallonly';
 
@@ -336,6 +340,18 @@ function DLLCompareISPackageVersion(AppId, InstallingVersion: string;
   external 'CompareISPackageVersion@files:UninsIS.dll stdcall setuponly';
 function DLLUninstallISPackage(AppId: string; Is64BitInstallMode, IsAdminInstallMode: DWORD): DWORD;
   external 'UninstallISPackage@files:UninsIS.dll stdcall setuponly';
+
+// Wrapper for SearchPathW() - returns true if the file is in the search Path,
+// or false otherwise
+function IsFileInPath(const FileName: string): Boolean;
+begin
+  result := SearchPath('',  // LPCWSTR lpPath
+    FileName,               // LPCWSTR lpFileName
+    '',                     // LPCWSTR lpExtension
+    0,                      // DWORD   nBufferLength
+    '',                     // LPWSTR  lpBuffer
+    0) > 0;                 // LPWSTR  *lpFilePart
+end;
 
 // Wrapper for PathMgr.dll AddDirToPath() function
 function AddDirToPath(const DirName: string): DWORD;
@@ -357,20 +373,10 @@ begin
   result := DLLAddDirToPath(DirName, PathType, 1);
   if result = 0 then
     Log(FmtMessage(CustomMessage('PathAddSuccessMessage'), [DirName, PathTypeName]))
+  else if result = ERROR_ALREADY_EXISTS then
+    Log(FmtMessage(CustomMessage('PathAlreadyExists'), [DirName, PathTypeName]))
   else
     Log(FmtMessage(CustomMessage('PathAddFailMessage'), [DirName, PathTypeName, IntToStr(result)]));
-end;
-
-// Wrapper for PathMgr.dll IsDirInPath() function
-function IsDirInPath(const DirName: string): Boolean;
-var
-  PathType, FindType: DWORD;
-begin
-  if IsAdminInstallMode() then
-    PathType := 0
-  else
-    PathType := 1;
-  result := DLLIsDirInPath(DirName, PathType, FindType) = 0;
 end;
 
 // Wrapper for PathMgr.dll RemoveDirFromPath() function
@@ -482,7 +488,7 @@ var
 begin
   result := true;
   // Was modifypath task selected during a previous install?
-  PathIsModified := GetPreviousData(MODIFY_PATH_TASK_NAME, '') = 'true';
+  ModifyPathTaskSelected := GetPreviousData(MODIFY_PATH_TASK_NAME, '') = 'true';
   try
     SWbemLocator := CreateOleObject('WbemScripting.SWbemLocator');
     WMIService := SWbemLocator.ConnectServer('', 'root\CIMV2');
@@ -503,7 +509,7 @@ function InitializeUninstall(): Boolean;
 begin
   result := true;
   // Was modifypath task selected during a previous install?
-  PathIsModified := GetPreviousData(MODIFY_PATH_TASK_NAME, '') = 'true';
+  ModifyPathTaskSelected := GetPreviousData(MODIFY_PATH_TASK_NAME, '') = 'true';
   ApplicationUninstalled := false;
 end;
 
@@ -519,7 +525,7 @@ procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
   if CurUninstallStep = usUninstall then
   begin
-    if PathIsModified then
+    if ModifyPathTaskSelected then
       RemoveDirFromPath(ExpandConstant('{app}\bin'));
   end
   else if CurUninstallStep = usPostUninstall then
@@ -545,7 +551,7 @@ begin
   // Note: IS removes and rewrites 'previous data' values at every reinstall
   SetPreviousData(PreviousDataKey, 'Setup Type', WizardSetupType(false));
   // Store previous or current path task selection as custom user setting
-  if PathIsModified or WizardIsTaskSelected(MODIFY_PATH_TASK_NAME) then
+  if ModifyPathTaskSelected or WizardIsTaskSelected(MODIFY_PATH_TASK_NAME) then
     SetPreviousData(PreviousDataKey, MODIFY_PATH_TASK_NAME, 'true');
 end;
 
@@ -934,7 +940,7 @@ begin
   else if CurStep = ssPostInstall then
   begin
     FixUnquotedServicePath();
-    if PathIsModified or WizardIsTaskSelected(MODIFY_PATH_TASK_NAME) then
+    if ModifyPathTaskSelected or WizardIsTaskSelected(MODIFY_PATH_TASK_NAME) then
       AddDirToPath(ExpandConstant('{app}\bin'));
     if GetArrayLength(RunningServices) > 0 then
     begin

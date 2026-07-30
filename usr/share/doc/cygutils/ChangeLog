@@ -1,3 +1,13 @@
+2025-08-09  Mark Geisert  <mark@maxrnd.com>  (1.4.17-5)
+
+       * src/cygstart/cygstart.c: Added new action 'runas' from patch
+         contributed by Vadim (vad.cygwin@vad.cx).
+       * src/cygstart/cygstart.1: Ditto.
+       * src/configure.c: Ditto.
+       * src/Makefile.am: Ditto.
+       * src/lssparse/lssparse.c: Added new version of file with updated
+         formatting by Roland Mainz. No functional changes.
+
 2025-04-24  Mark Geisert  <mark@maxrnd.com>  (1.4.17-4)
 
 	* src/cygstart/cygstart.c: Fix len arg of mbstowcs. Thanks to user

@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 10.3.1
+\define{version} 10.4.0
 
 \define{rightarrow} \u2192
 
@@ -47,7 +47,7 @@
 
 \title CygSSH User Guide
 
-\copyright Copyright 2020-2025 by Bill Stewart
+\copyright Copyright 2020-2026 by Bill Stewart
 
 \versionid \version
 
@@ -94,7 +94,7 @@ Example installation command:
 \c cygssh-version-setup.exe /SILENT /CLOSEAPPLICATIONS /SUPPRESSMSGBOXES
 \e        iiiiiii
 
-Replace \e{version} with the version (e.g., \s{9.8.0}).
+Replace \e{version} with the version (e.g., \s{10.4.0}).
 
 \I{/CLOSEAPPLICATIONS parameter}\I{/SILENT parameter}\I{/SUPPRESSMSGBOXES parameter}\I{install, silent}\I{silent install}The above command installs the package silently (i.e., without user interaction). The \c{/CLOSEAPPLICATIONS} parameter automatically stops running services and closes programs so that the installer can reinstall or upgrade the files. Stopped services will be automatically restarted after the installation completes. The \c{/SUPPRESSMSGBOXES} parameter suppresses message dialog boxes that would normally appear in an interactive installation.
 
@@ -102,7 +102,7 @@ If you want to prevent the installer from displaying its progress window during 
 
 \I{non-administrative install mode}\I{/CURRENTUSER parameter}The installer also supports non-administrative install mode, which installs only the client files for the current user (does not require administrator privileges). To run in non-administrative install mode, use the \c{/CURRENTUSER} parameter on the command line.
 
-\I{/FORCEUNINSTALL parameter}You can also force the installer to uninstall the installed version before proceeding with installation; to do this, specify the \c{/FORCEUNINSTALL} parameter on the command line. When you use this parameter, the installer detects if the package is already installed and automatically uninstalls it before proceeding with the installation.
+\I{/FORCEUNINSTALL parameter}You can also force the installer to uninstall the installed version before proceeding with installation; to do this, specify the \c{/FORCEUNINSTALL} parameter on the command line. When you use this parameter, the installer detects if the package is already installed and automatically uninstalls it before proceeding with the installation. If you use this parameter and you had previously updated the Path (see \k{setuptasks}), note that the uninstall will remove the \e{installpath}\c{\\bin} directory from the Path before adding it back when installation completes.
 
 When upgrading from certain older versions, the installer may decide it needs to perform an uninstall before upgrading. In these cases, the installer will behave as if the \c{/FORCEUNINSTALL} parameter is in use even if you don't specify it explicitly.
 
@@ -156,7 +156,7 @@ Note that this page doesn't appear if you are reinstalling or upgrading.
 
 \b \I{startservice installer task}\I{service, start}\s{startservice} - Corresponds to the \s{Start OpenSSH server service} check box. Starts the OpenSSH server service. This task is not applicable if the setup type is \s{client} (see \k{setuptype}). This task is selected by default.
 
-\b \I{modifypath installer task}\I{system Path}\I{user Path}\I{/CURRENTUSER parameter}\s{modifypath} - Corresponds to the \s{Add to system Path} (or \s{Add to user Path}) check box. Adds the \e{installpath}\c{\\bin} directory to the system or user Path environment variable if it does not already exist. This task is selected by default. (This task does not appear if \e{installpath}\c{\\bin} is already in the system or user Path.)
+\b \I{modifypath installer task}\I{system Path}\I{user Path}\I{/CURRENTUSER parameter}\s{modifypath} - Corresponds to the \s{Add to system Path} (or \s{Add to user Path}) check box. Adds the \e{installpath}\c{\\bin} directory to the system or user Path environment variable if it does not already exist. This task is selected by default.
 
 \b \s{resetconfig} - Restores the OpenSSH configuration files (\i\c{ssh_config} and/or \i\c{sshd_config}) to default values. Use this task with caution if you have made any customizations to the \c{etc\\ssh_config} and/or \c{etc\\sshd_config} files. When you select this task, the installer renames the existing \i\c{ssh_config} and/or \i\c{sshd_config} files with \s{-}\e{timestamp} appended (where \e{timestamp} is the current year, month, day, hour, minute, and second) before installing default copies of the configuration file(s). This task is not selected by default.
 
@@ -860,7 +860,7 @@ See \k{opensource} for source code availability for software components that req
 
 In addition to the above, the package contains a set of Windows PowerShell scripts written by Bill Stewart that are used for installing and managing the software. The Windows PowerShell scripts are covered by the MIT license:
 
-Copyright \copyright 2019-2025 by Bill Stewart.
+Copyright \copyright 2019-2026 by Bill Stewart.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -899,6 +899,14 @@ The source code is generally of interest only to developers.
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{10.4.0} (2026-07-30)
+
+\b Updated to OpenSSH 10.4p1 and latest Cygwin packages.
+
+\b Updated to Inno Setup 7.0.2 64-bit installer.
+
+\b Minor tweaks to installer.
 
 \s{10.3.1} (2026-05-21)
 

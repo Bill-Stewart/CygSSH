@@ -1,5 +1,3 @@
-﻿#preproc ispp
-
 ; CygSSH - Inno Setup messages file
 
 [Messages]
@@ -47,6 +45,7 @@ PathAddSuccessMessage=Successfully added "%1" to %2 Path
 PathAddFailMessage=Failed to add "%1" to %2 Path - error %3
 PathRemoveSuccessMessage=Successfully removed "%1" from %2 Path
 PathRemoveFailMessage=Failed to remove "%1" from %2 Path - error %3
+PathAlreadyExists=Did not add "%1" to %2 Path (already exists)
 
 ; Package messages
 PackageDetectedLogMessage=Existing installation of package detected

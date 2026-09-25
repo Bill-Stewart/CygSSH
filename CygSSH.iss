@@ -4,6 +4,7 @@
 #error This script requires Inno Setup 7.0.2 or later
 #endif
 
+#define CodeSignCertHash GetEnv("CODE_SIGN_CERT_HASH")
 #define UninstallIfVersionOlderThan "9.8.0"
 #define AppGUID "{21A533E3-0284-46B5-A731-FBC66EDFB168}"
 #define AppName ReadIni(AddBackslash(SourcePath) + "appinfo.ini", "OpenSSH", "Name", "")
@@ -50,6 +51,7 @@ VersionInfoProductVersion={#AppFullVersion}
 WizardImageFile=OpenSSH-164x314.bmp
 WizardSmallImageFile=OpenSSH-55x55.bmp
 WizardStyle=modern
+SignTool=SignTool {#CodeSignCertHash}
 
 [Languages]
 Name: en; MessagesFile: "compiler:Default.isl,Messages-en.isl"; LicenseFile: "License-en.rtf"; InfoBeforeFile: "Readme-en.rtf"
@@ -83,6 +85,8 @@ Source: "bin-setup\PathMgr.dll"; DestDir: "{app}\bin"; Flags: uninsneveruninstal
 Source: "bin-setup\UninsIS.dll"; Flags: dontcopy
 ; cygwin /bin
 Source: "bin-cygwin\*.dll";                     DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-cygwin\csplit.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-cygwin\cut.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\cygcheck.exe";              DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\cygpath.exe";               DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\cygrunsrv.exe";             DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
@@ -91,6 +95,8 @@ Source: "bin-cygwin\cygwin-console-helper.exe"; DestDir: "{app}\bin"; Components
 Source: "bin-cygwin\dash.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\editrights.exe";            DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\false.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-cygwin\fmt.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-cygwin\fold.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\getent.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\id.exe";                    DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\mintty.exe";                DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
@@ -103,6 +109,7 @@ Source: "bin-cygwin\rebase.exe";                DestDir: "{app}\bin"; Components
 Source: "bin-cygwin\rsync.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\scp.exe";                   DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\sftp.exe";                  DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
+Source: "bin-cygwin\split.exe";                 DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\ssh-add.exe";               DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\ssh-agent.exe";             DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
 Source: "bin-cygwin\ssh-keygen.exe";            DestDir: "{app}\bin"; Components: client server; Flags: ignoreversion
@@ -309,9 +316,6 @@ var
   WMIService: Variant;
   RunningServices: TCygwinServiceList;
 
-function SearchPath(lpPath, lpFileName, lpExtension: string; nBufferLength: DWORD; lpBuffer: string; lpFilePart: DWORD): DWORD;
-  external 'SearchPathW@kernel32.dll stdcall setuponly';
-
 // advapi32.dll functions for service info
 function OpenSCManager(lpMachineName: string; lpDatabaseName: string; dwDesiredAccess: DWORD): TSCHandle;
   external 'OpenSCManagerW@advapi32.dll stdcall';
@@ -341,16 +345,9 @@ function DLLCompareISPackageVersion(AppId, InstallingVersion: string;
 function DLLUninstallISPackage(AppId: string; Is64BitInstallMode, IsAdminInstallMode: DWORD): DWORD;
   external 'UninstallISPackage@files:UninsIS.dll stdcall setuponly';
 
-// Wrapper for SearchPathW() - returns true if the file is in the search Path,
-// or false otherwise
 function IsFileInPath(const FileName: string): Boolean;
 begin
-  result := SearchPath('',  // LPCWSTR lpPath
-    FileName,               // LPCWSTR lpFileName
-    '',                     // LPCWSTR lpExtension
-    0,                      // DWORD   nBufferLength
-    '',                     // LPWSTR  lpBuffer
-    0) > 0;                 // LPWSTR  *lpFilePart
+  result := FileSearch(FileName, GetEnv('Path')) <> '';
 end;
 
 // Wrapper for PathMgr.dll AddDirToPath() function

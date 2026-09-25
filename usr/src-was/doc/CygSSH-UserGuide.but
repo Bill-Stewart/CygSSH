@@ -6,7 +6,7 @@
 \# MACROS
 \# ----------------------------------------------------------------------------
 
-\define{version} 10.4.0
+\define{version} 10.5.0
 
 \define{rightarrow} \u2192
 
@@ -899,6 +899,18 @@ The source code is generally of interest only to developers.
 \A{versionhistory} Version History
 \I{release history}
 \I{version history}
+
+\s{10.5.1} (2026-09-25)
+
+\b Updated to OpenSSH 10.5p1 and latest Cygwin packages.
+
+\b Added some additional text-based utilities (csplit, cut, fmt, fold, split).
+
+\b Updated to Inno Setup 7.1.0.
+
+\b Minor tweaks to installer.
+
+\b Installer signed with self-signed certificate.
 
 \s{10.4.0} (2026-07-30)
 
